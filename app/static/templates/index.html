@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Learning & Career Mentor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom Style System -->
+    <link rel="stylesheet" href="/static/css/style.css?v=1.0.2">
+</head>
+<body data-theme="dark">
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar glass-panel d-flex flex-column justify-content-between">
+        <div>
+            <div class="d-flex align-items-center mb-4 px-2">
+                <i class="bi bi-cpu-fill text-primary fs-3 me-2"></i>
+                <h4 class="logo-text m-0 fw-bold">AI Mentor</h4>
+            </div>
+            <nav class="nav flex-column">
+                <a href="#" class="nav-link-custom active" onclick="switchTab('dashboard')">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchTab('study')">
+                    <i class="bi bi-book-half"></i>
+                    <span>Study Companion</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchTab('coding')">
+                    <i class="bi bi-terminal-fill"></i>
+                    <span>Coding Mentor</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchTab('career')">
+                    <i class="bi bi-briefcase-fill"></i>
+                    <span>Career Roadmap</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchTab('interview')">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span>Mock Interviews</span>
+                </a>
+                <a href="#" id="admin-nav" class="nav-link-custom d-none" onclick="switchTab('admin')">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span>Admin Panel</span>
+                </a>
+            </nav>
+        </div>
+        
+        <div>
+            <hr class="border-secondary opacity-25">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary rounded-circle p-2 me-2">
+                        <i class="bi bi-person-fill text-white"></i>
+                    </div>
+                    <div style="font-size: 0.85rem;" class="logo-text">
+                        <div class="fw-bold text-truncate" id="user-email-display">Guest</div>
+                        <span class="text-secondary" id="user-role-display">Not Signed In</span>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-outline-danger" onclick="logout()" title="Logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="main-content">
+        <!-- Header Bar -->
+        <header class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 id="tab-title" class="fw-extrabold m-0">Student Dashboard</h2>
+                <p id="tab-subtitle" class="text-secondary m-0">Track your learning statistics and readiness indicators.</p>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn glass-panel border-0 px-3 py-2" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                    <i class="bi bi-moon-stars-fill" id="theme-icon"></i>
+                </button>
+                <div id="auth-buttons-wrapper">
+                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Tabs -->
+        <main>
+            <!-- 1. Dashboard Tab -->
+            <section id="tab-dashboard" class="tab-pane-custom">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="glass-panel p-4 text-center">
+                            <i class="bi bi-lightning-charge-fill text-warning fs-1 mb-2"></i>
+                            <h5 class="text-secondary">Learning XP</h5>
+                            <h2 id="dash-xp" class="fw-bold">0</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="glass-panel p-4 text-center">
+                            <i class="bi bi-trophy-fill text-primary fs-1 mb-2"></i>
+                            <h5 class="text-secondary">Job Readiness</h5>
+                            <h2 id="dash-readiness" class="fw-bold">0%</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="glass-panel p-4 text-center">
+                            <i class="bi bi-check-circle-fill text-success fs-1 mb-2"></i>
+                            <h5 class="text-secondary">Quizzes Completed</h5>
+                            <h2 id="dash-quizzes" class="fw-bold">0</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="glass-panel p-4 text-center">
+                            <i class="bi bi-code-slash text-info fs-1 mb-2"></i>
+                            <h5 class="text-secondary">Coding Solved</h5>
+                            <h2 id="dash-coding" class="fw-bold">0</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="glass-panel p-4 mb-4">
+                            <h4 class="mb-3">Active Roadmap Target: <span class="text-primary" id="dash-target-title">Loading...</span></h4>
+                            <div class="progress mb-3" style="height: 10px; background: rgba(255,255,255,0.05);">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" id="dash-roadmap-progress-bar"></div>
+                            </div>
+                            <span class="text-secondary" id="dash-roadmap-progress-text">0% Roadmap Milestones Complete</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4">
+                            <h4>Activity Overview</h4>
+                            <div class="py-4 text-center text-secondary">
+                                <i class="bi bi-bar-chart-line fs-1 mb-2"></i>
+                                <p>Progress metrics are fully interactive.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Study Companion Tab -->
+            <section id="tab-study" class="tab-pane-custom d-none">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <!-- Upload Document Card -->
+                        <div class="glass-panel p-4 mb-4">
+                            <h4 class="mb-3">Ingest Study Material</h4>
+                            <form id="upload-doc-form" onsubmit="uploadDocument(event)">
+                                <div class="mb-3">
+                                    <input type="file" id="study-file" class="form-control glass-input" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary-custom w-100">Upload & Vectorize</button>
+                            </form>
+                            <div id="upload-status" class="mt-2 small text-secondary"></div>
+                        </div>
+
+                        <!-- Documents List -->
+                        <div class="glass-panel p-4 mb-4">
+                            <h4 class="mb-3">Processed Resources</h4>
+                            <div id="processed-docs-list" class="list-group list-group-flush bg-transparent">
+                                <span class="text-secondary">No files loaded yet.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <!-- RAG Q&A Interface -->
+                        <div class="glass-panel p-4 mb-4 d-flex flex-column" style="height: 400px;">
+                            <h4 class="mb-3">Query AI Study Companion</h4>
+                            <div id="rag-chat-history" class="flex-grow-1 overflow-auto mb-3 p-3 rounded" style="background: rgba(0,0,0,0.1); max-height: 280px;">
+                                <div class="text-secondary">Ask questions about your uploaded PDFs or PPTXs.</div>
+                            </div>
+                            <form id="rag-ask-form" onsubmit="askRAG(event)" class="d-flex gap-2">
+                                <input type="text" id="rag-query" class="form-control glass-input" placeholder="Type your query here..." required>
+                                <button type="submit" class="btn btn-primary-custom">Ask</button>
+                            </form>
+                        </div>
+
+                        <!-- Study Tools: Flashcard & Quiz triggers -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="glass-panel p-4 text-center">
+                                    <i class="bi bi-card-text fs-2 text-primary mb-2"></i>
+                                    <h5>Spaced Repetition</h5>
+                                    <button class="btn btn-sm btn-primary-custom mt-2" onclick="triggerFlashcardReview()">Review Cards</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="glass-panel p-4 text-center">
+                                    <i class="bi bi-question-square fs-2 text-success mb-2"></i>
+                                    <h5>AI Quiz Maker</h5>
+                                    <button class="btn btn-sm btn-primary-custom mt-2" onclick="triggerQuizGen()">Take Quiz</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Coding Mentor Tab -->
+            <section id="tab-coding" class="tab-pane-custom d-none">
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <div class="glass-panel p-4" style="height: calc(100vh - 160px); overflow-y: auto;">
+                            <h4 class="mb-3">Coding Challenges</h4>
+                            <div class="list-group list-group-flush bg-transparent" id="coding-problems-list">
+                                <span class="text-secondary">Loading problems...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9">
+                        <div class="coding-container">
+                            <!-- Code Editor -->
+                            <div class="coding-pane glass-panel p-4 flex-grow-1" style="height: calc(100vh - 160px);">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 id="active-problem-title" class="m-0">Challenge Workspace</h4>
+                                    <select class="form-select glass-input w-25" id="code-language" onchange="loadStarterCode()">
+                                        <option value="python">Python</option>
+                                        <option value="javascript">JavaScript</option>
+                                    </select>
+                                </div>
+                                <div class="flex-grow-1 d-flex flex-column mb-3">
+                                    <textarea id="code-editor-box" class="editor-textarea form-control" placeholder="# Write your code solution here..."></textarea>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-info" onclick="requestOptimization()">AI Optimize</button>
+                                    <button class="btn btn-primary-custom ms-auto" onclick="submitCodeSolution()">Submit Code</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Problem Specification / Output Console -->
+                            <div class="coding-pane" style="width: 320px; gap: 20px;">
+                                <div class="glass-panel p-4 flex-grow-1 overflow-auto" id="coding-desc-panel" style="max-height: 50%;">
+                                    <h5 class="fw-bold">Problem Prompt</h5>
+                                    <p class="text-secondary" id="coding-problem-text">Select a challenge from the list to begin coding.</p>
+                                </div>
+                                <div class="glass-panel p-4 flex-grow-1 overflow-auto" id="coding-console-panel" style="max-height: 50%;">
+                                    <h5 class="fw-bold">Evaluation Console</h5>
+                                    <pre class="text-secondary small" id="coding-output-console">Submit code to view console output logs.</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Career Roadmap Tab -->
+            <section id="tab-career" class="tab-pane-custom d-none">
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <div class="glass-panel p-4 mb-4">
+                            <h4 class="mb-3">Set Target & Analyze Resume</h4>
+                            <form id="resume-form" onsubmit="uploadResume(event)">
+                                <div class="mb-3">
+                                    <label class="form-label">Target Job Title</label>
+                                    <input type="text" id="target-job" class="form-control glass-input" placeholder="e.g., Senior FastAPI Developer" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Upload Resume (PDF, DOCX)</label>
+                                    <input type="file" id="resume-file" class="form-control glass-input" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary-custom w-100">Analyze Skills & Set Goals</button>
+                            </form>
+                        </div>
+                        
+                        <div class="glass-panel p-4" id="skill-gap-panel">
+                            <h4>Target Job Skills Map</h4>
+                            <p class="text-secondary">Ingest resume to view target skills profile.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="glass-panel p-4 mb-4">
+                            <h4 class="mb-3">AI Learning Timeline</h4>
+                            <div class="timeline-track" id="timeline-wrapper">
+                                <p class="text-secondary">Roadmap milestones will display here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Mock Interview Tab -->
+            <section id="tab-interview" class="tab-pane-custom d-none">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="glass-panel p-4 mb-4">
+                            <h4 class="mb-3">Start Simulated Mock</h4>
+                            <div class="mb-3">
+                                <label class="form-label">Interview Type</label>
+                                <select class="form-select glass-input" id="interview-type">
+                                    <option value="TECHNICAL">Technical Interview</option>
+                                    <option value="HR">HR Interview</option>
+                                    <option value="BEHAVIORAL">Behavioral Screening</option>
+                                    <option value="CODING">Coding Discussion</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary-custom w-100" onclick="initiateMockInterview()">Initialize Interview</button>
+                        </div>
+
+                        <div class="glass-panel p-4">
+                            <h4 class="mb-3">Previous Mock Runs</h4>
+                            <div class="list-group list-group-flush bg-transparent" id="mock-sessions-list">
+                                <span class="text-secondary">No mock interviews completed.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="glass-panel p-4 d-flex flex-column" style="height: 500px;" id="interview-workspace">
+                            <h4 class="mb-3">Mock Live Audio/Text Stream</h4>
+                            <div class="flex-grow-1 overflow-auto p-3 rounded mb-3" style="background: rgba(0,0,0,0.15);" id="interview-chat-pane">
+                                <div class="text-secondary">Initialize session to begin interviewing.</div>
+                            </div>
+                            <div class="d-flex gap-2" id="interview-inputs-pane">
+                                <input type="text" id="interview-user-message" class="form-control glass-input" placeholder="Type response..." disabled>
+                                <button class="btn btn-primary-custom" id="interview-send-btn" onclick="sendInterviewResponse()" disabled>Send</button>
+                                <button class="btn btn-danger" id="interview-end-btn" onclick="endInterviewSession()" disabled>End</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Admin Panel Tab -->
+            <section id="tab-admin" class="tab-pane-custom d-none">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="glass-panel p-4 text-center">
+                            <h5 class="text-secondary">Registered Users</h5>
+                            <h2 id="admin-stat-users" class="fw-bold">0</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-4 text-center">
+                            <h5 class="text-secondary">System Logins</h5>
+                            <h2 id="admin-stat-logins" class="fw-bold">0</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-4 text-center">
+                            <h5 class="text-secondary">Environment Status</h5>
+                            <h2 class="fw-bold text-success">ONLINE</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-4">
+                    <h4 class="mb-3">Global Security Audit Trail</h4>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Action</th>
+                                    <th>Entity</th>
+                                    <th>Origin IP</th>
+                                    <th>Payload Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-logs-table-body">
+                                <tr>
+                                    <td colspan="5" class="text-center text-secondary">Loading log indices...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- AUTHENTICATION DIALOG (Login / Register Modal) -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h3 class="modal-title fw-bold" id="auth-modal-title">Welcome Back</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="resetAuthError()"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="auth-form" onsubmit="executeAuthAction(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" id="auth-email" class="form-control glass-input" placeholder="student@aimentor.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="auth-password" class="form-control glass-input" placeholder="••••••••" required>
+                        </div>
+                        <div class="mb-3 d-none" id="auth-name-fields">
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" id="auth-fname" class="form-control glass-input" placeholder="John">
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" id="auth-lname" class="form-control glass-input" placeholder="Doe">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 d-none" id="auth-otp-field">
+                            <label class="form-label text-warning">OTP Verification Code</label>
+                            <input type="text" id="auth-otp" class="form-control glass-input" placeholder="123456" minlength="6" maxlength="6">
+                            <small class="text-info d-block mt-2"><i class="bi bi-info-circle-fill me-1"></i> Check the python server terminal logs to retrieve your simulated 6-digit OTP code.</small>
+                        </div>
+                        <div id="auth-error-block" class="alert alert-danger d-none mt-2"></div>
+                        <button type="submit" class="btn btn-primary-custom w-100 mt-3" id="auth-submit-btn">Login</button>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 pt-0 justify-content-center">
+                    <span id="auth-toggle-msg" class="text-secondary">Don't have an account?</span>
+                    <a href="#" class="text-primary fw-bold" id="auth-toggle-link" onclick="toggleAuthMode()">Register Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core Application Logic Bundle -->
+    <script src="/static/js/main.js?v=1.0.2"></script>
+</body>
+</html>
