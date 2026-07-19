@@ -208,45 +208,375 @@
 
             <!-- 3. Coding Mentor Tab -->
             <section id="tab-coding" class="tab-pane-custom d-none">
-                <div class="row g-4">
-                    <div class="col-lg-3">
-                        <div class="glass-panel p-4" style="height: calc(100vh - 160px); overflow-y: auto;">
-                            <h4 class="mb-3">Coding Challenges</h4>
-                            <div class="list-group list-group-flush bg-transparent" id="coding-problems-list">
-                                <span class="text-secondary">Loading problems...</span>
+                <!-- Sub-navigation Pills for Coding Mentor Tools -->
+                <div class="d-flex flex-wrap gap-2 mb-4 sub-nav-pills">
+                    <button class="btn btn-sm btn-sub-tab active" id="btn-sub-chat" onclick="switchCodingSubTab('chat')">
+                        <i class="bi bi-chat-dots-fill me-1"></i> AI Chat Assistant
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-debugger" onclick="switchCodingSubTab('debugger')">
+                        <i class="bi bi-bug-fill me-1"></i> AI Error Debugger
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-explain" onclick="switchCodingSubTab('explain')">
+                        <i class="bi bi-file-earmark-code-fill me-1"></i> Explain Code
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-converter" onclick="switchCodingSubTab('converter')">
+                        <i class="bi bi-arrow-left-right me-1"></i> Code Converter
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-quiz" onclick="switchCodingSubTab('quiz')">
+                        <i class="bi bi-question-diamond-fill me-1"></i> Coding Quiz
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-roadmap" onclick="switchCodingSubTab('roadmap')">
+                        <i class="bi bi-signpost-split-fill me-1"></i> Coding Roadmap
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-challenges" onclick="switchCodingSubTab('challenges')">
+                        <i class="bi bi-terminal-fill me-1"></i> Code Challenges
+                    </button>
+                </div>
+
+                <!-- Sub-Tab Panes -->
+                
+                <!-- 1. AI Chat Assistant Sub-pane -->
+                <div id="coding-sub-chat" class="coding-sub-pane">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Recent Chats -->
+                        <div class="col-md-3 h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
+                                    <h5 class="fw-bold m-0 text-white">Recent Chats</h5>
+                                    <button class="btn btn-sm btn-primary-custom px-2 py-1" onclick="startNewCodingChat()">+ New Chat</button>
+                                </div>
+                                <div class="list-group list-group-flush bg-transparent flex-grow-1 overflow-auto" id="recent-chats-list" style="max-height: calc(100% - 40px);">
+                                    <!-- Dynamic list of chats -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Active Chat window -->
+                        <div class="col-md-9 h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <div class="flex-grow-1 overflow-auto p-3 rounded mb-3" style="background: rgba(0, 0, 0, 0.15);" id="chat-messages-container">
+                                    <!-- Messages go here -->
+                                    <div class="text-secondary text-center py-5">
+                                        <i class="bi bi-chat-left-text-fill fs-1 mb-2 text-primary opacity-50"></i>
+                                        <p>Start a new conversation or choose an existing chat to begin.</p>
+                                    </div>
+                                </div>
+                                <form id="coding-chat-form" onsubmit="sendCodingChatMessage(event)" class="d-flex gap-2 align-items-center flex-shrink-0">
+                                    <input type="text" id="coding-chat-input" class="form-control glass-input flex-grow-1" placeholder="Ask your coding question..." required>
+                                    <button type="submit" class="btn btn-primary-custom px-4" style="min-height: 48px;">
+                                        <i class="bi bi-send-fill text-white fs-5"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-lg-9">
-                        <div class="coding-container">
-                            <!-- Code Editor -->
-                            <div class="coding-pane glass-panel p-4 flex-grow-1" style="height: calc(100vh - 160px);">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 id="active-problem-title" class="m-0">Challenge Workspace</h4>
-                                    <select class="form-select glass-input w-25" id="code-language" onchange="loadStarterCode()">
-                                        <option value="python">Python</option>
-                                        <option value="javascript">JavaScript</option>
-                                    </select>
+                <!-- 2. AI Error Debugger Sub-pane -->
+                <div id="coding-sub-debugger" class="coding-sub-pane d-none">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Error Input -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <h5 class="fw-bold mb-3 text-white flex-shrink-0">Paste your Error or Code</h5>
+                                <textarea id="debugger-input" class="editor-textarea form-control flex-grow-1 mb-3" placeholder="TypeError: unsupported operand type(s) for +: 'int' and 'str'&#10;&#10;File &quot;main.py&quot;, line 5, in &lt;module&gt;&#10;  result = 10 + '20'"></textarea>
+                                <button class="btn btn-primary-custom w-100 flex-shrink-0" onclick="analyzeError()">Analyze Error</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Debug Analysis Output -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100 overflow-auto" id="debugger-analysis-output">
+                                <h5 class="fw-bold mb-3 text-white flex-shrink-0">AI Analysis</h5>
+                                <div class="text-secondary text-center py-5 my-auto" id="debugger-placeholder">
+                                    <i class="bi bi-bug-fill fs-1 mb-2 text-danger opacity-50"></i>
+                                    <p>Submit an error or code snippet to receive AI-powered debugging solutions.</p>
                                 </div>
-                                <div class="flex-grow-1 d-flex flex-column mb-3">
-                                    <textarea id="code-editor-box" class="editor-textarea form-control" placeholder="# Write your code solution here..."></textarea>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-outline-info" onclick="requestOptimization()">AI Optimize</button>
-                                    <button class="btn btn-primary-custom ms-auto" onclick="submitCodeSolution()">Submit Code</button>
+                                <div id="debugger-details-container" class="d-none">
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold">Error Type:</div>
+                                        <div class="fw-bold text-danger fs-5" id="debug-error-type">-</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold">Reason:</div>
+                                        <p class="m-0 text-white" id="debug-reason">-</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold">How to Fix:</div>
+                                        <p class="m-0 text-white" id="debug-fix">-</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold">Correct Code:</div>
+                                        <pre class="editor-textarea p-3" style="max-height: 200px; overflow-y: auto; background: #090d16;" id="debug-code-box">-</pre>
+                                    </div>
+                                    <div class="mb-1">
+                                        <div class="text-secondary small fw-bold">Best Practice:</div>
+                                        <p class="m-0 text-info" id="debug-best-practice">-</p>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <!-- Problem Specification / Output Console -->
-                            <div class="coding-pane" style="width: 320px; gap: 20px;">
-                                <div class="glass-panel p-4 flex-grow-1 overflow-auto" id="coding-desc-panel" style="max-height: 50%;">
-                                    <h5 class="fw-bold">Problem Prompt</h5>
-                                    <p class="text-secondary" id="coding-problem-text">Select a challenge from the list to begin coding.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Explain Code Sub-pane -->
+                <div id="coding-sub-explain" class="coding-sub-pane d-none">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Code Input -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
+                                    <h5 class="fw-bold m-0 text-white">Your Code</h5>
+                                    <select class="form-select glass-input py-1" style="width: auto; height: auto;" id="explain-language">
+                                        <option value="python">Python</option>
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="java">Java</option>
+                                        <option value="cpp">C++</option>
+                                        <option value="sql">SQL</option>
+                                    </select>
                                 </div>
-                                <div class="glass-panel p-4 flex-grow-1 overflow-auto" id="coding-console-panel" style="max-height: 50%;">
-                                    <h5 class="fw-bold">Evaluation Console</h5>
-                                    <pre class="text-secondary small" id="coding-output-console">Submit code to view console output logs.</pre>
+                                <textarea id="explain-input" class="editor-textarea form-control flex-grow-1 mb-3" placeholder="def factorial(n):&#10;    if n == 0:&#10;        return 1&#10;    else:&#10;        return n * factorial(n-1)&#10;&#10;num = 5&#10;print(factorial(num))"></textarea>
+                                <button class="btn btn-primary-custom w-100 flex-shrink-0" onclick="explainCode()">Explain Code</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Explanation Output -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100 overflow-auto" id="explain-output-panel">
+                                <h5 class="fw-bold mb-3 text-white flex-shrink-0">AI Explanation</h5>
+                                <div class="text-secondary text-center py-5 my-auto" id="explain-placeholder">
+                                    <i class="bi bi-file-earmark-code-fill fs-1 mb-2 text-info opacity-50"></i>
+                                    <p>Paste a code snippet to view a line-by-line explanation and output prediction.</p>
+                                </div>
+                                <div id="explain-details-container" class="d-none">
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold">Purpose:</div>
+                                        <p class="m-0 text-white fw-semibold" id="explain-purpose">-</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold">Line by Line Explanation:</div>
+                                        <div class="text-white small" id="explain-steps">-</div>
+                                    </div>
+                                    <div class="mb-1">
+                                        <div class="text-secondary small fw-bold">Output:</div>
+                                        <pre class="bg-dark text-success p-3 rounded" style="font-family: monospace; border: 1px solid var(--border-color);" id="explain-output-box">-</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Code Converter Sub-pane -->
+                <div id="coding-sub-converter" class="coding-sub-pane d-none">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Source Code & Selection -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="text-secondary small">From</span>
+                                        <select class="form-select glass-input py-1" style="width: auto; height: auto;" id="converter-from-lang">
+                                            <option value="python">Python</option>
+                                            <option value="javascript">JavaScript</option>
+                                            <option value="java">Java</option>
+                                            <option value="cpp">C++</option>
+                                        </select>
+                                        <i class="bi bi-arrow-left-right text-secondary px-1"></i>
+                                        <span class="text-secondary small">To</span>
+                                        <select class="form-select glass-input py-1" style="width: auto; height: auto;" id="converter-to-lang">
+                                            <option value="java">Java</option>
+                                            <option value="python">Python</option>
+                                            <option value="javascript">JavaScript</option>
+                                            <option value="cpp">C++</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <textarea id="converter-input" class="editor-textarea form-control flex-grow-1 mb-3" placeholder="def add(a, b):&#10;    return a + b&#10;&#10;result = add(5, 10)&#10;print(result)"></textarea>
+                                <button class="btn btn-primary-custom w-100 flex-shrink-0" onclick="convertCode()">Convert Code</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Converted Code -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
+                                    <h5 class="fw-bold m-0 text-white" id="converter-output-title">Converted Code (Java)</h5>
+                                    <button class="btn btn-sm btn-outline-info" onclick="copyConvertedCode()">
+                                        <i class="bi bi-copy me-1"></i> Copy Code
+                                    </button>
+                                </div>
+                                <div class="flex-grow-1 d-flex flex-column">
+                                    <textarea id="converter-output-box" class="editor-textarea form-control flex-grow-1" readonly placeholder="// Converted code will appear here..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Coding Quiz Sub-pane -->
+                <div id="coding-sub-quiz" class="coding-sub-pane d-none">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Quiz Settings -->
+                        <div class="col-md-4 h-100">
+                            <div class="glass-panel p-4 h-100">
+                                <h5 class="fw-bold mb-4 text-white">Quiz Configuration</h5>
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small">Select Topic</label>
+                                    <select class="form-select glass-input" id="quiz-topic">
+                                        <option value="python">Python</option>
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="java">Java</option>
+                                        <option value="cpp">C++</option>
+                                        <option value="sql">SQL</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small">Difficulty</label>
+                                    <select class="form-select glass-input" id="quiz-difficulty">
+                                        <option value="easy">Easy</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="hard">Hard</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label text-secondary small">Number of Questions</label>
+                                    <select class="form-select glass-input" id="quiz-qty">
+                                        <option value="5" selected>5</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary-custom w-100" id="btn-start-quiz" onclick="startCodingQuiz()">Start Quiz</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Active Question / Results Screen -->
+                        <div class="col-md-8 h-100">
+                            <div class="glass-panel p-4 h-100 d-flex flex-column" id="quiz-workspace-panel">
+                                <!-- Quiz Initial State Placeholder -->
+                                <div class="text-secondary text-center py-5 my-auto" id="quiz-placeholder-pane">
+                                    <i class="bi bi-question-diamond-fill fs-1 mb-2 text-success opacity-50"></i>
+                                    <p>Configure and launch the quiz on the left panel to test your skills.</p>
+                                </div>
+                                
+                                <!-- Active Quiz Content -->
+                                <div id="quiz-active-pane" class="d-none flex-grow-1 d-flex flex-column h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-10 flex-shrink-0">
+                                        <h5 class="fw-bold m-0 text-white" id="quiz-question-number">Question 1 of 5</h5>
+                                        <div class="text-warning small d-flex align-items-center gap-1">
+                                            <i class="bi bi-clock-history"></i> <span id="quiz-timer">05:00</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 overflow-auto mb-3" style="max-height: calc(100% - 250px);">
+                                        <p id="quiz-question-text" class="text-white fw-semibold mb-3" style="white-space: pre-line;">-</p>
+                                    </div>
+                                    
+                                    <!-- Quiz Options List -->
+                                    <div class="d-flex flex-column gap-2 mb-3 flex-shrink-0" id="quiz-options-container">
+                                        <!-- Dynamic options -->
+                                    </div>
+                                    
+                                    <!-- Quiz Buttons -->
+                                    <div class="d-flex justify-content-between align-items-center mt-auto flex-shrink-0">
+                                        <div class="text-info small d-none" id="quiz-feedback-box">
+                                            <i class="bi bi-info-circle-fill"></i> Select your answer.
+                                        </div>
+                                        <button class="btn btn-primary-custom ms-auto px-4" id="quiz-next-btn" onclick="nextCodingQuizQuestion()">Next Question <i class="bi bi-arrow-right-short ms-1"></i></button>
+                                    </div>
+                                </div>
+
+                                <!-- Quiz Final Result pane -->
+                                <div id="quiz-result-pane" class="d-none text-center my-auto">
+                                    <i class="bi bi-trophy-fill text-warning fs-1 mb-3"></i>
+                                    <h3 class="fw-bold text-white mb-2">Quiz Completed!</h3>
+                                    <h4 class="text-info fw-semibold mb-3">Your Score: <span id="quiz-final-score">4/5</span></h4>
+                                    <p class="text-secondary small mb-4">Great attempt! Your job readiness index has been updated accordingly.</p>
+                                    <button class="btn btn-primary-custom px-4" onclick="resetQuizWorkspace()">Retake / New Quiz</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Coding Roadmap Sub-pane -->
+                <div id="coding-sub-roadmap" class="coding-sub-pane d-none">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Goal selection -->
+                        <div class="col-md-4 h-100">
+                            <div class="glass-panel p-4 h-100">
+                                <h5 class="fw-bold mb-4 text-white">Roadmap Builder</h5>
+                                <div class="mb-4">
+                                    <label class="form-label text-secondary small">Select Your Goal</label>
+                                    <select class="form-select glass-input" id="roadmap-goal-selector">
+                                        <option value="backend">Backend Developer</option>
+                                        <option value="frontend">Frontend Developer</option>
+                                        <option value="fullstack">Fullstack Developer</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary-custom w-100" onclick="generateCodingRoadmap()">
+                                    Generate Roadmap <i class="bi-chevron-right ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Visual Roadmap Timeline -->
+                        <div class="col-md-8 h-100">
+                            <div class="glass-panel p-4 h-100 overflow-auto">
+                                <h5 class="fw-bold mb-4 text-white" id="roadmap-right-title">Your Personalized Roadmap</h5>
+                                <div id="roadmap-placeholder-pane" class="text-secondary text-center py-5 my-auto">
+                                    <i class="bi bi-signpost-split-fill fs-1 mb-2 text-primary opacity-50"></i>
+                                    <p>Select your goal on the left and click generate to build your path.</p>
+                                </div>
+                                <div class="timeline-track d-none" id="roadmap-timeline-container">
+                                    <!-- Dynamic roadmap steps -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Coding Challenges Sub-pane (original view) -->
+                <div id="coding-sub-challenges" class="coding-sub-pane d-none">
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            <div class="glass-panel p-4" style="height: calc(100vh - 220px); overflow-y: auto;">
+                                <h4 class="mb-3">Coding Challenges</h4>
+                                <div class="list-group list-group-flush bg-transparent" id="coding-problems-list">
+                                    <span class="text-secondary">Loading problems...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-9">
+                            <div class="coding-container">
+                                <!-- Code Editor -->
+                                <div class="coding-pane glass-panel p-4 flex-grow-1" style="height: calc(100vh - 220px);">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4 id="active-problem-title" class="m-0">Challenge Workspace</h4>
+                                        <select class="form-select glass-input w-25" id="code-language" onchange="loadStarterCode()">
+                                            <option value="python">Python</option>
+                                            <option value="javascript">JavaScript</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex-grow-1 d-flex flex-column mb-3">
+                                        <textarea id="code-editor-box" class="editor-textarea form-control" placeholder="# Write your code solution here..."></textarea>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-outline-info" onclick="requestOptimization()">AI Optimize</button>
+                                        <button class="btn btn-primary-custom ms-auto" onclick="submitCodeSolution()">Submit Code</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Problem Specification / Output Console -->
+                                <div class="coding-pane" style="width: 320px; gap: 20px;">
+                                    <div class="glass-panel p-4 flex-grow-1 overflow-auto" id="coding-desc-panel" style="max-height: 50%;">
+                                        <h5 class="fw-bold">Problem Prompt</h5>
+                                        <p class="text-secondary" id="coding-problem-text">Select a challenge from the list to begin coding.</p>
+                                    </div>
+                                    <div class="glass-panel p-4 flex-grow-1 overflow-auto" id="coding-console-panel" style="max-height: 50%;">
+                                        <h5 class="fw-bold">Evaluation Console</h5>
+                                        <pre class="text-secondary small" id="coding-output-console">Submit code to view console output logs.</pre>
+                                    </div>
                                 </div>
                             </div>
                         </div>

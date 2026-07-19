@@ -254,3 +254,119 @@ h1, h2, h3, h4, h5, h6 {
         height: auto;
     }
 }
+
+/* Coding Mentor Sub-tab System styles */
+.sub-nav-pills {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+
+.btn-sub-tab {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-sub-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.btn-sub-tab.active {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--primary);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
+}
+
+/* Chat bubble styling */
+.chat-bubble-user {
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: var(--text-primary);
+    border-radius: 12px 12px 0 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    align-self: flex-end;
+    max-width: 80%;
+    margin-left: auto;
+}
+
+.chat-bubble-mentor {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 12px 12px 12px 0;
+    padding: 16px;
+    margin-bottom: 16px;
+    align-self: flex-start;
+    max-width: 80%;
+}
+
+.chat-bubble-mentor pre {
+    background: #090d16;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #38bdf8 !important;
+}
+
+/* Quiz Option Card styling */
+.quiz-option-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 14px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+}
+
+.quiz-option-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(4px);
+}
+
+.quiz-option-card.selected {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+}
+
+.quiz-option-card.correct {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--success);
+}
+
+.quiz-option-card.incorrect {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+}
+
+/* Roadmap step status colors */
+.badge-completed {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-in-progress {
+    background: rgba(99, 102, 241, 0.15);
+    color: #8b5cf6;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.badge-pending {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
