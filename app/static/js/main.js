@@ -806,6 +806,17 @@ function switchCodingSubTab(subTabId) {
         title.innerText = "AI Coding Mentor";
         subtitle.innerText = "Compile code solutions and query complexity feedbacks.";
         loadCodingProblems();
+    } else if (subTabId === "memory") {
+        title.innerText = "AI Mentor Memory";
+        subtitle.innerText = "AI remembers everything about your learning journey.";
+    } else if (subTabId === "timeline") {
+        title.innerText = "Code Evolution Timeline";
+        subtitle.innerText = "Track how your code improves over time.";
+        initCodeEvolutionTimeline();
+    } else if (subTabId === "mission") {
+        title.innerText = "Daily AI Mission";
+        subtitle.innerText = "Complete daily missions and earn exciting rewards.";
+        initDailyMission();
     }
 }
 
@@ -1409,5 +1420,180 @@ function formatBulletList(text) {
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// ============================================================================
+// Code Evolution Timeline — Initialization & Dummy Data
+// ============================================================================
+
+function initCodeEvolutionTimeline() {
+    const versions = [
+        {
+            version: 7, label: "(Latest)", date: "27 May 2025", time: "11:20 AM",
+            desc: "Optimized binary search and handled edge cases.",
+            added: 6, removed: 2, bugFixed: true, complexity: "O(log n) → O(log n)",
+            tags: ["added", "removed", "bugfix"]
+        },
+        {
+            version: 6, date: "27 May 2025", time: "09:40 AM",
+            desc: "Fixed infinite loop issue.",
+            added: 3, removed: 1, bugFixed: true, complexity: "O(n) → O(log n)",
+            tags: ["added", "removed", "bugfix"]
+        },
+        {
+            version: 5, date: "26 May 2025", time: "08:30 PM",
+            desc: "Refactored condition check.",
+            added: 4, removed: 3, bugFixed: false, complexity: "O(n) → O(n)",
+            tags: ["added", "removed", "improvement"]
+        },
+        {
+            version: 4, date: "26 May 2025", time: "06:15 PM",
+            desc: "Handled empty array cases.",
+            added: 2, removed: 0, bugFixed: false, complexity: "O(n) → O(n)",
+            tags: ["added", "improvement"]
+        }
+    ];
+
+    const container = document.getElementById("evolution-timeline-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    versions.forEach((v, i) => {
+        const tagHtml = v.tags.map(t => {
+            if (t === "added") return `<span class="badge me-1" style="background:rgba(16,185,129,0.15);color:#34d399;font-size:0.7rem;">+ Added ${v.added} lines</span>`;
+            if (t === "removed") return `<span class="badge me-1" style="background:rgba(239,68,68,0.15);color:#f87171;font-size:0.7rem;">- Removed ${v.removed} lines</span>`;
+            if (t === "bugfix") return `<span class="badge me-1" style="background:rgba(245,158,11,0.15);color:#fbbf24;font-size:0.7rem;">Bug Fixed</span>`;
+            if (t === "improvement") return `<span class="badge me-1" style="background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.7rem;">Improvement</span>`;
+            return "";
+        }).join("");
+
+        const isLatest = i === 0;
+        container.innerHTML += `
+            <div class="evo-item ${isLatest ? 'evo-item-active' : ''}" style="position:relative;padding-left:24px;padding-bottom:${i < versions.length - 1 ? '24' : '0'}px;border-left:2px solid ${isLatest ? 'var(--primary)' : 'var(--border-color)'};">
+                <div style="position:absolute;left:-7px;top:0;width:12px;height:12px;border-radius:50%;background:${isLatest ? 'var(--primary)' : 'rgba(255,255,255,0.15)'};border:2px solid ${isLatest ? 'var(--primary)' : 'var(--border-color)'};"></div>
+                <div class="fw-bold text-white" style="font-size:0.9rem;">Version ${v.version} ${v.label || ''}</div>
+                <div class="text-secondary" style="font-size:0.75rem;">${v.date}, ${v.time}</div>
+                <div class="text-secondary small mt-1">${v.desc}</div>
+                <div class="mt-2">${tagHtml}</div>
+                ${v.complexity ? `<div class="text-secondary mt-1" style="font-size:0.7rem;">Complexity: ${v.complexity}</div>` : ''}
+            </div>
+        `;
+    });
+
+    // Populate code diff panels
+    const oldCode = document.getElementById("diff-old-code");
+    const newCode = document.getElementById("diff-new-code");
+    if (oldCode) {
+        oldCode.innerHTML = formatDiffLines([
+            { n: 1, t: 'def binarySearch(arr, target):', s: 'normal' },
+            { n: 2, t: '    low, high = 0, len(arr)-1', s: 'normal' },
+            { n: 3, t: '    while low <= high:', s: 'normal' },
+            { n: 4, t: '        mid = (low + high) // 2', s: 'removed' },
+            { n: 5, t: '        if arr[mid] == target:', s: 'normal' },
+            { n: 6, t: '            return mid', s: 'normal' },
+            { n: 7, t: '        elif arr[mid] < target:', s: 'removed' },
+            { n: 8, t: '            low = mid + 1', s: 'normal' },
+            { n: 9, t: '        else:', s: 'normal' },
+            { n: 10, t: '            high = mid - 1', s: 'normal' },
+            { n: 11, t: '    return -1', s: 'normal' }
+        ]);
+    }
+    if (newCode) {
+        newCode.innerHTML = formatDiffLines([
+            { n: 1, t: 'def binarySearch(arr, target):', s: 'normal' },
+            { n: 2, t: '    if not arr:', s: 'added' },
+            { n: 3, t: '        return -1', s: 'added' },
+            { n: 4, t: '    low, high = 0, len(arr)-1', s: 'normal' },
+            { n: 5, t: '    while low <= high:', s: 'normal' },
+            { n: 6, t: '        mid = low + (high - low) // 2', s: 'added' },
+            { n: 7, t: '        if arr[mid] == target:', s: 'normal' },
+            { n: 8, t: '            return mid', s: 'normal' },
+            { n: 9, t: '        elif arr[mid] < target:', s: 'normal' },
+            { n: 10, t: '            low = mid + 1', s: 'normal' },
+            { n: 11, t: '        else:', s: 'normal' },
+            { n: 12, t: '            high = mid - 1', s: 'normal' },
+            { n: 13, t: '    return -1', s: 'normal' }
+        ]);
+    }
+}
+
+function formatDiffLines(lines) {
+    return lines.map(l => {
+        let bg = 'transparent';
+        let color = '#94a3b8';
+        if (l.s === 'added') { bg = 'rgba(16,185,129,0.12)'; color = '#34d399'; }
+        if (l.s === 'removed') { bg = 'rgba(239,68,68,0.12)'; color = '#f87171'; }
+        const num = String(l.n).padStart(2, ' ');
+        return `<div style="background:${bg};padding:1px 8px;white-space:pre;"><span style="color:rgba(148,163,184,0.4);margin-right:12px;">${num}</span><span style="color:${color};">${escapeHtml(l.t)}</span></div>`;
+    }).join('');
+}
+
+function escapeHtml(text) {
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// ============================================================================
+// Daily AI Mission — Initialization & Dummy Data
+// ============================================================================
+
+function initDailyMission() {
+    // Set today's date
+    const dateEl = document.getElementById("mission-date");
+    if (dateEl) {
+        const now = new Date();
+        dateEl.textContent = now.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    const missions = [
+        { title: "Solve 2 Array Questions", desc: "Practice array problems", progress: 1, total: 2, xp: 50, coins: 20, icon: "bi-code-square", iconColor: "#6366f1", status: "in-progress" },
+        { title: "Fix 1 Bug", desc: "Debug and fix any code bug", progress: 0, total: 1, xp: 40, coins: 15, icon: "bi-bug-fill", iconColor: "#ef4444", status: "pending" },
+        { title: "Read about HashMap", desc: "Learn HashMap in detail", progress: 0, total: 1, xp: 30, coins: 10, icon: "bi-book-fill", iconColor: "#f59e0b", status: "pending" },
+        { title: "Complete Quiz", desc: "Complete today's coding quiz", progress: 0, total: 1, xp: 50, coins: 20, icon: "bi-question-diamond-fill", iconColor: "#8b5cf6", status: "pending" },
+        { title: "Build Login Page", desc: "Build a simple login page", progress: 0, total: 1, xp: 60, coins: 25, icon: "bi-window-stack", iconColor: "#10b981", status: "pending" }
+    ];
+
+    const container = document.getElementById("mission-tasks-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    missions.forEach((m, idx) => {
+        const pct = Math.round((m.progress / m.total) * 100);
+        const isComplete = m.progress >= m.total;
+        const statusBadge = isComplete
+            ? `<span class="badge" style="background:rgba(16,185,129,0.15);color:#34d399;">Done</span>`
+            : m.status === "in-progress"
+                ? `<span class="badge" style="background:rgba(99,102,241,0.15);color:#a5b4fc;">In Progress</span>`
+                : `<span class="badge" style="background:rgba(255,255,255,0.05);color:#94a3b8;">Pending</span>`;
+
+        container.innerHTML += `
+            <div class="glass-panel p-3 mb-3 d-flex align-items-center gap-3 mission-task-item">
+                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:42px;height:42px;background:${m.iconColor}20;">
+                    <i class="bi ${m.icon} fs-5" style="color:${m.iconColor};"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div class="fw-bold text-white" style="font-size:0.9rem;">${m.title}</div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-secondary" style="font-size:0.75rem;">${m.progress} / ${m.total}</span>
+                            ${statusBadge}
+                        </div>
+                    </div>
+                    <div class="text-secondary" style="font-size:0.75rem;margin-bottom:6px;">${m.desc}</div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="flex-grow-1">
+                            <div class="progress" style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;">
+                                <div class="progress-bar" role="progressbar" style="width:${pct}%;background:${pct >= 100 ? '#10b981' : 'var(--primary)'};border-radius:3px;transition:width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                            <span style="font-size:0.7rem;color:#fbbf24;"><i class="bi bi-star-fill me-1"></i>${m.xp}</span>
+                            <span style="font-size:0.7rem;color:#f59e0b;"><i class="bi bi-coin me-1"></i>${m.coins}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
 }
 

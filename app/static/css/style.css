@@ -606,3 +606,56 @@ h1, h2, h3, h4, h5, h6 {
 #coding-sub-career-coach::-webkit-scrollbar-track { background: transparent; }
 #coding-sub-career-coach::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 10px; }
 
+/* ================================================
+   AI Mentor Memory — Card hover styles
+   ================================================ */
+.memory-card {
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+.memory-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+}
+
+/* ================================================
+   Code Evolution Timeline — Timeline item styles
+   ================================================ */
+.timeline-evolution {
+    position: relative;
+}
+.evo-item {
+    transition: background 0.2s ease;
+    border-radius: 8px;
+}
+.evo-item:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+.evo-item-active {
+    background: rgba(99, 102, 241, 0.04);
+}
+
+/* ================================================
+   Daily AI Mission — Task item styles
+   ================================================ */
+.mission-task-item {
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    cursor: default;
+}
+.mission-task-item:hover {
+    transform: translateX(4px);
+    border-color: rgba(99, 102, 241, 0.25);
+}
+
+/* Scrollbars for new sub-panes */
+#coding-sub-memory > div::-webkit-scrollbar,
+#coding-sub-timeline > div::-webkit-scrollbar,
+#coding-sub-mission > div::-webkit-scrollbar { width: 5px; }
+#coding-sub-memory > div::-webkit-scrollbar-track,
+#coding-sub-timeline > div::-webkit-scrollbar-track,
+#coding-sub-mission > div::-webkit-scrollbar-track { background: transparent; }
+#coding-sub-memory > div::-webkit-scrollbar-thumb,
+#coding-sub-timeline > div::-webkit-scrollbar-thumb,
+#coding-sub-mission > div::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 10px; }
+
