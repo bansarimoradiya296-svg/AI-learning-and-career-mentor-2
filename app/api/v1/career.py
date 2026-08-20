@@ -2,6 +2,7 @@ import os
 import uuid
 from typing import List
 from fastapi import APIRouter, Depends, UploadFile, File, Form, status
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -53,10 +54,10 @@ async def analyze_resume_and_set_profile(
         target_job_title=target_job_title,
         user_id=current_user.id
     )
-    
+
     # Commit changes
     await db.commit()
-    
+
     # Reload goal with relationships
     stmt = (
         select(CareerGoal)
@@ -86,6 +87,7 @@ async def list_career_goals(
             selectinload(CareerGoal.projects),
             selectinload(CareerGoal.certifications)
         )
+        .order_by(CareerGoal.created_at.desc())
     )
     result = await db.execute(stmt)
     return result.scalars().all()
@@ -103,4 +105,58 @@ async def get_roadmap(
     roadmap = result.scalars().first()
     if not roadmap:
         raise NotFoundError("Roadmap not found")
+    return roadmap
+
+
+# ── Phase Status Update ───────────────────────────────────────────────────────
+
+class PhaseStatusUpdate(BaseModel):
+    phase_num: int      # 1-based phase number
+    phase_status: str   # "upcoming" | "inprogress" | "completed"
+
+
+@router.patch("/roadmaps/{roadmap_id}/phase-status", response_model=RoadmapResponse)
+async def update_phase_status(
+    roadmap_id: uuid.UUID,
+    payload: PhaseStatusUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Updates the status of a specific phase in a roadmap and recalculates completion percentage."""
+    stmt = select(Roadmap).filter(Roadmap.id == roadmap_id)
+    result = await db.execute(stmt)
+    roadmap = result.scalars().first()
+    if not roadmap:
+        raise NotFoundError("Roadmap not found")
+
+    allowed = {"upcoming", "inprogress", "completed"}
+    if payload.phase_status not in allowed:
+        raise BadRequestError(f"Invalid status. Allowed: {allowed}")
+
+    # Update the target phase status inside JSON
+    import copy
+    structure = copy.deepcopy(roadmap.structure)
+    phases = structure.get("phases", [])
+    for phase in phases:
+        if phase.get("phase_num") == payload.phase_num:
+            phase["status"] = payload.phase_status
+            break
+
+    structure["phases"] = phases
+
+    # Recalculate completion percentage
+    total = len(phases)
+    completed_count = sum(1 for p in phases if p.get("status") == "completed")
+    inprogress_count = sum(1 for p in phases if p.get("status") == "inprogress")
+    completion = 0.0
+    if total > 0:
+        completion = round(((completed_count + inprogress_count * 0.5) / total) * 100, 1)
+
+    from sqlalchemy.orm.attributes import flag_modified
+    roadmap.structure = structure
+    flag_modified(roadmap, "structure")
+    roadmap.completion_percentage = completion
+
+    await db.commit()
+    await db.refresh(roadmap)
     return roadmap

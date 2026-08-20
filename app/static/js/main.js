@@ -20,6 +20,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.body.setAttribute("data-theme", savedTheme);
     updateThemeIcon(savedTheme);
+
+    // Static "View All" toggle for hardcoded project cards
+    const viewAllBtn = document.getElementById("rm-view-all-btn");
+    const projectsGrid = document.getElementById("rm-projects-grid");
+    if (viewAllBtn && projectsGrid) {
+        let staticShowingAll = false;
+        const allCards = () => projectsGrid.querySelectorAll(".rm-project-card");
+        // Hide cards beyond 3 initially only if more than 3 exist
+        const initStatic = () => {
+            const cards = allCards();
+            if (cards.length > 3) {
+                cards.forEach((c, i) => { if (i >= 3) c.style.display = "none"; });
+                viewAllBtn.style.display = "inline-block";
+                viewAllBtn.onclick = () => {
+                    // Only run if still showing static cards (not dynamic)
+                    if (projectsGrid.dataset.dynamic === "true") return;
+                    staticShowingAll = !staticShowingAll;
+                    allCards().forEach((c, i) => {
+                        if (i >= 3) c.style.display = staticShowingAll ? "flex" : "none";
+                    });
+                    viewAllBtn.textContent = staticShowingAll ? "Show Less" : "View All";
+                };
+            } else {
+                viewAllBtn.style.display = cards.length > 0 ? "none" : "none";
+            }
+        };
+        initStatic();
+    }
 });
 
 // Theme Management
@@ -260,6 +288,8 @@ function switchTab(tabId) {
     const title = document.getElementById("tab-title");
     const subtitle = document.getElementById("tab-subtitle");
     
+    title.parentElement.style.display = "block"; // Reset to visible
+    
     if (tabId === "dashboard") {
         title.innerText = "Student Dashboard";
         subtitle.innerText = "Track your learning statistics and readiness indicators.";
@@ -273,8 +303,7 @@ function switchTab(tabId) {
         subtitle.innerText = "Compile code solutions and query complexity feedbacks.";
         loadCodingProblems();
     } else if (tabId === "career") {
-        title.innerText = "Career Roadmap Architect";
-        subtitle.innerText = "Map learning pathways to close technical skill gaps.";
+        title.parentElement.style.display = "none"; // Hide on roadmap tab
         loadCareerGoalProfile();
     } else if (tabId === "interview") {
         title.innerText = "Interview Simulator";
@@ -516,18 +545,26 @@ async function requestOptimization() {
 // ==========================================
 // 4. Career Roadmap Logic
 // ==========================================
+
+let _rmShowingAll = false;
+
 async function uploadResume(event) {
     event.preventDefault();
     const title = document.getElementById("target-job").value;
     const fileInput = document.getElementById("resume-file");
+    if (!accessToken) {
+        document.getElementById("rm-upload-status").innerHTML = `<span class="text-danger">Please sign in first to analyze your resume and generate a roadmap.</span>`;
+        return;
+    }
+    
     if (fileInput.files.length === 0) return;
 
     const formData = new FormData();
     formData.append("target_job_title", title);
     formData.append("file", fileInput.files[0]);
 
-    const timeline = document.getElementById("timeline-wrapper");
-    timeline.innerHTML = `<div class="spinner-border text-primary" role="status"></div><p>AI Recruiter is parsing resume and plotting learning roadmaps...</p>`;
+    const status = document.getElementById("rm-upload-status");
+    status.innerHTML = `<div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>AI Recruiter is parsing resume and plotting roadmap...`;
 
     try {
         const res = await fetch(`${API_ROOT}/career/analyze`, {
@@ -537,56 +574,346 @@ async function uploadResume(event) {
         });
 
         if (res.ok) {
-            loadCareerGoalProfile();
+            status.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Roadmap generated! Loading...</span>`;
+            setTimeout(() => {
+                const modalEl = document.getElementById('editGoalModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) modalInstance.hide();
+                loadCareerGoalProfile();
+            }, 800);
         } else {
-            timeline.innerHTML = `<p class="text-danger">Failed to parse resume.</p>`;
+            status.innerHTML = `<span class="text-danger">Failed to analyze resume. Please try again.</span>`;
         }
     } catch (e) {
-        timeline.innerHTML = `<p class="text-danger">Ingestion timeout.</p>`;
+        status.innerHTML = `<span class="text-danger">Request timed out. Check your connection.</span>`;
     }
 }
 
 async function loadCareerGoalProfile() {
     if (!accessToken) return;
     try {
-        const res = await fetch(`${API_ROOT}/career/goals`, {
-            headers: { "Authorization": `Bearer ${accessToken}` }
+        const res = await fetch(`${API_ROOT}/career/goals?_t=${new Date().getTime()}`, {
+            headers: { "Authorization": `Bearer ${accessToken}` },
+            cache: "no-store"
         });
-        if (res.ok) {
-            const goals = await res.json();
-            if (goals.length > 0) {
-                const latest = goals[0];
-                
-                // Draw Skills map
-                const map = document.getElementById("skill-gap-panel");
-                map.innerHTML = `
-                    <h5>Targeting: <span class="text-info">${latest.target_job_title}</span></h5>
-                    <p class="text-secondary small">Acquired Skills: ${latest.current_skills.join(", ")}</p>
-                    <p class="text-warning small">Target Gaps: ${latest.target_skills.join(", ")}</p>
-                `;
+        if (!res.ok) return;
 
-                // Draw Timeline track
-                if (latest.roadmaps.length > 0) {
-                    const roadmap = latest.roadmaps[0];
-                    const timeline = document.getElementById("timeline-wrapper");
-                    timeline.innerHTML = "";
-                    
-                    roadmap.structure.phases.forEach(phase => {
-                        const div = document.createElement("div");
-                        div.className = "timeline-item";
-                        div.innerHTML = `
-                            <h5 class="fw-bold">${phase.title} <span class="badge bg-primary text-white ms-2">${phase.estimated_weeks} Weeks</span></h5>
-                            <ul class="text-secondary small">
-                                ${phase.milestones.map(m => `<li>${m}</li>`).join("")}
-                            </ul>
-                        `;
-                        timeline.appendChild(div);
-                    });
-                }
+        const goals = await res.json();
+        if (goals.length === 0) return;
+
+        const goal = goals[0];
+        const roadmap = (goal.roadmaps && goal.roadmaps.length > 0) ? goal.roadmaps[0] : null;
+
+        // ── 1. Info Cards ────────────────────────────────
+        const titleEl = document.getElementById("rm-goal-title");
+        if (titleEl) titleEl.textContent = goal.target_job_title || "—";
+        
+        if (goal.roadmap_status === "FAILED" || (!goal.projects || goal.projects.length === 0)) {
+            const roadmapPanel = document.getElementById("rm-roadmap-panel");
+            if (roadmapPanel) {
+                roadmapPanel.innerHTML = `
+                    <div class="alert alert-danger p-4 text-center">
+                        <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-2"></i>
+                        <h5 class="fw-bold">AI Analysis Failed</h5>
+                        <p>We could not generate your personalized roadmap. The backend reported an AI error.</p>
+                    </div>
+                `;
+            }
+            const projectsPanel = document.getElementById("rm-projects-panel");
+            if (projectsPanel) projectsPanel.classList.add("d-none");
+            
+            const skillGapPanel = document.getElementById("skill-gap-panel");
+            if (skillGapPanel) skillGapPanel.innerHTML = `<div class="text-secondary p-3">Skill analysis failed.</div>`;
+            return;
+        }
+
+        // Derive level from job readiness score
+        const score = goal.job_readiness_score || 0;
+        const level = score >= 70 ? "Advanced" : score >= 40 ? "Intermediate" : "Beginner";
+        document.getElementById("rm-level").textContent = level;
+        document.getElementById("rm-level-msg").textContent = score >= 70 ? "Great progress!" : "Keep learning!";
+
+        // Estimated time will be computed after phases array is ready (see below)
+
+        // ── 2. Roadmap Summary Sidebar ───────────────────
+        let structure = roadmap ? roadmap.structure : null;
+        if (typeof structure === 'string') {
+            try { structure = JSON.parse(structure); } catch (e) { console.error("Failed to parse roadmap structure", e); }
+        }
+        const phases = (structure && structure.phases) ? structure.phases : [];
+        document.getElementById("rm-summary-phases").textContent = phases.length;
+
+        const totalTopics = phases.reduce((acc, p) => acc + (p.milestones ? p.milestones.length : 0), 0);
+        document.getElementById("rm-summary-topics").textContent = totalTopics;
+
+        const projectCount = (goal.projects && goal.projects.length) ? goal.projects.length : 0;
+        document.getElementById("rm-summary-projects").textContent = projectCount;
+
+        // ── Update Skills List ───────────────────────────
+        const skillsList = document.getElementById("rm-skills-list");
+        if (skillsList && goal.target_skills) {
+            let targetSkills = goal.target_skills;
+            if (typeof targetSkills === 'string') {
+                try { targetSkills = JSON.parse(targetSkills); } catch(e) { targetSkills = []; }
+            }
+            if (Array.isArray(targetSkills) && targetSkills.length > 0) {
+                const currentPct = roadmap ? (roadmap.completion_percentage || 0) : 0;
+                // Cap the display at 100% just in case
+                const displayPct = Math.min(100, Math.round(currentPct));
+                
+                skillsList.innerHTML = targetSkills.map(skill => `
+                    <div class="rm-skill-row">
+                        <div><span>${skill}</span><span class="rm-skill-pct">${displayPct}%</span></div>
+                        <div class="rm-skill-bar"><div class="rm-skill-fill" style="width:${displayPct}%"></div></div>
+                    </div>
+                `).join('');
             }
         }
-    } catch (e) {}
+
+        // ── Estimated Time (computed here after phases is ready) ──
+        if (phases.length > 0) {
+            const totalWeeks = phases.reduce((acc, p) => {
+                let w = p.estimated_weeks || 0;
+                if (typeof w === 'string') {
+                    const match = w.match(/\d+/g);
+                    w = match ? parseInt(match[match.length - 1], 10) : 0;
+                }
+                return acc + Number(w);
+            }, 0);
+            console.log('[CareerMentor] totalWeeks:', totalWeeks);
+            const months = totalWeeks > 0 ? Math.max(1, Math.round(totalWeeks / 4.33)) : null;
+            document.getElementById("rm-est-time").textContent = months ? `${months} – ${months + 2} Months` : "—";
+        } else {
+            document.getElementById("rm-est-time").textContent = "—";
+        }
+
+        // ── 3. Phase Connector + Phase Cards ─────────────
+        if (phases.length > 0) {
+            const uploadPanel = document.getElementById("rm-upload-panel");
+            if (uploadPanel) uploadPanel.classList.add("d-none");
+            
+            const roadmapPanel = document.getElementById("rm-roadmap-panel");
+            if (roadmapPanel) roadmapPanel.classList.remove("d-none");
+
+            // Build connector nodes
+            const connector = document.getElementById("rm-phase-connector");
+            connector.innerHTML = `<div class="rm-connector-line"></div>`;
+            phases.forEach((phase, i) => {
+                const pct = roadmap.completion_percentage || 0;
+                const perPhase = 100 / phases.length;
+                let nodeClass = "rm-node-upcoming";
+                if (pct >= (i + 1) * perPhase) nodeClass = "rm-node-completed";
+                else if (pct >= i * perPhase) nodeClass = "rm-node-inprogress";
+                connector.innerHTML += `<div class="rm-connector-node ${nodeClass}"><span>${i + 1}</span></div>`;
+            });
+
+            // Build phase cards
+            const phasesGrid = document.getElementById("rm-phases-grid");
+            phasesGrid.innerHTML = "";
+            
+            let activePhaseIndex = phases.findIndex(p => p.status === "inprogress");
+            if (activePhaseIndex === -1) {
+                activePhaseIndex = phases.findIndex(p => !p.status || p.status === "upcoming");
+                if (activePhaseIndex === -1) activePhaseIndex = 0;
+            }
+
+            phases.forEach((phase, i) => {
+                // Determine card class from stored status (fallback to completion_percentage)
+                const storedStatus = phase.status || "";
+                let cardClass = "rm-phase-upcoming";
+                if (storedStatus === "completed")  cardClass = "rm-phase-completed";
+                else if (storedStatus === "inprogress") cardClass = "rm-phase-inprogress";
+                
+                if (i === activePhaseIndex) {
+                    cardClass += " rm-phase-active-highlight";
+                }
+
+                const iconColors = ["rm-icon-blue","rm-icon-blue","rm-icon-orange","rm-icon-green"];
+                const phaseIcons = ["bi-mortarboard-fill","bi-tools","bi-graph-up-arrow","bi-rocket-takeoff-fill"];
+                const iconColor = iconColors[i % iconColors.length];
+                const phaseIcon = phaseIcons[i % phaseIcons.length];
+                const milestones = (phase.milestones || []).slice(0, 4).map(m =>
+                    `<li><i class="bi bi-check-circle-fill text-primary" style="font-size:0.65rem;"></i>${m}</li>`
+                ).join("");
+
+                const phaseNum = phase.phase_num || (i + 1);
+                const selectId = `phase-status-select-${phaseNum}`;
+
+                phasesGrid.innerHTML += `
+                    <div class="rm-phase-card ${cardClass}" id="phase-card-${phaseNum}">
+                        <div class="rm-phase-header">
+                            <div class="rm-phase-icon ${iconColor}"><i class="bi ${phaseIcon}"></i></div>
+                            <span class="rm-phase-label">Phase ${phaseNum}</span>
+                        </div>
+                        <h5 class="rm-phase-title">${phase.title}</h5>
+                        <div class="rm-phase-duration"><i class="bi bi-clock me-1"></i>Duration: ${String(phase.estimated_weeks || "?").replace(/weeks?/i, '').trim()} Weeks</div>
+                        <p class="rm-phase-desc">${phase.description || "Master key concepts for this phase."}</p>
+                        <ul class="rm-topic-list">${milestones}</ul>
+                        <div class="rm-phase-status-control mt-2">
+                            <select id="${selectId}" class="form-select glass-input form-select-sm mb-2" onchange="this.nextElementSibling.classList.remove('d-none')">
+                                <option value="upcoming"   ${storedStatus === "upcoming"   || !storedStatus ? "selected" : ""}>⏳ Upcoming</option>
+                                <option value="inprogress" ${storedStatus === "inprogress" ? "selected" : ""}>🔄 In Progress</option>
+                                <option value="completed"  ${storedStatus === "completed"  ? "selected" : ""}>✅ Completed</option>
+                            </select>
+                            <button class="btn btn-sm btn-primary-custom w-100 d-none"
+                                onclick="updatePhaseStatus('${roadmap.id}', ${phaseNum}, '${selectId}')">
+                                <i class="bi bi-check2 me-1"></i>Update Status
+                            </button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+
+        // ── 4. Projects Grid with View All ───────────────
+        if (goal.projects && goal.projects.length > 0) {
+            document.getElementById("rm-projects-panel").classList.remove("d-none");
+            _rmShowingAll = false;
+            renderProjectsGrid(goal.projects);
+
+            const viewAllBtn = document.getElementById("rm-view-all-btn");
+            if (goal.projects.length > 3) {
+                viewAllBtn.style.display = "inline-block";
+                viewAllBtn.onclick = () => {
+                    _rmShowingAll = !_rmShowingAll;
+                    viewAllBtn.textContent = _rmShowingAll ? "Show Less" : "View All";
+                    renderProjectsGrid(goal.projects);
+                };
+            } else {
+                viewAllBtn.style.display = "none";
+            }
+        }
+
+        // ── 5. Skills Sidebar ────────────────────────────
+        if (goal.target_skills && goal.target_skills.length > 0) {
+            const skillsList = document.getElementById("rm-skills-list");
+            skillsList.innerHTML = "";
+            const completionPct = (roadmap && roadmap.completion_percentage) ? roadmap.completion_percentage : 0;
+            goal.target_skills.slice(0, 6).forEach((skill, idx) => {
+                const basePct = 20 + idx * 3;
+                const earnedPct = Math.round(completionPct * (0.85 + idx * 0.03));
+                const skillPct = Math.min(100, Math.max(basePct, basePct + earnedPct));
+                skillsList.innerHTML += `
+                    <div class="rm-skill-row">
+                        <div><span>${skill}</span><span class="rm-skill-pct">${skillPct}%</span></div>
+                        <div class="rm-skill-bar"><div class="rm-skill-fill" style="width:${skillPct}%"></div></div>
+                    </div>`;
+            });
+        }
+
+        // ── 6. Skill Gap Panel ───────────────────────────
+        const gapPanel = document.getElementById("skill-gap-panel");
+        gapPanel.innerHTML = `
+            <h6 class="rm-sidebar-title mb-2">Skill Gap Analysis</h6>
+            <p class="small text-info mb-1">Targeting: <strong>${goal.target_job_title}</strong></p>
+            <p class="small text-secondary mb-1">Current Skills: ${(goal.current_skills || []).slice(0, 4).join(", ") || "—"}</p>
+            <p class="small text-warning mb-0">Target Gaps: ${(goal.target_skills || []).slice(0, 4).join(", ") || "—"}</p>`;
+
+    } catch (e) {
+        console.error("Career roadmap load error:", e);
+    }
 }
+
+function renderProjectsGrid(projects) {
+    const grid = document.getElementById("rm-projects-grid");
+    grid.innerHTML = "";
+    const limit = _rmShowingAll ? projects.length : 3;
+    const projIcons = ["bi-bar-chart-fill", "bi-database-fill", "bi-graph-up", "bi-lightbulb-fill", "bi-code-slash"];
+    const iconColors = ["rm-icon-blue", "rm-icon-blue", "rm-icon-orange", "rm-icon-green", "rm-icon-blue"];
+    
+    projects.slice(0, limit).forEach((proj, i) => {
+        const pIcon = projIcons[i % projIcons.length];
+        const pColor = iconColors[i % iconColors.length];
+        const tags = (proj.skills_gained || []).map(s =>
+            `<span class="badge bg-primary bg-opacity-25 text-primary me-1 mb-1" style="font-size:0.65rem;">${s}</span>`
+        ).join("");
+        grid.innerHTML += `
+            <div class="rm-project-card">
+                <div class="rm-proj-icon ${pColor}"><i class="bi ${pIcon}"></i></div>
+                <div style="flex:1">
+                    <div class="rm-proj-name">${proj.title}</div>
+                    <div class="rm-proj-type">${proj.complexity || "Standard"} Level</div>
+                    <p class="text-secondary mb-1" style="font-size:0.72rem;">${proj.description || ""}</p>
+                    <div>${tags}</div>
+                </div>
+            </div>`;
+    });
+}
+
+function setRoadmapView(view) {
+    document.getElementById("btn-timeline-view").classList.toggle("active", view === "timeline");
+    document.getElementById("btn-list-view").classList.toggle("active", view === "list");
+    const grid = document.getElementById("rm-phases-grid");
+    if (view === "list") {
+        grid.style.gridTemplateColumns = "1fr";
+    } else {
+        grid.style.gridTemplateColumns = "";
+    }
+}
+
+function openGoalModal() {
+    const modal = new bootstrap.Modal(document.getElementById('editGoalModal'));
+    modal.show();
+}
+
+function exportRoadmap() {
+    const goalTitle = (document.getElementById("rm-goal-title").textContent || "My Roadmap").trim();
+    const level     = document.getElementById("rm-level").textContent;
+    const estTime   = document.getElementById("rm-est-time").textContent;
+    const date      = new Date().toLocaleDateString("en-IN", {day:"numeric",month:"long",year:"numeric"});
+
+    const phaseCards = Array.from(document.querySelectorAll(".rm-phase-card")).map(card => {
+        const label    = card.querySelector(".rm-phase-label")?.textContent || "";
+        const title    = card.querySelector(".rm-phase-title")?.textContent || "";
+        const duration = (card.querySelector(".rm-phase-duration")?.textContent || "").replace(/\s+/g," ").trim();
+        const desc     = card.querySelector(".rm-phase-desc")?.textContent || "";
+        const status   = (card.querySelector(".rm-phase-status")?.textContent || "").trim();
+        const topics   = Array.from(card.querySelectorAll(".rm-topic-list li")).map(li => "<li>" + li.textContent.trim() + "</li>").join("");
+        const isComp   = card.classList.contains("rm-phase-completed");
+        const isInProg = card.classList.contains("rm-phase-inprogress");
+        const bc = isComp ? "#4f8ef7" : isInProg ? "#6366f1" : "#334155";
+        const sc = isComp ? "#10d9a0" : isInProg ? "#6366f1" : "#64748b";
+        return '<div class="phase-card" style="border-color:' + bc + ';">' + '<div class="phase-label">' + label + '</div>' + '<div class="phase-title">' + title + '</div>' + '<div class="phase-dur">' + duration + '</div>' + '<p class="phase-desc">' + desc + '</p>' + '<ul class="topic-list">' + topics + '</ul>' + '<div class="phase-status" style="color:' + sc + ';">' + status + '</div></div>';
+    }).join("");
+
+    const projCards = Array.from(document.querySelectorAll(".rm-project-card")).map(card => {
+        const name  = card.querySelector(".rm-proj-name")?.textContent || "";
+        const type  = card.querySelector(".rm-proj-type")?.textContent || "";
+        const phase = card.querySelector(".rm-proj-phase")?.textContent || "";
+        return '<div class="proj-card"><div class="proj-name">' + name + '</div><div class="proj-type">' + type + '</div><span class="proj-badge">' + phase + '</span></div>';
+    }).join("");
+
+    const skillRows = Array.from(document.querySelectorAll(".rm-skill-row")).map(row => {
+        const name = row.querySelector("span:first-child")?.textContent || "";
+        const pct  = row.querySelector(".rm-skill-pct")?.textContent || "0%";
+        return '<div class="skill-row"><div class="skill-label"><span>' + name + '</span><span>' + pct + '</span></div><div class="skill-bar"><div class="skill-fill" style="width:' + pct + ';"></div></div></div>';
+    }).join("");
+
+    const css = `* { margin:0; padding:0; box-sizing:border-box; } body { font-family:Arial,sans-serif; background:#ffffff; color:#0f172a; padding:24px; font-size:11px; } .hdr { display:flex; justify-content:space-between; border-bottom:2px solid #6366f1; padding-bottom:14px; margin-bottom:18px; } .hdr h1 { font-size:20px; font-weight:800; color:#0f172a; } .hdr p { font-size:10px; color:#475569; margin-top:3px; } .hdr-r { font-size:9px; color:#64748b; text-align:right; } .info-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px; } .ic { border-radius:8px; padding:10px; border:1px solid #e2e8f0; } .ic-lbl { font-size:7px; text-transform:uppercase; color:#64748b; font-weight:700; } .ic-val { font-size:13px; font-weight:800; margin-top:3px; color:#0f172a; } .sec { font-size:12px; font-weight:700; border-left:3px solid #6366f1; padding-left:7px; margin:0 0 8px; color:#0f172a; } .phases-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:16px; } .phase-card { border:1px solid #cbd5e1; border-radius:8px; padding:10px; background:#f8fafc; } .phase-label { font-size:7px; text-transform:uppercase; color:#64748b; font-weight:700; margin-bottom:3px; } .phase-title { font-size:11px; font-weight:800; margin-bottom:3px; color:#0f172a; } .phase-dur { font-size:8px; color:#475569; margin-bottom:4px; } .phase-desc { font-size:8px; color:#475569; margin-bottom:6px; } .topic-list { list-style:none; } .topic-list li { font-size:8px; color:#334155; padding:1px 0; } .topic-list li::before { content:"- "; color:#6366f1; } .phase-status { font-size:8px; font-weight:700; margin-top:6px; } .projs-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:16px; } .proj-card { border:1px solid #cbd5e1; border-radius:7px; padding:8px; background:#f8fafc; } .proj-name { font-size:10px; font-weight:700; margin-bottom:2px; color:#0f172a; } .proj-type { font-size:8px; color:#475569; margin-bottom:4px; } .proj-badge { font-size:7px; font-weight:700; color:#6366f1; padding:1px 6px; border-radius:99px; border:1px solid rgba(99,102,241,0.3); background:#e0e7ff; } .skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:16px; } .skill-label { display:flex; justify-content:space-between; font-size:9px; margin-bottom:2px; color:#0f172a; font-weight:600; } .skill-bar { height:4px; background:#e2e8f0; border-radius:99px; overflow:hidden; } .skill-fill { height:100%; background:linear-gradient(90deg,#6366f1,#8b5cf6); } .footer { margin-top:12px; border-top:1px solid #cbd5e1; padding-top:8px; font-size:8px; color:#64748b; text-align:center; } @media print { body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } @page { margin:6mm; size:A4 portrait; } }`;
+
+    const rows = [
+        "<!DOCTYPE html><html><head><meta charset=UTF-8><title>Roadmap</title><style>" + css + "</style></head><body>",
+        "<div class=hdr><div><h1>Personalized Learning Roadmap</h1><p>Target: <strong style=color:#6366f1>" + goalTitle + "</strong></p></div><div class=hdr-r><div>" + date + "</div><div>AI Learning and Career Mentor</div></div></div>",
+        "<div class=info-row>",
+        "<div class=ic style=background:rgba(79,142,247,.12)><div class=ic-lbl>YOUR GOAL</div><div class=ic-val>" + goalTitle + "</div></div>",
+        "<div class=ic style=background:rgba(16,185,129,.12)><div class=ic-lbl>CURRENT LEVEL</div><div class=ic-val>" + level + "</div></div>",
+        "<div class=ic style=background:rgba(245,158,11,.12)><div class=ic-lbl>ESTIMATED TIME</div><div class=ic-val>" + estTime + "</div></div>",
+        "</div>",
+        "<div class=sec>Learning Phases</div><div class=phases-grid>" + phaseCards + "</div>",
+        "<div class=sec>Projects You Will Build</div><div class=projs-grid>" + projCards + "</div>",
+        "<div class=sec>Skills You Will Gain</div><div class=skills-grid>" + skillRows + "</div>",
+        "<div class=footer>Generated by AI Learning and Career Mentor</div>",
+        "</body></html>"
+    ];
+
+    const w = window.open("", "_blank", "width=1100,height=750");
+    w.document.open();
+    w.document.write(rows.join(""));
+    w.document.close();
+    setTimeout(() => { try { w.print(); } catch(e) {} }, 500);
+}
+
+
 
 // ==========================================
 // 5. Mock Interview WebSocket Logic
@@ -759,4 +1086,44 @@ async function loadAdminPanelData() {
             });
         }
     } catch (e) {}
+}
+
+async function updatePhaseStatus(roadmapId, phaseNum, selectId) {
+    const select = document.getElementById(selectId);
+    if (!select || !accessToken) return;
+    
+    const statusVal = select.value;
+    const btn = select.nextElementSibling;
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...';
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(`${API_ROOT}/career/roadmaps/${roadmapId}/phase-status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+                phase_num: phaseNum,
+                phase_status: statusVal
+            })
+        });
+
+        if (res.ok) {
+            // Reload the profile to reflect changes (progress bar, etc.)
+            await loadCareerGoalProfile();
+        } else {
+            alert('Failed to update phase status.');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    } catch (err) {
+        console.error("Error updating phase status:", err);
+        alert('An error occurred while updating status.');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
 }

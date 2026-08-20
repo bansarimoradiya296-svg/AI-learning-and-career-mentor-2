@@ -123,6 +123,18 @@ h1, h2, h3, h4, h5, h6 {
     outline: none;
 }
 
+/* Fix dropdown option text visibility in dark mode */
+.glass-input option {
+    background: #1e293b;
+    color: #f1f5f9;
+}
+
+.glass-input option:hover,
+.glass-input option:checked {
+    background: #6366f1;
+    color: #ffffff;
+}
+
 /* Buttons */
 .btn-primary-custom {
     background: var(--primary);
@@ -254,3 +266,173 @@ h1, h2, h3, h4, h5, h6 {
         height: auto;
     }
 }
+
+/* =============================================
+   CAREER ROADMAP — Premium Design System
+   ============================================= */
+
+/* Page Header */
+.rm-title { font-size: 1.75rem; font-weight: 800; color: var(--text-primary); }
+.rm-subtitle { font-size: 0.9rem; color: var(--text-secondary); }
+.rm-export-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+.rm-export-btn:hover { background: rgba(99,102,241,0.12); border-color: var(--primary); color: var(--primary); }
+
+/* Info Cards Row */
+.rm-info-card { border-radius: 14px; transition: transform 0.2s ease; }
+.rm-info-card:hover { transform: translateY(-2px); }
+.rm-info-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+}
+.rm-icon-blue   { background: rgba(79,142,247,0.15); color: #4f8ef7; }
+.rm-icon-green  { background: rgba(16,185,129,0.15); color: #10b981; }
+.rm-icon-orange { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.rm-info-label  { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600; }
+.rm-info-sublabel { font-size: 0.75rem; color: var(--text-secondary); }
+.rm-info-value  { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+.rm-level-value, .rm-time-value { font-size: 1.1rem; }
+.rm-info-status { font-size: 0.75rem; }
+.rm-edit-btn {
+    font-size: 0.72rem; padding: 3px 10px; border-radius: 6px;
+    border: 1px solid rgba(99,102,241,0.4); color: var(--primary);
+    background: rgba(99,102,241,0.08);
+}
+.rm-edit-btn:hover { background: rgba(99,102,241,0.2); color: var(--primary); }
+
+/* View Toggle */
+.rm-view-toggle { display: flex; gap: 4px; background: rgba(255,255,255,0.04); border-radius: 8px; padding: 3px; }
+.rm-view-btn {
+    border: none; background: transparent; color: var(--text-secondary);
+    font-size: 0.8rem; padding: 5px 14px; border-radius: 6px;
+    transition: all 0.2s ease; cursor: pointer;
+}
+.rm-view-btn.active { background: var(--primary); color: #fff; }
+
+/* Phase Timeline Connector */
+.rm-timeline-connector {
+    position: relative; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+}
+.rm-connector-line {
+    position: absolute; left: 0; right: 0; top: 50%;
+    height: 2px; background: var(--border-color); z-index: 0;
+}
+.rm-connector-node {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; z-index: 1;
+    border: 2px solid;
+}
+.rm-node-completed  { background: rgba(79,142,247,0.2);  border-color: #4f8ef7; color: #4f8ef7; }
+.rm-node-inprogress { background: rgba(99,102,241,0.25); border-color: var(--primary); color: var(--primary); box-shadow: 0 0 12px rgba(99,102,241,0.4); }
+.rm-node-upcoming   { background: rgba(255,255,255,0.04); border-color: var(--border-color); color: var(--text-secondary); }
+.rm-node-orange     { border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,0.1); }
+.rm-node-green      { border-color: #10b981; color: #10b981; background: rgba(16,185,129,0.1); }
+
+/* Phase Cards Grid */
+.rm-phases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+.rm-phase-card {
+    border-radius: 14px; padding: 18px;
+    border: 1px solid var(--border-color);
+    background: rgba(255,255,255,0.02);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.rm-phase-card:hover { transform: translateY(-3px); }
+.rm-phase-completed { border-color: rgba(79,142,247,0.35); }
+.rm-phase-inprogress { border-color: rgba(99,102,241,0.5); box-shadow: 0 0 20px rgba(99,102,241,0.12); }
+.rm-phase-upcoming  { border-color: var(--border-color); opacity: 0.85; }
+.rm-phase-active-highlight {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 20px rgba(99,102,241,0.25) !important;
+    transform: scale(1.02);
+    opacity: 1 !important;
+}
+
+.rm-phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.rm-phase-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+}
+.rm-phase-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+.rm-phase-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.rm-phase-duration { font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 8px; }
+.rm-phase-desc { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 10px; }
+.rm-topic-list { list-style: none; padding: 0; margin: 0 0 12px; }
+.rm-topic-list li { font-size: 0.78rem; color: var(--text-secondary); padding: 3px 0; display: flex; align-items: center; gap: 6px; }
+.rm-phase-status {
+    font-size: 0.72rem; font-weight: 600; border-radius: 6px;
+    padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px;
+}
+.rm-status-completed  { background: rgba(16,217,160,0.12); color: #10d9a0; border: 1px solid rgba(16,217,160,0.3); }
+.rm-status-inprogress { background: rgba(79,142,247,0.12); color: var(--primary); border: 1px solid rgba(79,142,247,0.35); }
+.rm-status-upcoming   { background: rgba(255,255,255,0.04); color: var(--text-secondary); border: 1px solid var(--border-color); }
+
+/* Projects Grid */
+.rm-projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.rm-project-card {
+    display: flex; align-items: flex-start; gap: 12px; padding: 14px;
+    border-radius: 12px; background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-color); transition: all 0.2s ease;
+}
+.rm-project-card:hover { background: rgba(79,142,247,0.08); border-color: rgba(79,142,247,0.35); transform: translateY(-2px); }
+.rm-proj-icon {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; background: rgba(255,255,255,0.06); color: var(--primary);
+}
+.rm-proj-name { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); }
+.rm-proj-type { font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 4px; }
+.rm-proj-phase {
+    display: inline-block; font-size: 0.65rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 99px;
+    background: rgba(99,102,241,0.15); color: var(--primary);
+    border: 1px solid rgba(99,102,241,0.3);
+}
+
+/* Why This Roadmap List */
+.rm-why-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.rm-why-list li { font-size: 0.82rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+
+
+/* View All Button */
+.rm-view-all-btn {
+    font-size: 0.8rem; padding: 5px 14px; border-radius: 8px;
+    border: 1px solid rgba(99,102,241,0.4); color: var(--primary);
+    background: rgba(99,102,241,0.08); transition: all 0.2s ease;
+}
+.rm-view-all-btn:hover { background: rgba(99,102,241,0.2); color: var(--primary); }
+
+/* Roadmap Note */
+.rm-roadmap-note { font-size: 0.78rem; color: var(--text-secondary); }
+
+/* Sidebar */
+.rm-sidebar-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); }
+.rm-summary-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.rm-summary-list li { font-size: 0.82rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+
+/* Skills Progress Bars */
+.rm-skills-list { display: flex; flex-direction: column; gap: 10px; }
+.rm-skill-row { display: flex; flex-direction: column; gap: 4px; }
+.rm-skill-row > div:first-child { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-primary); }
+.rm-skill-pct { color: var(--text-secondary); font-size: 0.72rem; }
+.rm-skill-bar { height: 5px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+.rm-skill-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 99px; transition: width 0.8s ease; }
+
+/* Stay Consistent */
+.rm-stay-consistent { background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12)) !important; }
+.rm-stay-text { font-size: 0.8rem; color: var(--text-secondary); margin: 0; }
+

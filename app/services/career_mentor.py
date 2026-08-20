@@ -2,7 +2,7 @@ import json
 import uuid
 from typing import Dict, List, Optional
 import google.generativeai as genai
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -47,8 +47,12 @@ class CareerMentorService:
             f"Do not format with Markdown tags. Output clean raw JSON text only."
         )
 
+        # Delete existing goals for this user (replace old with new)
+        await self.db.execute(delete(CareerGoal).where(CareerGoal.user_id == user_id))
+        await self.db.flush()
+
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel("gemini-3.1-flash-lite")
             response = model.generate_content(prompt)
             raw_text = response.text.replace("```json", "").replace("```", "").strip()
             analysis = json.loads(raw_text)
@@ -59,6 +63,7 @@ class CareerMentorService:
                 target_job_title=target_job_title,
                 current_skills=analysis.get("current_skills", []),
                 target_skills=analysis.get("target_skills", []),
+                job_readiness_score=float(analysis.get("job_readiness_score", 0)),
                 roadmap_status="READY"
             )
             self.db.add(goal)
@@ -142,7 +147,7 @@ class CareerMentorService:
         )
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel("gemini-3.1-flash-lite")
             response = model.generate_content(prompt)
             raw_text = response.text.replace("```json", "").replace("```", "").strip()
             roadmap_structure = json.loads(raw_text)
