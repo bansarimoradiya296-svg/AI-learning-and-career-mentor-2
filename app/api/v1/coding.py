@@ -17,7 +17,7 @@ from app.schemas.coding import (
     CodingQuizRequest, CodingRoadmapRequest
 )
 from app.services.code_executor import CodeExecutorService
-from app.security.permissions import get_current_user
+from app.security.permissions import get_current_user, get_optional_current_user
 
 router = APIRouter(prefix="/coding", tags=["Coding Mentor"])
 
@@ -198,24 +198,24 @@ async def optimize_code(
     return suggestions
 
 
-# ==========================================
-# Coding Mentor Sub-pages endpoints
-# ==========================================
+def check_is_placeholder(api_key: str) -> bool:
+    return (
+        not api_key 
+        or api_key == "abc123" 
+        or api_key.startswith("your_")
+        or "placeholder" in api_key.lower()
+    )
 
 @router.post("/chat")
 async def coding_chat(
     payload: CodingChatRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: User | None = Depends(get_optional_current_user)
 ):
     """Simulates or calls Gemini to answer a coding question."""
     message = payload.message.strip()
     history = payload.history
     
-    is_placeholder = (
-        not settings.GEMINI_API_KEY 
-        or settings.GEMINI_API_KEY == "abc123" 
-        or settings.GEMINI_API_KEY.startswith("your_")
-    )
+    is_placeholder = check_is_placeholder(settings.GEMINI_API_KEY)
     
     if is_placeholder:
         return {"response": get_simulated_chat_response(message)}
@@ -245,16 +245,12 @@ async def coding_chat(
 @router.post("/debug")
 async def coding_debug(
     payload: CodingDebugRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: User | None = Depends(get_optional_current_user)
 ):
     """Analyzes error messages and code snippets."""
     code_or_error = payload.code_or_error.strip()
     
-    is_placeholder = (
-        not settings.GEMINI_API_KEY 
-        or settings.GEMINI_API_KEY == "abc123" 
-        or settings.GEMINI_API_KEY.startswith("your_")
-    )
+    is_placeholder = check_is_placeholder(settings.GEMINI_API_KEY)
     
     if not is_placeholder:
         try:
@@ -285,17 +281,13 @@ async def coding_debug(
 @router.post("/explain")
 async def code_explain(
     payload: CodeExplainRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: User | None = Depends(get_optional_current_user)
 ):
     """Generates a detailed code explanation."""
     code = payload.code.strip()
     language = payload.language.strip()
     
-    is_placeholder = (
-        not settings.GEMINI_API_KEY 
-        or settings.GEMINI_API_KEY == "abc123" 
-        or settings.GEMINI_API_KEY.startswith("your_")
-    )
+    is_placeholder = check_is_placeholder(settings.GEMINI_API_KEY)
     
     if not is_placeholder:
         try:
@@ -331,11 +323,7 @@ async def code_convert(
     from_lang = payload.from_language.strip()
     to_lang = payload.to_language.strip()
     
-    is_placeholder = (
-        not settings.GEMINI_API_KEY 
-        or settings.GEMINI_API_KEY == "abc123" 
-        or settings.GEMINI_API_KEY.startswith("your_")
-    )
+    is_placeholder = check_is_placeholder(settings.GEMINI_API_KEY)
     
     if not is_placeholder:
         try:
@@ -362,18 +350,14 @@ async def code_convert(
 @router.post("/quiz/generate")
 async def code_quiz_generate(
     payload: CodingQuizRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: User | None = Depends(get_optional_current_user)
 ):
     """Generates a coding quiz dynamically."""
     topic = payload.topic.strip()
     difficulty = payload.difficulty.strip()
     num_questions = payload.num_questions
     
-    is_placeholder = (
-        not settings.GEMINI_API_KEY 
-        or settings.GEMINI_API_KEY == "abc123" 
-        or settings.GEMINI_API_KEY.startswith("your_")
-    )
+    is_placeholder = check_is_placeholder(settings.GEMINI_API_KEY)
     
     if not is_placeholder:
         try:
@@ -417,11 +401,7 @@ async def code_roadmap_generate(
     """Generates a targeted learning roadmap for a coding goal."""
     goal = payload.goal.strip()
     
-    is_placeholder = (
-        not settings.GEMINI_API_KEY 
-        or settings.GEMINI_API_KEY == "abc123" 
-        or settings.GEMINI_API_KEY.startswith("your_")
-    )
+    is_placeholder = check_is_placeholder(settings.GEMINI_API_KEY)
     
     if not is_placeholder:
         try:
@@ -457,6 +437,263 @@ async def code_roadmap_generate(
 # ==========================================
 # Simulated Fallback Response Generators
 # ==========================================
+
+def generate_dynamic_fallback_response(message: str) -> str:
+    msg_lower = message.lower().strip()
+    
+    # 1. Identify programming language
+    languages = {
+        "python": "Python",
+        "javascript": "JavaScript",
+        "js": "JavaScript",
+        "typescript": "TypeScript",
+        "ts": "TypeScript",
+        "java": "Java",
+        "c++": "C++",
+        "cpp": "C++",
+        "c#": "C#",
+        "c lang": "C",
+        "c program": "C",
+        "rust": "Rust",
+        "go": "Go",
+        "golang": "Go",
+        "swift": "Swift",
+        "kotlin": "Kotlin",
+        "ruby": "Ruby",
+        "php": "PHP",
+        "sql": "SQL",
+        "html": "HTML",
+        "css": "CSS",
+    }
+    
+    lang_found = "Python"  # Default
+    for kw, name in languages.items():
+        if kw in msg_lower:
+            lang_found = name
+            break
+            
+    # 2. Identify key concepts / topics
+    topics = {
+        "loop": "Loops",
+        "recursion": "Recursion",
+        "class": "Classes and Objects",
+        "object": "Classes and Objects",
+        "function": "Functions",
+        "method": "Methods",
+        "variable": "Variables",
+        "array": "Arrays",
+        "list": "Lists/Arrays",
+        "dictionary": "Dictionaries/Maps",
+        "dict": "Dictionaries/Maps",
+        "map": "Maps/Dictionaries",
+        "set": "Sets",
+        "tuple": "Tuples",
+        "pointer": "Pointers",
+        "reference": "References",
+        "sort": "Sorting Algorithms",
+        "search": "Search Algorithms",
+        "tree": "Trees",
+        "graph": "Graphs",
+        "stack": "Stacks",
+        "queue": "Queues",
+        "database": "Databases",
+        "query": "Database Queries",
+        "api": "APIs and Web Services",
+        "rest": "RESTful Web Services",
+        "json": "JSON",
+        "async": "Asynchronous Programming",
+        "await": "Asynchronous Programming",
+        "promise": "Promises",
+        "thread": "Multithreading",
+        "regex": "Regular Expressions",
+        "exception": "Exception Handling",
+        "error": "Error Handling",
+        "file": "File Operations",
+        "inherit": "Inheritance",
+        "interface": "Interfaces",
+    }
+    
+    topic_found = None
+    for kw, name in topics.items():
+        if kw in msg_lower:
+            topic_found = name
+            break
+            
+    if not topic_found:
+        topic_found = "Software Development Fundamentals"
+
+    # 3. Generate dynamic sample code
+    code_samples = {
+        "Python": {
+            "Loops": (
+                "```python\n"
+                "# For loop iterating over a range\n"
+                "for i in range(5):\n"
+                "    print(f\"Iteration {i}\")\n\n"
+                "# While loop checking a condition\n"
+                "count = 0\n"
+                "while count < 3:\n"
+                "    print(f\"Count: {count}\")\n"
+                "    count += 1\n"
+                "```"
+            ),
+            "Recursion": (
+                "```python\n"
+                "# Recursive function to calculate factorial\n"
+                "def factorial(n):\n"
+                "    if n <= 1:  # Base case\n"
+                "        return 1\n"
+                "    return n * factorial(n - 1)  # Recursive call\n\n"
+                "print(factorial(5))  # Output: 120\n"
+                "```"
+            ),
+            "Classes and Objects": (
+                "```python\n"
+                "class Person:\n"
+                "    def __init__(self, name, age):\n"
+                "        self.name = name\n"
+                "        self.age = age\n"
+                "        \n"
+                "    def greet(self):\n"
+                "        return f\"Hello, my name is {self.name} and I am {self.age} years old.\"\n\n"
+                "p = Person(\"Alice\", 25)\n"
+                "print(p.greet())\n"
+                "```"
+            ),
+            "Functions": (
+                "```python\n"
+                "def greet(name, greeting=\"Hello\"):\n"
+                "    \"\"\"Generates a custom greeting message.\"\"\"\n"
+                "    return f\"{greeting}, {name}!\"\n\n"
+                "print(greet(\"World\"))  # Hello, World!\n"
+                "```"
+            ),
+            "Lists/Arrays": (
+                "```python\n"
+                "# List operations\n"
+                "fruits = [\"apple\", \"banana\", \"cherry\"]\n"
+                "fruits.append(\"orange\")\n"
+                "for fruit in fruits:\n"
+                "    print(fruit.upper())\n"
+                "```"
+            ),
+            "Dictionaries/Maps": (
+                "```python\n"
+                "# Dictionary setup and access\n"
+                "user = {\"id\": 1, \"name\": \"Bob\", \"role\": \"admin\"}\n"
+                "print(user[\"name\"])\n"
+                "for key, value in user.items():\n"
+                "    print(f\"{key}: {value}\")\n"
+                "```"
+            )
+        },
+        "JavaScript": {
+            "Loops": (
+                "```javascript\n"
+                "// For loop\n"
+                "for (let i = 0; i < 5; i++) {\n"
+                "    console.log(`Iteration ${i}`);\n"
+                "}\n\n"
+                "// Array iteration\n"
+                "const items = ['a', 'b', 'c'];\n"
+                "items.forEach(item => console.log(item));\n"
+                "```"
+            ),
+            "Recursion": (
+                "```javascript\n"
+                "// Recursive function for factorial\n"
+                "function factorial(n) {\n"
+                "    if (n <= 1) return 1; // Base case\n"
+                "    return n * factorial(n - 1); // Recursive call\n"
+                "}\n"
+                "console.log(factorial(5)); // 120\n"
+                "```"
+            ),
+            "Classes and Objects": (
+                "```javascript\n"
+                "class Person {\n"
+                "    constructor(name, age) {\n"
+                "        this.name = name;\n"
+                "        this.age = age;\n"
+                "    }\n"
+                "    \n"
+                "    greet() {\n"
+                "        return `Hello, my name is ${this.name} and I am ${this.age} years old.`;\n"
+                "    }\n"
+                "}\n"
+                "const p = new Person(\"Alice\", 25);\n"
+                "console.log(p.greet());\n"
+                "```"
+            ),
+            "Functions": (
+                "```javascript\n"
+                "// Arrow function example\n"
+                "const greet = (name) => `Hello, ${name}!`;\n"
+                "console.log(greet(\"World\"));\n"
+                "```"
+            )
+        }
+    }
+    
+    code_block = code_samples.get(lang_found, {}).get(topic_found)
+    if not code_block:
+        if lang_found == "Python":
+            code_block = (
+                "```python\n"
+                "# Sample demonstration of " + topic_found + " in Python\n"
+                "def demonstrate_concept(data):\n"
+                "    print('Demonstrating: " + topic_found + "')\n"
+                "    return data\n\n"
+                "result = demonstrate_concept('Hello Python')\n"
+                "print(result)\n"
+                "```"
+            )
+        elif lang_found == "JavaScript":
+            code_block = (
+                "```javascript\n"
+                "// Sample demonstration of " + topic_found + " in JavaScript\n"
+                "function demonstrateConcept(data) {\n"
+                "    console.log('Demonstrating: " + topic_found + "');\n"
+                "    return data;\n"
+                "}\n\n"
+                "const result = demonstrateConcept('Hello JS');\n"
+                "console.log(result);\n"
+                "```"
+            )
+        elif lang_found == "SQL":
+            code_block = (
+                "```sql\n"
+                "-- Sample SQL query demonstrating " + topic_found + "\n"
+                "SELECT id, name, created_at\n"
+                "FROM users\n"
+                "WHERE status = 'active'\n"
+                "ORDER BY created_at DESC;\n"
+                "```"
+            )
+        else:
+            code_block = (
+                "```python\n"
+                "# Dynamic coding demonstration of " + topic_found + " (" + lang_found + ")\n"
+                "# Use this skeleton to build your solution\n"
+                "print('Learning " + topic_found + " in " + lang_found + "')\n"
+                "```"
+            )
+
+    response = (
+        f"### AI Mentor: {topic_found} in {lang_found}\n\n"
+        f"Here is a dynamic explanation and demonstration based on your query: *\"{message[:120]}\"*\n\n"
+        f"**Overview:**\n"
+        f"{topic_found} is a key concept in {lang_found}. Understanding this helps you write cleaner, more efficient, and more maintainable code.\n\n"
+        f"**Code Example:**\n"
+        f"{code_block}\n\n"
+        f"**Best Practices & Key Tips:**\n"
+        f"1. **Readability:** Always use clear variable names and follow standard formatting style conventions.\n"
+        f"2. **Error Safety:** Handle unexpected inputs or edge cases proactively to prevent runtime errors.\n"
+        f"3. **Modular Design:** Keep functions short and focused on a single responsibility.\n\n"
+        f"*Note: Running in offline/fallback mode. Configure a valid `GEMINI_API_KEY` in your environment variables to enable full generative responses.*"
+    )
+    return response
+
 
 def get_simulated_chat_response(message: str) -> str:
     """
@@ -1823,22 +2060,7 @@ def get_simulated_chat_response(message: str) -> str:
         )
 
     # ── Final fallback ──────────────────────────────────────
-    return (
-        f"Thank you for your question! I'm your AI Coding Mentor and I'm here to help. 🚀\n\n"
-        f"While I don't have a specific pre-built answer for your exact query, here are some tips:\n\n"
-        f"**Your Question:** *\"{message[:100]}{'...' if len(message) > 100 else ''}\"*\n\n"
-        f"I work best with specific programming questions like:\n"
-        f"- \"Explain recursion with an example\"\n"
-        f"- \"How do Python decorators work?\"\n"
-        f"- \"What is the difference between TCP and UDP?\"\n"
-        f"- \"Show me a binary search implementation\"\n"
-        f"- \"How to prepare for coding interviews?\"\n\n"
-        f"**Topics I cover:**\n"
-        f"Python, Java, C, C++, JavaScript, HTML, CSS, SQL, Flask, Django, "
-        f"Machine Learning, AI, Data Science, OOP, DBMS, OS, Networking, "
-        f"Git, Algorithms, Data Structures, Career Guidance, and more!\n\n"
-        f"Try rephrasing your question with more specific keywords and I'll provide a detailed answer with code examples!"
-    )
+    return generate_dynamic_fallback_response(message)
 
 
 def get_simulated_debug_response(error_str: str) -> dict:

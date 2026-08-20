@@ -774,6 +774,25 @@ function switchCodingSubTab(subTabId) {
     const activeBtn = document.getElementById(`btn-sub-${subTabId}`);
     if (activeBtn) activeBtn.classList.add("active");
     
+    // Toggle active style on workflow cards for visual feedback
+    document.querySelectorAll(".feature-card").forEach(card => {
+        card.style.transform = "";
+        card.style.boxShadow = "";
+    });
+    const activeCard = document.querySelector(`.card-${subTabId === 'chat' ? 'chat' : subTabId === 'debugger' ? 'debugger' : subTabId === 'explain' ? 'explain' : 'quiz'}`);
+    if (activeCard) {
+        activeCard.style.transform = "translateY(-4px)";
+        if (subTabId === 'chat') {
+            activeCard.style.boxShadow = "0 8px 30px rgba(59, 130, 246, 0.25)";
+        } else if (subTabId === 'debugger') {
+            activeCard.style.boxShadow = "0 8px 30px rgba(16, 185, 129, 0.25)";
+        } else if (subTabId === 'explain') {
+            activeCard.style.boxShadow = "0 8px 30px rgba(245, 158, 11, 0.25)";
+        } else if (subTabId === 'quiz') {
+            activeCard.style.boxShadow = "0 8px 30px rgba(139, 92, 246, 0.25)";
+        }
+    }
+    
     // Toggle visibility of sub-pane divs
     document.querySelectorAll(".coding-sub-pane").forEach(pane => pane.classList.add("d-none"));
     const activePane = document.getElementById(`coding-sub-${subTabId}`);
@@ -793,32 +812,22 @@ function switchCodingSubTab(subTabId) {
     } else if (subTabId === "explain") {
         title.innerText = "Explain Code";
         subtitle.innerText = "Get a detailed explanation of any code.";
-    } else if (subTabId === "converter") {
-        title.innerText = "Code Converter";
-        subtitle.innerText = "Convert code from one programming language to another.";
     } else if (subTabId === "quiz") {
         title.innerText = "Coding Quiz";
         subtitle.innerText = "Test your coding knowledge with AI-generated quizzes.";
-    } else if (subTabId === "roadmap") {
-        title.innerText = "Coding Roadmap";
-        subtitle.innerText = "Get a personalized roadmap to achieve your coding goals.";
-    } else if (subTabId === "challenges") {
-        title.innerText = "AI Coding Mentor";
-        subtitle.innerText = "Compile code solutions and query complexity feedbacks.";
-        loadCodingProblems();
-    } else if (subTabId === "memory") {
-        title.innerText = "AI Mentor Memory";
-        subtitle.innerText = "AI remembers everything about your learning journey.";
-    } else if (subTabId === "timeline") {
-        title.innerText = "Code Evolution Timeline";
-        subtitle.innerText = "Track how your code improves over time.";
-        initCodeEvolutionTimeline();
-    } else if (subTabId === "mission") {
-        title.innerText = "Daily AI Mission";
-        subtitle.innerText = "Complete daily missions and earn exciting rewards.";
-        initDailyMission();
     }
 }
+
+function clearActiveCodingChat() {
+    if (!activeCodingChatId) return;
+    const session = codingChatSessions.find(s => s.id === activeCodingChatId);
+    if (session) {
+        session.messages = [];
+        localStorage.setItem("coding_chat_sessions", JSON.stringify(codingChatSessions));
+        selectCodingChatSession(activeCodingChatId);
+    }
+}
+
 
 // 1. AI Chat Assistant Logic
 let codingChatSessions = [];
@@ -909,7 +918,9 @@ function loadCodingChatSessions() {
         
         btn.innerHTML = `
             <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-medium text-truncate text-white" style="max-width: 70%;">${session.title}</span>
+                <span class="fw-medium text-truncate text-white" style="max-width: 70%;">
+                    <i class="bi bi-chat-left-text text-primary me-2"></i>${session.title}
+                </span>
                 <span class="text-secondary small" style="font-size: 0.75rem;">${session.timestamp}</span>
             </div>
         `;
