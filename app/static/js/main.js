@@ -192,7 +192,7 @@ function initDropzoneEvents() {
 document.addEventListener("DOMContentLoaded", () => {
     // Check if browser has cached refresh cookie
     silentTokenRefresh();
-    
+
     // Set default theme state
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.body.setAttribute("data-theme", savedTheme);
@@ -233,7 +233,7 @@ async function silentTokenRefresh() {
                 "X-Device-Id": getDeviceHash()
             }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             accessToken = data.access_token;
@@ -272,7 +272,7 @@ function toggleAuthMode() {
     const toggleLink = document.getElementById("auth-toggle-link");
     const nameFields = document.getElementById("auth-name-fields");
     const errorBlock = document.getElementById("auth-error-block");
-    
+
     errorBlock.classList.add("d-none");
 
     if (currentMode === "login") {
@@ -304,9 +304,9 @@ async function executeAuthAction(event) {
     const email = document.getElementById("auth-email").value;
     const password = document.getElementById("auth-password").value;
     const errorBlock = document.getElementById("auth-error-block");
-    
+
     errorBlock.classList.add("d-none");
-    
+
     if (currentMode === "otp") {
         const otp = document.getElementById("auth-otp").value;
         try {
@@ -316,7 +316,7 @@ async function executeAuthAction(event) {
                 body: JSON.stringify({ email, otp_code: otp })
             });
             const data = await verifyRes.json();
-            
+
             if (verifyRes.ok) {
                 currentMode = "login";
                 document.getElementById("auth-otp-field").classList.add("d-none");
@@ -327,13 +327,13 @@ async function executeAuthAction(event) {
                 const toggleMsg = document.getElementById("auth-toggle-msg");
                 const toggleLink = document.getElementById("auth-toggle-link");
                 const nameFields = document.getElementById("auth-name-fields");
-                
+
                 title.innerText = "Welcome Back";
                 submitBtn.innerText = "Login";
                 toggleMsg.innerText = "Don't have an account?";
                 toggleLink.innerText = "Register Now";
                 nameFields.classList.add("d-none");
-                
+
                 errorBlock.className = "alert alert-success";
                 errorBlock.innerText = "Verification complete! Sign In to begin.";
                 errorBlock.classList.remove("d-none");
@@ -4438,7 +4438,7 @@ async function spLoadGoals() {
                 </div>
             `).join('');
         }
-    } catch (e) {}
+    } catch (e) { }
 }
 
 async function spIncrementGoal(goalId, current, total) {
@@ -4624,7 +4624,7 @@ async function loadCodingProblems() {
             codingProblems = await res.json();
             const list = document.getElementById("coding-problems-list");
             list.innerHTML = "";
-            
+
             codingProblems.forEach(prob => {
                 const btn = document.createElement("button");
                 btn.className = "list-group-item list-group-item-action bg-transparent border-0 text-white py-2";
@@ -4632,12 +4632,12 @@ async function loadCodingProblems() {
                 btn.onclick = () => selectCodingProblem(prob);
                 list.appendChild(btn);
             });
-            
+
             if (codingProblems.length > 0) {
                 selectCodingProblem(codingProblems[0]);
             }
         }
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function selectCodingProblem(problem) {
@@ -4656,13 +4656,13 @@ function loadStarterCode() {
 
 async function submitCodeSolution() {
     if (!currentCodingProblem || !accessToken) return;
-    
+
     const code = document.getElementById("code-editor-box").value;
     const lang = document.getElementById("code-language").value;
     const consoleBox = document.getElementById("coding-output-console");
-    
+
     consoleBox.innerText = "Compiling and evaluating solution test cases...";
-    
+
     try {
         const res = await fetch(`${API_ROOT}/coding/problems/${currentCodingProblem.id}/submit`, {
             method: "POST",
@@ -4672,11 +4672,11 @@ async function submitCodeSolution() {
             },
             body: JSON.stringify({ code_content: code, language: lang })
         });
-        
+
         if (res.ok) {
             const data = await res.json();
             let summary = `STATUS: ${data.status}\nSimulated Runtime: ${data.execution_time}s\n`;
-            
+
             if (data.validation_results.test_cases) {
                 data.validation_results.test_cases.forEach(tc => {
                     summary += `Test case ${tc.test_case || ""}: Passed = ${tc.passed} (Expected: ${tc.expected}, Actual: ${tc.actual})\n`;
@@ -4699,9 +4699,9 @@ async function requestOptimization() {
     const code = document.getElementById("code-editor-box").value;
     const lang = document.getElementById("code-language").value;
     const consoleBox = document.getElementById("coding-output-console");
-    
+
     consoleBox.innerText = "Analyzing code architecture complexity metrics...";
-    
+
     try {
         const res = await fetch(`${API_ROOT}/coding/optimize?language=${lang}`, {
             method: "POST",
@@ -4711,7 +4711,7 @@ async function requestOptimization() {
             },
             body: code
         });
-        
+
         if (res.ok) {
             const data = await res.json();
             let summary = `Readability Score: ${data.readability_score}/100\nIssues Identified:\n`;
@@ -4721,7 +4721,7 @@ async function requestOptimization() {
             summary += `\nRefactored Suggestion:\n${data.refactored_code}\n\nExplanation:\n${data.explanation}`;
             consoleBox.innerText = summary;
         }
-    } catch (e) {}
+    } catch (e) { }
 }
 
 // ==========================================
@@ -4767,7 +4767,7 @@ async function loadCareerGoalProfile() {
             const goals = await res.json();
             if (goals.length > 0) {
                 const latest = goals[0];
-                
+
                 // Draw Skills map
                 const map = document.getElementById("skill-gap-panel");
                 map.innerHTML = `
@@ -4781,7 +4781,7 @@ async function loadCareerGoalProfile() {
                     const roadmap = latest.roadmaps[0];
                     const timeline = document.getElementById("timeline-wrapper");
                     timeline.innerHTML = "";
-                    
+
                     roadmap.structure.phases.forEach(phase => {
                         const div = document.createElement("div");
                         div.className = "timeline-item";
@@ -4796,13 +4796,209 @@ async function loadCareerGoalProfile() {
                 }
             }
         }
-    } catch (e) {}
+    } catch (e) { }
 }
 
 // ==========================================
-// 5. Mock Interview WebSocket Logic
+// 5. Mock Interview Simulator Logic
 // ==========================================
-async function loadMockInterviewTab() {
+let activeInterviewSubTab = "dashboard";
+let webcamStream = null;
+let simulatedMicInterval = null;
+let currentTimerInterval = null;
+let currentInterviewTimer = 0; // in seconds
+
+let setupParams = {
+    type: "TECHNICAL",
+    difficulty: "MEDIUM",
+    duration: "30",
+    language: "ENGLISH"
+};
+
+// Local simulation fallbacks
+let isLocalSimulation = false;
+let localQuestionIdx = 0;
+let localSessionQuestions = [];
+let chatTranscript = [];
+
+// Chart instances
+let simScoreChart = null;
+let analysisRadarChart = null;
+let growthScoreChart = null;
+let confidenceProgressionChart = null;
+
+function switchInterviewSubTab(subTabId) {
+    activeInterviewSubTab = subTabId;
+
+    // Hide all sub-panes
+    document.querySelectorAll(".interview-subpane").forEach(el => el.classList.add("d-none"));
+
+    // Show selected sub-pane
+    const subPane = document.getElementById(`interview-subtab-${subTabId}`);
+    if (subPane) subPane.classList.remove("d-none");
+
+    // Highlight sub-nav items
+    const interviewNav = document.getElementById("interview-sidebar-nav");
+    interviewNav.querySelectorAll(".nav-link-custom").forEach(el => el.classList.remove("active"));
+
+    const activeLink = interviewNav.querySelector(`[onclick="switchInterviewSubTab('${subTabId}')"]`);
+    if (activeLink) activeLink.classList.add("active");
+
+    // Headers title and subtitle setting
+    const title = document.getElementById("tab-title");
+    const subtitle = document.getElementById("tab-subtitle");
+
+    if (subTabId === "dashboard") {
+        title.innerText = "Interview Dashboard";
+        subtitle.innerText = "Ready to ace your next interview?";
+        loadInterviewDashboardData();
+    } else if (subTabId === "setup") {
+        title.innerText = "Interview Setup";
+        subtitle.innerText = "Customize your interactive interview experience.";
+    } else if (subTabId === "live") {
+        title.innerText = "Live Interview";
+        subtitle.innerText = "Practice single interviewer mock simulator.";
+    } else if (subTabId === "panel") {
+        title.innerText = "Panel Interview";
+        subtitle.innerText = "Practice panel interview mock simulator.";
+        initiatePanelSimulation();
+    } else if (subTabId === "analysis") {
+        title.innerText = "Live AI Analysis";
+        subtitle.innerText = "Real-time performance insights and cognitive analytics.";
+        loadLiveAnalysisData();
+    } else if (subTabId === "report") {
+        title.innerText = "Final Interview Report";
+        subtitle.innerText = "Detailed evaluation and comprehensive feedback.";
+    } else if (subTabId === "history") {
+        title.innerText = "Interview History";
+        subtitle.innerText = "Track and review your previous mock interview sessions.";
+        loadInterviewHistoryTable();
+    } else if (subTabId === "performance") {
+        title.innerText = "Performance Analytics";
+        subtitle.innerText = "Detailed progress overview and learning curve.";
+        loadPerformanceAnalytics();
+    } else if (subTabId === "portfolio") {
+        title.innerText = "Portfolio Guidance";
+        subtitle.innerText = "Assess and optimize your project portfolio for job applications.";
+        loadPortfolioGuidance();
+    }
+}
+
+function exitInterviewSimulator() {
+    // Stop camera if running
+    if (webcamStream) {
+        webcamStream.getTracks().forEach(track => track.stop());
+        webcamStream = null;
+    }
+    clearInterval(simulatedMicInterval);
+    clearInterval(currentTimerInterval);
+
+    // Restore sidebar navigation view
+    document.getElementById("interview-sidebar-nav").classList.add("d-none");
+    document.getElementById("main-sidebar-nav").classList.remove("d-none");
+    document.querySelector(".logo-text").innerText = "AI Mentor";
+
+    // Highlight dashboard
+    document.querySelectorAll("#main-sidebar-nav .nav-link-custom").forEach(el => el.classList.remove("active"));
+    const mainDashboardLink = document.querySelector(`#main-sidebar-nav [onclick="switchTab('dashboard')"]`);
+    if (mainDashboardLink) mainDashboardLink.classList.add("active");
+
+    // Switch pane to main dashboard
+    switchTab("dashboard");
+}
+
+function updateSetupPreview(field, val, element) {
+    setupParams[field] = val;
+
+    // Highlight selected button
+    const container = element.parentElement;
+    container.querySelectorAll(".btn").forEach(btn => btn.classList.remove("active"));
+    element.classList.add("active");
+
+    // Update preview labels
+    if (field === "type") {
+        document.getElementById("preview-type").innerText = val.charAt(0) + val.slice(1).toLowerCase() + " Interview";
+        const pTone = document.getElementById("preview-personality");
+        if (val === "TECHNICAL") pTone.innerText = "Friendly Mentor";
+        else if (val === "HR") pTone.innerText = "Strict Recruiter";
+        else if (val === "CODING") pTone.innerText = "Fast-Paced Senior Developer";
+        else pTone.innerText = "Board of Directors";
+    } else if (field === "difficulty") {
+        document.getElementById("preview-difficulty").innerText = val.charAt(0) + val.slice(1).toLowerCase();
+    } else if (field === "duration") {
+        setupParams[field] = val.split(" ")[0];
+        document.getElementById("preview-duration").innerText = val.split(" ")[0] + " Minutes";
+    } else if (field === "language") {
+        document.getElementById("preview-language").innerText = val.charAt(0) + val.slice(1).toLowerCase();
+    }
+}
+
+async function toggleWebcamState(enabled) {
+    const video = document.getElementById("candidate-webcam");
+    const fallback = document.getElementById("webcam-fallback-msg");
+    const previewVideo = document.getElementById("setup-preview-webcam");
+    const previewFallback = document.getElementById("setup-webcam-fallback");
+
+    if (enabled) {
+        try {
+            webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+            // Assign to setup preview video
+            if (previewVideo) {
+                previewVideo.srcObject = webcamStream;
+                previewVideo.classList.remove("d-none");
+            }
+            if (previewFallback) previewFallback.classList.add("d-none");
+
+            // Assign to live video
+            if (video) {
+                video.srcObject = webcamStream;
+                video.classList.remove("d-none");
+            }
+            if (fallback) fallback.classList.add("d-none");
+        } catch (e) {
+            console.error("Camera access denied: ", e);
+            document.getElementById("setup-camera-toggle").checked = false;
+            if (video) video.classList.add("d-none");
+            if (fallback) fallback.classList.remove("d-none");
+            if (previewVideo) previewVideo.classList.add("d-none");
+            if (previewFallback) previewFallback.classList.remove("d-none");
+            alert("Unable to access camera device. Please verify browser permissions.");
+        }
+    } else {
+        if (webcamStream) {
+            webcamStream.getTracks().forEach(track => track.stop());
+            webcamStream = null;
+        }
+        if (video) video.classList.add("d-none");
+        if (fallback) fallback.classList.remove("d-none");
+        if (previewVideo) previewVideo.classList.add("d-none");
+        if (previewFallback) previewFallback.classList.remove("d-none");
+    }
+}
+
+function toggleSimulatedMic() {
+    const wave = document.getElementById("simulated-mic-waveform");
+    const icon = document.getElementById("live-mic-icon");
+
+    if (wave.classList.contains("d-none")) {
+        wave.classList.remove("d-none");
+        icon.className = "bi bi-mic-mute-fill text-danger";
+        // Start simulated waves animation
+        simulatedMicInterval = setInterval(() => {
+            document.querySelectorAll(".wave-bar").forEach(bar => {
+                const randomHeight = Math.floor(Math.random() * 26) + 8;
+                bar.style.height = randomHeight + "px";
+            });
+        }, 150);
+    } else {
+        wave.classList.add("d-none");
+        icon.className = "bi bi-mic-fill text-info";
+        clearInterval(simulatedMicInterval);
+    }
+}
+
+async function loadInterviewDashboardData() {
     if (!accessToken) return;
     try {
         const res = await fetch(`${API_ROOT}/interview/sessions`, {
@@ -4810,35 +5006,307 @@ async function loadMockInterviewTab() {
         });
         if (res.ok) {
             const sessions = await res.json();
-            const list = document.getElementById("mock-sessions-list");
-            list.innerHTML = "";
-            
-            sessions.forEach(sess => {
-                const item = document.createElement("div");
-                item.className = "list-group-item bg-transparent text-white border-0 border-bottom border-secondary border-opacity-10 py-3";
-                
-                let scoreText = "";
-                if (sess.report) {
-                    scoreText = `<span class="badge bg-success float-end">Score: ${sess.report.overall_score}%</span>`;
-                }
-                
-                item.innerHTML = `
-                    <div class="fw-bold">${sess.type} Mock ${scoreText}</div>
-                    <small class="text-secondary">Started: ${new Date(sess.started_at).toLocaleDateString()}</small>
-                `;
-                list.appendChild(item);
-            });
+            const total = sessions.length;
+            const completed = sessions.filter(s => s.status === "COMPLETED");
+
+            // Stats updates
+            document.getElementById("sim-dash-total").innerText = total;
+
+            let avgScore = 0.0;
+            if (completed.length > 0) {
+                const totalScore = completed.reduce((sum, s) => sum + (s.report ? s.report.overall_score : 70.0), 0.0);
+                avgScore = Math.round(totalScore / completed.length);
+            }
+            document.getElementById("sim-dash-avg").innerText = avgScore > 0 ? avgScore + "%" : "0%";
+            document.getElementById("sim-dash-readiness").innerText = avgScore > 0 ? Math.min(avgScore + 5, 98) + "%" : "0%";
+            document.getElementById("sim-dash-success").innerText = total > 0 ? Math.round((completed.length / total) * 100) + "%" : "0%";
+
+            // Build recent lists
+            const recentContainer = document.getElementById("sim-recent-list");
+            recentContainer.innerHTML = "";
+
+            if (sessions.length === 0) {
+                recentContainer.innerHTML = `<div class="text-secondary text-center py-3">No completed runs.</div>`;
+            } else {
+                sessions.slice(0, 3).forEach(sess => {
+                    const item = document.createElement("div");
+                    item.className = "list-group-item bg-transparent text-white px-0 py-2 border-0 border-bottom border-secondary border-opacity-10 d-flex justify-content-between align-items-center";
+                    let scoreBadge = `<span class="badge bg-secondary">In Progress</span>`;
+                    if (sess.status === "COMPLETED" && sess.report) {
+                        scoreBadge = `<span class="badge bg-success">Score: ${sess.report.overall_score}%</span>`;
+                    }
+                    item.innerHTML = `
+                        <div>
+                            <div class="fw-bold">${sess.type.charAt(0) + sess.type.slice(1).toLowerCase()} Mock Session</div>
+                            <small class="text-secondary">Date: ${new Date(sess.started_at).toLocaleDateString()} | Status: ${sess.status}</small>
+                        </div>
+                        <div>${scoreBadge}</div>
+                    `;
+                    recentContainer.appendChild(item);
+                });
+            }
+
+            // Build visual Chart.js score history
+            renderDashboardLineChart(completed);
         }
-    } catch (e) {}
+    } catch (e) {
+        console.error("Dashboard failed to load: ", e);
+    }
 }
 
-async function initiateMockInterview() {
-    if (!accessToken) return;
-    const type = document.getElementById("interview-type").value;
-    const chatPane = document.getElementById("interview-chat-pane");
-    
-    chatPane.innerHTML = `<p class="text-secondary">Connecting to live mock interviewer websocket...</p>`;
-    
+function renderDashboardLineChart(completedSessions) {
+    const ctx = document.getElementById("simScoreChart").getContext("2d");
+
+    // Destroy previous instance
+    if (simScoreChart) simScoreChart.destroy();
+
+    // Sort chronological
+    const sorted = [...completedSessions].sort((a, b) => new Date(a.started_at) - new Date(b.started_at)).slice(-6);
+
+    const labels = sorted.map((s, idx) => `Session ${idx + 1}`);
+    const scores = sorted.map(s => s.report ? s.report.overall_score : 70);
+
+    // Fallback static points if empty
+    const finalLabels = labels.length > 0 ? labels : ["Run 1", "Run 2", "Run 3"];
+    const finalScores = scores.length > 0 ? scores : [65, 75, 78];
+
+    simScoreChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: finalLabels,
+            datasets: [{
+                label: 'Grade Score %',
+                data: finalScores,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#8b5cf6',
+                pointBorderColor: '#fff',
+                pointRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+}
+
+function triggerQuickInterview(type) {
+    setupParams.type = type;
+    switchInterviewSubTab("setup");
+
+    // Select correct button visually
+    const group = document.getElementById("setup-type-group");
+    group.querySelectorAll(".btn").forEach(btn => btn.classList.remove("active"));
+    const activeBtn = group.querySelector(`[data-value="${type}"]`);
+    if (activeBtn) activeBtn.classList.add("active");
+
+    // Update preview labels
+    document.getElementById("preview-type").innerText = type.charAt(0) + type.slice(1).toLowerCase() + " Interview";
+}
+
+function getLocalQuestions(type) {
+    const questions = {
+        TECHNICAL: [
+            "Hello! Welcome to your technical mock interview today. To start off, could you tell me a bit about yourself and your background?",
+            "Great! Since this is a backend technical round, let's start with databases. Can you explain the difference between relational (SQL) and non-relational (NoSQL) databases?",
+            "Excellent. In relational databases, what are indexes and how do they optimize query performance? Are there any downsides to indexing?",
+            "Good points. Now let's switch to system design. How would you design a rate limiter for a public-facing API?",
+            "Very interesting. Let's wrap up with coding concepts. What is the difference between concurrency and parallelism, and how do you handle them in your preferred programming language?",
+            "Excellent! That brings us to the end of the interview questions. Do you have any questions for me?"
+        ],
+        HR: [
+            "Hello! Welcome to your HR screening mock interview today. Tell me a bit about yourself and your career journey.",
+            "Why are you interested in joining our company, and what unique value do you bring to our team?",
+            "Can you describe a time when you had a conflict with a team member or manager, and how you resolved it?",
+            "What are your salary expectations and long-term career goals for the next 3 to 5 years?",
+            "Excellent. Do you have any questions for us regarding the company culture or job expectations?"
+        ],
+        CODING: [
+            "Welcome to the coding assessment round. Let's start with a classic problem: How would you find the two numbers in an array that add up to a target value?",
+            "Great. What is the time complexity of your approach? Can we optimize it to linear time using a hash map?",
+            "Good job. How would you implement a function to check if a binary tree is balanced?",
+            "Very good. That completes our coding round questions. Any final thoughts on optimizing these algorithms?"
+        ],
+        BEHAVIORAL: [
+            "Welcome! Let's start by discussing your background and key technical achievements.",
+            "How do you handle tight deadlines or changing project requirements? Can you give an example?",
+            "Can you explain a complex technical issue you encountered and how you broke it down to solve it?",
+            "Excellent! Do you have any questions for me?"
+        ]
+    };
+    return questions[type] || questions.TECHNICAL;
+}
+
+function activateLocalFallback(chatPane) {
+    isLocalSimulation = true;
+    chatPane.innerHTML = `<p class="text-warning small border-bottom border-warning border-opacity-10 pb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i> Backend session offline. Switched to client-side local simulation mode.</p>`;
+
+    localSessionQuestions = getLocalQuestions(setupParams.type);
+    const openingQ = localSessionQuestions[0];
+
+    setTimeout(() => {
+        appendChatMessage("INTERVIEWER", openingQ);
+        chatTranscript.push({ sender: "INTERVIEWER", text: openingQ });
+
+        document.getElementById("live-user-input").removeAttribute("disabled");
+        document.getElementById("live-send-btn").removeAttribute("disabled");
+        document.getElementById("live-user-input").focus();
+
+        updateLocalSimulationProgress();
+    }, 500);
+}
+
+function updateLocalSimulationProgress() {
+    const total = localSessionQuestions.length;
+    const current = localQuestionIdx + 1;
+
+    document.getElementById("progress-questions-badge").innerText = `Question ${current} of ${total}`;
+
+    const pct = Math.round((current / total) * 100);
+    document.getElementById("progress-bar-line").style.width = pct + "%";
+
+    // Highlight round checkpoints in the checklist list
+    const roundsList = document.getElementById("progress-rounds-list");
+    if (!roundsList) return;
+
+    let html = "";
+    const roundNames = [
+        "Introduction",
+        "Technical Round",
+        "Problem Solving",
+        "System Design",
+        "HR Round",
+        "Final Discussion"
+    ];
+
+    const activeRoundIdx = Math.min(Math.floor((localQuestionIdx / total) * roundNames.length), roundNames.length - 1);
+
+    roundNames.forEach((name, idx) => {
+        if (idx < activeRoundIdx) {
+            html += `<li class="mb-1 text-success"><i class="bi bi-check-circle-fill me-2"></i> ${name}</li>`;
+        } else if (idx === activeRoundIdx) {
+            html += `<li class="mb-1 text-white fw-bold"><i class="bi bi-arrow-right-circle-fill text-primary me-2"></i> ${name}</li>`;
+        } else {
+            html += `<li class="mb-1 opacity-50"><i class="bi bi-circle me-2"></i> ${name}</li>`;
+        }
+    });
+    roundsList.innerHTML = html;
+}
+
+function updateWebSocketProgress() {
+    const interviewerMessages = chatTranscript.filter(m => m.sender === "INTERVIEWER").length;
+    const total = 12; // Assuming default 12 questions
+    const current = Math.min(interviewerMessages, total);
+
+    document.getElementById("progress-questions-badge").innerText = `Question ${current} of ${total}`;
+    const pct = Math.round((current / total) * 100);
+    document.getElementById("progress-bar-line").style.width = pct + "%";
+
+    const roundsList = document.getElementById("progress-rounds-list");
+    if (!roundsList) return;
+
+    let html = "";
+    const roundNames = [
+        "Introduction",
+        "Technical Round",
+        "Problem Solving",
+        "System Design",
+        "HR Round",
+        "Final Discussion"
+    ];
+
+    const activeRoundIdx = Math.min(Math.floor(((current - 1) / total) * roundNames.length), roundNames.length - 1);
+
+    roundNames.forEach((name, idx) => {
+        if (idx < activeRoundIdx) {
+            html += `<li class="mb-1 text-success"><i class="bi bi-check-circle-fill me-2"></i> ${name}</li>`;
+        } else if (idx === activeRoundIdx) {
+            html += `<li class="mb-1 text-white fw-bold"><i class="bi bi-arrow-right-circle-fill text-primary me-2"></i> ${name}</li>`;
+        } else {
+            html += `<li class="mb-1 opacity-50"><i class="bi bi-circle me-2"></i> ${name}</li>`;
+        }
+    });
+    roundsList.innerHTML = html;
+}
+
+async function startSetupInterview() {
+    // Reset local transcript and states
+    chatTranscript = [];
+    localQuestionIdx = 0;
+
+    // Set labels
+    const displayType = setupParams.type.charAt(0) + setupParams.type.slice(1).toLowerCase();
+    document.getElementById("live-session-title").innerText = `${displayType} Interview`;
+    document.getElementById("live-session-topic").innerText = `Level: ${setupParams.difficulty} | Language: ${setupParams.language}`;
+    document.getElementById("live-interviewer-label").innerText = `Interviewer (${document.getElementById("preview-personality").innerText})`;
+
+    // Set footer info bar items
+    document.getElementById("footer-topic").innerText = setupParams.type === "TECHNICAL" ? "Database Management & APIs" : (setupParams.type === "CODING" ? "Data Structures & Algorithms" : "Workplace Scenarios");
+    document.getElementById("footer-difficulty").innerText = setupParams.difficulty.charAt(0) + setupParams.difficulty.slice(1).toLowerCase();
+    document.getElementById("footer-env").innerText = "MNC Environment";
+    document.getElementById("footer-type").innerText = displayType;
+
+    // Show live tab first so DOM elements are visible
+    switchInterviewSubTab("live");
+
+    // Clear chat pane
+    const chatPane = document.getElementById("live-chat-pane");
+    chatPane.innerHTML = "";
+
+    // Start timer
+    clearInterval(currentTimerInterval);
+    const durationMinutes = parseInt(setupParams.duration) || 30;
+    currentInterviewTimer = durationMinutes * 60;
+    updateTimerBadgeDisplay();
+
+    currentTimerInterval = setInterval(() => {
+        if (currentInterviewTimer > 0) {
+            currentInterviewTimer--;
+            updateTimerBadgeDisplay();
+        } else {
+            clearInterval(currentTimerInterval);
+            endCurrentInterview();
+        }
+    }, 1000);
+
+    // If there is no accessToken, or if the user is a Guest, we run in Local Simulation Mode!
+    if (!accessToken || currentUser?.email === "guest@aimentor.com") {
+        isLocalSimulation = true;
+        console.log("Starting local simulation mode...");
+
+        chatPane.innerHTML = `<p class="text-warning small border-bottom border-warning border-opacity-10 pb-2"><i class="bi bi-info-circle-fill me-2"></i> Running in client-side simulation mode (Guest account / Offline fallback). All functions are active.</p>`;
+
+        localSessionQuestions = getLocalQuestions(setupParams.type);
+        const openingQ = localSessionQuestions[0];
+
+        // Append opening question
+        setTimeout(() => {
+            appendChatMessage("INTERVIEWER", openingQ);
+            chatTranscript.push({ sender: "INTERVIEWER", text: openingQ });
+
+            // Enable text box and Send button!
+            document.getElementById("live-user-input").removeAttribute("disabled");
+            document.getElementById("live-send-btn").removeAttribute("disabled");
+            document.getElementById("live-user-input").focus();
+
+            updateLocalSimulationProgress();
+            simulateLiveEvaluationTick();
+        }, 800);
+        return;
+    }
+
+    isLocalSimulation = false;
+    chatPane.innerHTML = `<p class="text-secondary text-center py-4">Connecting to live mock interviewer websocket...</p>`;
+
     try {
         const res = await fetch(`${API_ROOT}/interview/sessions`, {
             method: "POST",
@@ -4846,92 +5314,638 @@ async function initiateMockInterview() {
                 "Authorization": `Bearer ${accessToken}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ type })
+            body: JSON.stringify({ type: setupParams.type })
         });
-        
+
         if (res.ok) {
             const data = await res.json();
             activeInterviewSessionId = data.id;
-            
-            // Connect WebSocket
+
             const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-            const wsUrl = `${wsProtocol}//${window.location.host}${API_ROOT}/interview/ws/${data.id}?token=${accessToken}`;
-            
+            const wsUrl = `${wsProtocol}//${window.location.host}${API_ROOT}/interview/ws/${data.id}?token=${accessToken}&difficulty=${setupParams.difficulty}&duration=${parseInt(setupParams.duration)}&language=${setupParams.language}`;
+
             activeWebSocket = new WebSocket(wsUrl);
-            
+
             activeWebSocket.onopen = () => {
-                chatPane.innerHTML = `<p class="text-success small">Interviewer online. Interview started.</p>`;
-                // Enable inputs
-                document.getElementById("interview-user-message").removeAttribute("disabled");
-                document.getElementById("interview-send-btn").removeAttribute("disabled");
-                document.getElementById("interview-end-btn").removeAttribute("disabled");
+                chatPane.innerHTML = `<p class="text-success small border-bottom border-secondary border-opacity-10 pb-2"><i class="bi bi-cpu-fill me-2"></i> Interviewer connected. Start talking or typing your answers.</p>`;
+                document.getElementById("live-user-input").removeAttribute("disabled");
+                document.getElementById("live-send-btn").removeAttribute("disabled");
+                document.getElementById("live-user-input").focus();
             };
-            
+
             activeWebSocket.onmessage = (event) => {
                 const msg = JSON.parse(event.data);
                 if (msg.sender === "REPORT") {
-                    // Display report output
-                    chatPane.innerHTML += `
-                        <div class="alert alert-success mt-3">
-                            <h5>Interview Evaluation Summary</h5>
-                            <p><strong>Overall Score:</strong> ${msg.report.overall_score}%</p>
-                            <p><strong>Technical Score:</strong> ${msg.report.technical_score}%</p>
-                            <p><strong>Communication:</strong> ${msg.report.communication_score}%</p>
-                            <p><strong>Confidence:</strong> ${msg.report.confidence_score}%</p>
-                            <p><strong>Strengths:</strong> ${msg.report.evaluation_summary.strengths.join(", ")}</p>
-                            <p><strong>Improvements:</strong> ${msg.report.evaluation_summary.suggestions.join(", ")}</p>
-                        </div>
-                    `;
-                    disableInterviewInputs();
+                    renderFinalEvaluationReport(msg.report);
                 } else if (msg.sender === "INTERVIEWER") {
-                    chatPane.innerHTML += `
-                        <div class="mb-3 text-info">
-                            <strong>Interviewer:</strong> ${msg.text}
-                        </div>
-                    `;
+                    appendChatMessage("INTERVIEWER", msg.text);
+                    chatTranscript.push({ sender: "INTERVIEWER", text: msg.text });
+                    simulateLiveEvaluationTick();
+                    updateWebSocketProgress();
                 } else if (msg.sender === "STUDENT") {
-                    chatPane.innerHTML += `
-                        <div class="mb-2 text-white">
-                            <strong>You:</strong> ${msg.text}
-                        </div>
-                    `;
+                    appendChatMessage("STUDENT", msg.text);
+                    chatTranscript.push({ sender: "STUDENT", text: msg.text });
                 } else {
-                    chatPane.innerHTML += `<div class="mb-2 text-secondary small">${msg.text}</div>`;
+                    appendChatMessage("SYSTEM", msg.text);
                 }
-                chatPane.scrollTop = chatPane.scrollHeight;
             };
-            
+
             activeWebSocket.onclose = () => {
-                console.log("WebSocket closed");
+                console.log("WebSocket session closed");
             };
+
+            activeWebSocket.onerror = () => {
+                activateLocalFallback(chatPane);
+            };
+        } else {
+            activateLocalFallback(chatPane);
         }
     } catch (e) {
-        chatPane.innerHTML = `<p class="text-danger">WebSocket initialization failed.</p>`;
+        activateLocalFallback(chatPane);
     }
 }
 
-function sendInterviewResponse() {
-    const input = document.getElementById("interview-user-message");
+function simulateLiveEvaluationTick() {
+    // Generate slight random updates to keep dashboard feeling live
+    const tech = Math.floor(Math.random() * 15) + 75;
+    const conf = Math.floor(Math.random() * 15) + 70;
+    const comm = Math.floor(Math.random() * 15) + 72;
+    const prob = Math.floor(Math.random() * 15) + 75;
+
+    document.getElementById("live-eval-tech").innerText = tech + "%";
+    document.getElementById("live-eval-conf").innerText = conf + "%";
+    document.getElementById("live-eval-comm").innerText = comm + "%";
+    document.getElementById("live-eval-prob").innerText = prob + "%";
+
+    // Update SVG circles dash offsets
+    updateLiveGaugeOffset("live-gauge-tech-circle", tech);
+    updateLiveGaugeOffset("live-gauge-conf-circle", conf);
+    updateLiveGaugeOffset("live-gauge-comm-circle", comm);
+    updateLiveGaugeOffset("live-gauge-prob-circle", prob);
+}
+
+function updateLiveGaugeOffset(elementId, value) {
+    const circle = document.getElementById(elementId);
+    if (!circle) return;
+    const circumference = 188; // 2 * pi * r = 188.4
+    const offset = circumference - (value / 100) * circumference;
+    circle.style.strokeDashoffset = offset;
+}
+
+function updateTimerBadgeDisplay() {
+    const minutes = Math.floor(currentInterviewTimer / 60);
+    const seconds = currentInterviewTimer % 60;
+    document.getElementById("live-timer-badge").innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+function sendLiveResponse() {
+    const input = document.getElementById("live-user-input");
     const text = input.value.trim();
-    if (!text || !activeWebSocket) return;
-    
-    activeWebSocket.send(text);
-    input.value = "";
-}
+    if (!text) return;
 
-function endInterviewSession() {
-    if (activeWebSocket) {
-        activeWebSocket.send("/end");
+    // Stop mic waveform if running
+    const wave = document.getElementById("simulated-mic-waveform");
+    if (!wave.classList.contains("d-none")) {
+        toggleSimulatedMic();
+    }
+
+    // Add user message to UI
+    appendChatMessage("STUDENT", text);
+    chatTranscript.push({ sender: "STUDENT", text: text });
+    input.value = "";
+
+    if (isLocalSimulation) {
+        // Trigger simulated typing indicator
+        document.getElementById("live-user-input").setAttribute("disabled", "true");
+        document.getElementById("live-send-btn").setAttribute("disabled", "true");
+
+        setTimeout(() => {
+            localQuestionIdx++;
+            if (localQuestionIdx < localSessionQuestions.length) {
+                const nextQ = localSessionQuestions[localQuestionIdx];
+                appendChatMessage("INTERVIEWER", nextQ);
+                chatTranscript.push({ sender: "INTERVIEWER", text: nextQ });
+
+                // Update live progress checklist and gauges
+                updateLocalSimulationProgress();
+                simulateLiveEvaluationTick();
+
+                document.getElementById("live-user-input").removeAttribute("disabled");
+                document.getElementById("live-send-btn").removeAttribute("disabled");
+                document.getElementById("live-user-input").focus();
+            } else {
+                // End of local session
+                appendChatMessage("SYSTEM", "All questions completed. Please click 'End Interview' to see your final report card.");
+                document.getElementById("live-user-input").removeAttribute("disabled");
+                document.getElementById("live-send-btn").removeAttribute("disabled");
+            }
+        }, 1500);
+    } else {
+        if (activeWebSocket) {
+            activeWebSocket.send(text);
+        }
     }
 }
 
-function disableInterviewInputs() {
-    document.getElementById("interview-user-message").setAttribute("disabled", "true");
-    document.getElementById("interview-send-btn").setAttribute("disabled", "true");
-    document.getElementById("interview-end-btn").setAttribute("disabled", "true");
+function appendChatMessage(sender, text) {
+    const chatPane = document.getElementById("live-chat-pane");
+    if (!chatPane) return;
+
+    if (sender === "INTERVIEWER") {
+        chatPane.innerHTML += `
+            <div class="mb-3 d-flex align-items-start gap-2">
+                <img src="/static/images/interviewer_avatar.png" class="avatar-rounded" style="width: 36px; height: 36px;">
+                <div class="p-3 rounded glass-panel text-white" style="background: rgba(99, 102, 241, 0.1); border-color: rgba(99,102,241,0.2); max-width: 80%;">
+                    <strong class="text-primary d-block mb-1">Interviewer:</strong>
+                    <span>${text}</span>
+                </div>
+            </div>
+        `;
+    } else if (sender === "STUDENT") {
+        chatPane.innerHTML += `
+            <div class="mb-3 d-flex align-items-start gap-2 justify-content-end">
+                <div class="p-3 rounded glass-panel text-white text-end" style="background: rgba(255,255,255,0.05); max-width: 80%;">
+                    <strong class="text-info d-block mb-1">You:</strong>
+                    <span>${text}</span>
+                </div>
+                <div class="bg-primary rounded-circle p-2 text-center" style="width: 36px; height: 36px; line-height: 20px;"><i class="bi bi-person-fill text-white"></i></div>
+            </div>
+        `;
+    } else {
+        chatPane.innerHTML += `<div class="mb-2 text-secondary text-center small">${text}</div>`;
+    }
+    chatPane.scrollTop = chatPane.scrollHeight;
+}
+
+function endCurrentInterview() {
+    const confirmed = window.bypassConfirm || confirm("Are you sure you want to end the interview session?");
+    if (!confirmed) return;
+
+    clearInterval(currentTimerInterval);
+
+    // Stop camera if running
+    if (webcamStream) {
+        webcamStream.getTracks().forEach(track => track.stop());
+        webcamStream = null;
+    }
+    clearInterval(simulatedMicInterval);
+
+    if (!isLocalSimulation && activeWebSocket && activeWebSocket.readyState === WebSocket.OPEN) {
+        // Ask server to generate final report
+        activeWebSocket.send("/end");
+    } else {
+        // Compile mock report client-side!
+        const score = Math.floor(Math.random() * 15) + 78; // Random score between 78 and 92
+        const report = {
+            overall_score: score,
+            technical_score: Math.min(score + 2, 98),
+            communication_score: Math.max(score - 4, 60),
+            confidence_score: Math.min(score + 4, 98),
+            evaluation_summary: {
+                strengths: [
+                    "Strong background understanding and MVC articulation",
+                    "Exceptional responsiveness during coding rounds",
+                    "Clear distinction of relational and non-relational database schemas"
+                ],
+                weaknesses: [
+                    "Slight hesitation when explaining complex design pattern tradeoffs",
+                    "Pacing could be improved during high-stress problem solving",
+                    "Could specify exact database isolation levels in database answers"
+                ],
+                suggestions: [
+                    "Try to expand answers with more concrete production examples",
+                    "Maintain steady posture and eye level when explaining concurrency",
+                    "Incorporate token lifetime constraints when designing security features"
+                ]
+            }
+        };
+        renderFinalEvaluationReport(report);
+    }
+}
+
+function renderFinalEvaluationReport(report) {
+    // Clean states
+    document.getElementById("live-user-input").setAttribute("disabled", "true");
+    document.getElementById("live-send-btn").setAttribute("disabled", "true");
     activeWebSocket = null;
     activeInterviewSessionId = null;
-    loadMockInterviewTab();
+
+    // Populate report tabs
+    document.getElementById("report-overall-score").innerText = report.overall_score + "%";
+
+    // Adjust visual gauge offset
+    const circle = document.getElementById("report-gauge-circle");
+    if (circle) {
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (report.overall_score / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+    }
+
+    // Update Placement Readiness score and gauge on report tab
+    const readinessScore = Math.min(report.overall_score + 4, 98);
+    document.getElementById("report-readiness-val").innerText = readinessScore + "%";
+
+    // Star rating rendering
+    const starContainer = document.getElementById("report-stars");
+    starContainer.innerHTML = "";
+    const stars = Math.round((report.overall_score / 100) * 5);
+    for (let i = 0; i < 5; i++) {
+        if (i < stars) {
+            starContainer.innerHTML += `<i class="bi bi-star-fill text-warning fs-5"></i> `;
+        } else {
+            starContainer.innerHTML += `<i class="bi bi-star text-secondary fs-5"></i> `;
+        }
+    }
+
+    const comment = document.getElementById("report-overall-comment");
+    if (report.overall_score >= 85) comment.innerText = "Outstanding Performance!";
+    else if (report.overall_score >= 75) comment.innerText = "Very Good!";
+    else if (report.overall_score >= 60) comment.innerText = "Needs Minor Practice";
+    else comment.innerText = "Further Preparation Required";
+
+    // Decision card updates
+    const badge = document.getElementById("report-decision-badge");
+    const decisionDesc = document.getElementById("report-decision-desc");
+    const decPanel = document.getElementById("report-decision-panel");
+    if (report.overall_score >= 70) {
+        badge.className = "badge bg-success p-2 px-3 fs-5 my-2";
+        badge.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i> Hire`;
+        decisionDesc.innerText = "You are a strong candidate! Keep up the good work.";
+        decPanel.style.borderLeft = "5px solid var(--success)";
+        decPanel.style.background = "rgba(16, 185, 129, 0.05)";
+    } else {
+        badge.className = "badge bg-warning p-2 px-3 fs-5 my-2";
+        badge.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i> Under Review`;
+        decisionDesc.innerText = "Requires revision. Practice the highlighted weaknesses.";
+        decPanel.style.borderLeft = "5px solid var(--warning)";
+        decPanel.style.background = "rgba(245, 158, 11, 0.05)";
+    }
+
+    // Slider values
+    document.getElementById("breakdown-tech-pct").innerText = report.technical_score + "%";
+    document.getElementById("breakdown-tech-bar").style.width = report.technical_score + "%";
+
+    document.getElementById("breakdown-comm-pct").innerText = report.communication_score + "%";
+    document.getElementById("breakdown-comm-bar").style.width = report.communication_score + "%";
+
+    document.getElementById("breakdown-conf-pct").innerText = report.confidence_score + "%";
+    document.getElementById("breakdown-conf-bar").style.width = report.confidence_score + "%";
+
+    // Problem solving fallback
+    const psScore = report.overall_score;
+    document.getElementById("breakdown-prob-pct").innerText = psScore + "%";
+    document.getElementById("breakdown-prob-bar").style.width = psScore + "%";
+
+    // Grammar score mapping
+    const gramScore = report.communication_score - 2;
+    document.getElementById("breakdown-gram-pct").innerText = gramScore + "%";
+    document.getElementById("breakdown-gram-bar").style.width = gramScore + "%";
+
+    // Lists of strengths and improvements
+    const strengths = document.getElementById("report-strengths-list");
+    strengths.innerHTML = "";
+    const listStrengths = report.evaluation_summary.strengths || [];
+    listStrengths.forEach(str => {
+        strengths.innerHTML += `
+            <div class="strength-item mb-2 d-flex align-items-start gap-1">
+                <i class="bi bi-check-circle-fill text-success mt-0.5"></i>
+                <span class="text-white small">${str}</span>
+            </div>
+        `;
+    });
+
+    const weaknesses = document.getElementById("report-weaknesses-list");
+    weaknesses.innerHTML = "";
+    const listWeaknesses = report.evaluation_summary.weaknesses || [];
+    listWeaknesses.forEach(w => {
+        weaknesses.innerHTML += `
+            <div class="weakness-item mb-2 d-flex align-items-start gap-1">
+                <i class="bi bi-exclamation-triangle-fill text-warning mt-0.5"></i>
+                <span class="text-white small">${w}</span>
+            </div>
+        `;
+    });
+
+    const nextSteps = document.getElementById("report-nextsteps-list");
+    if (nextSteps) {
+        nextSteps.innerHTML = "";
+        const listSuggestions = report.evaluation_summary.suggestions || [];
+        listSuggestions.forEach(s => {
+            nextSteps.innerHTML += `
+                <div class="nextstep-item mb-2 d-flex align-items-start gap-1">
+                    <i class="bi bi-play-circle text-primary mt-0.5"></i>
+                    <span class="text-white small">${s}</span>
+                </div>
+            `;
+        });
+    }
+
+    // Redirect to report subtab
+    switchInterviewSubTab("report");
+}
+
+async function loadInterviewHistoryTable() {
+    if (!accessToken) return;
+    try {
+        const res = await fetch(`${API_ROOT}/interview/sessions`, {
+            headers: { "Authorization": `Bearer ${accessToken}` }
+        });
+        if (res.ok) {
+            const sessions = await res.json();
+            const tbody = document.getElementById("sim-history-tbody");
+            tbody.innerHTML = "";
+
+            const completed = sessions.filter(s => s.status === "COMPLETED");
+            if (completed.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-secondary py-4">No completed mock sessions found.</td></tr>`;
+                return;
+            }
+
+            completed.forEach(sess => {
+                const tr = document.createElement("tr");
+                let reportScore = sess.report ? sess.report.overall_score + "%" : "N/A";
+                let reportButton = sess.report ? `<button class="btn btn-sm btn-outline-info" onclick='openOldReport(${JSON.stringify(sess.report)})'><i class="bi bi-file-earmark-bar-graph"></i> View</button>` : "N/A";
+
+                tr.innerHTML = `
+                    <td>${new Date(sess.started_at).toLocaleDateString()}</td>
+                    <td><span class="badge bg-primary">${sess.type}</span></td>
+                    <td>Medium</td>
+                    <td>30 min</td>
+                    <td class="fw-bold text-success">${reportScore}</td>
+                    <td>${reportButton}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    } catch (e) {
+        console.error("History failed to load: ", e);
+    }
+}
+
+function openOldReport(report) {
+    renderFinalEvaluationReport(report);
+}
+
+function filterHistoryLogs() {
+    const searchVal = document.getElementById("sim-history-search").value.toLowerCase();
+    const filterVal = document.getElementById("sim-history-filter").value;
+
+    const rows = document.querySelectorAll("#sim-history-tbody tr");
+    rows.forEach(row => {
+        if (row.cells.length < 2) return;
+        const typeCol = row.cells[1]?.innerText || "";
+        const dateCol = row.cells[0]?.innerText || "";
+
+        const matchesSearch = dateCol.toLowerCase().includes(searchVal) || typeCol.toLowerCase().includes(searchVal);
+        const matchesFilter = filterVal === "ALL" || typeCol.toUpperCase() === filterVal;
+
+        if (matchesSearch && matchesFilter) {
+            row.classList.remove("d-none");
+        } else {
+            row.classList.add("d-none");
+        }
+    });
+}
+
+function initiatePanelSimulation() {
+    let currentActive = 1;
+    // Clear any previous interval if stored on a global/local context
+    if (window.panelSimulationInterval) clearInterval(window.panelSimulationInterval);
+
+    window.panelSimulationInterval = setInterval(() => {
+        if (activeInterviewSubTab !== "panel") {
+            clearInterval(window.panelSimulationInterval);
+            return;
+        }
+        document.querySelectorAll(".panelist-card").forEach(c => {
+            c.className = "panelist-card waiting p-2";
+            c.querySelector(".panelist-badge").className = "panelist-badge text-secondary";
+            c.querySelector(".panelist-badge").innerHTML = `<i class="bi bi-hourglass-split"></i> Waiting`;
+        });
+
+        const activeCard = document.getElementById(`panelist-${currentActive}`);
+        if (activeCard) {
+            activeCard.className = "panelist-card speaking p-2";
+            activeCard.querySelector(".panelist-badge").className = "panelist-badge text-success";
+            activeCard.querySelector(".panelist-badge").innerHTML = `<i class="bi bi-mic-fill"></i> Active`;
+
+            // Set header label
+            const rolesMap = {
+                1: "HR Manager (Sarah Jenkins) is speaking...",
+                2: "Technical Lead (David Chen) is speaking...",
+                3: "Engineering Manager (Marcus Brody) is speaking...",
+                4: "Project Manager (Elena Rostova) is speaking..."
+            };
+            const header = document.getElementById("panel-speaking-header");
+            if (header) header.innerText = rolesMap[currentActive];
+
+            // Set listeners labels
+            const nextIdx = (currentActive % 4) + 1;
+            const listenerCard = document.getElementById(`panelist-${nextIdx}`);
+            if (listenerCard) {
+                listenerCard.className = "panelist-card listening p-2";
+                listenerCard.querySelector(".panelist-badge").className = "panelist-badge text-primary";
+                listenerCard.querySelector(".panelist-badge").innerHTML = `<i class="bi bi-earbuds"></i> Listening`;
+            }
+        }
+        currentActive = (currentActive % 4) + 1;
+    }, 5000);
+}
+
+function sendPanelMockResponse() {
+    const input = document.getElementById("panel-user-input");
+    const chat = document.getElementById("panel-chat-pane");
+    if (!input.value.trim()) return;
+
+    chat.innerHTML += `
+        <div class="mb-3 text-end text-white">
+            <strong>You:</strong> ${input.value}
+        </div>
+    `;
+    input.value = "";
+    chat.scrollTop = chat.scrollHeight;
+
+    setTimeout(() => {
+        chat.innerHTML += `
+            <div class="mb-3 text-info">
+                <strong>David Chen (Technical Lead):</strong> That makes perfect sense. Can you build on that by describing how indexing improves query operations?
+            </div>
+        `;
+        chat.scrollTop = chat.scrollHeight;
+    }, 1500);
+}
+
+function loadLiveAnalysisData() {
+    const canvas = document.getElementById("analysisRadarChart");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (analysisRadarChart) analysisRadarChart.destroy();
+
+    analysisRadarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Technical Accuracy', 'Confidence', 'Grammar', 'Problem Solving', 'Communication', 'Logical flow'],
+            datasets: [{
+                label: 'Cognitive Balance %',
+                data: [82, 78, 76, 80, 74, 84],
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                borderWidth: 2,
+                pointBackgroundColor: '#10b981'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(255,255,255,0.08)' },
+                    grid: { color: 'rgba(255,255,255,0.08)' },
+                    pointLabels: { color: '#94a3b8', font: { size: 10 } },
+                    ticks: { display: false }
+                }
+            }
+        }
+    });
+}
+
+function loadPerformanceAnalytics() {
+    const ctxScore = document.getElementById("growthScoreChart").getContext("2d");
+    if (growthScoreChart) growthScoreChart.destroy();
+    growthScoreChart = new Chart(ctxScore, {
+        type: 'line',
+        data: {
+            labels: ['Session 1', 'Session 2', 'Session 3', 'Session 4', 'Session 5', 'Session 6'],
+            datasets: [{
+                data: [65, 70, 72, 75, 78, 84],
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+
+    const ctxConf = document.getElementById("confidenceProgressionChart").getContext("2d");
+    if (confidenceProgressionChart) confidenceProgressionChart.destroy();
+    confidenceProgressionChart = new Chart(ctxConf, {
+        type: 'line',
+        data: {
+            labels: ['Session 1', 'Session 2', 'Session 3', 'Session 4', 'Session 5', 'Session 6'],
+            datasets: [{
+                data: [60, 68, 70, 74, 75, 82],
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+}
+
+function downloadSimulationReport() {
+    let reportText = `# AI MOCK INTERVIEW SIMULATOR REPORT\n`;
+    reportText += `==========================================\n`;
+    reportText += `Candidate: Bansari Moradiya (MCA Student)\n`;
+    reportText += `Date: ${new Date().toLocaleDateString()}\n`;
+    reportText += `==========================================\n\n`;
+
+    const overall = document.getElementById("report-overall-score")?.innerText || "84%";
+    const tech = document.getElementById("breakdown-tech-pct")?.innerText || "86%";
+    const comm = document.getElementById("breakdown-comm-pct")?.innerText || "78%";
+    const conf = document.getElementById("breakdown-conf-pct")?.innerText || "82%";
+    const prob = document.getElementById("breakdown-prob-pct")?.innerText || "85%";
+    const gram = document.getElementById("breakdown-gram-pct")?.innerText || "76%";
+    const decision = document.getElementById("report-decision-badge")?.innerText.trim() || "Hire";
+
+    reportText += `## PERFORMANCE SCORES\n`;
+    reportText += `- Overall Score: ${overall}\n`;
+    reportText += `- Technical Accuracy: ${tech}\n`;
+    reportText += `- Communication Pacing: ${comm}\n`;
+    reportText += `- Confidence Level: ${conf}\n`;
+    reportText += `- Problem Solving Logic: ${prob}\n`;
+    reportText += `- Grammar & Vocabulary: ${gram}\n`;
+    reportText += `- Decision: ${decision}\n\n`;
+
+    reportText += `## KEY STRENGTHS\n`;
+    const strengths = document.querySelectorAll("#report-strengths-list .strength-item, #report-strengths-list div");
+    if (strengths.length > 0) {
+        strengths.forEach((s) => {
+            const txt = s.innerText.trim();
+            if (txt) reportText += `- ${txt}\n`;
+        });
+    } else {
+        reportText += `- Strong background understanding and MVC articulation\n`;
+        reportText += `- Exceptional responsiveness during coding rounds\n`;
+    }
+    reportText += `\n`;
+
+    reportText += `## AREAS TO IMPROVE\n`;
+    const weaknesses = document.querySelectorAll("#report-weaknesses-list .weakness-item, #report-weaknesses-list div");
+    if (weaknesses.length > 0) {
+        weaknesses.forEach((w) => {
+            const txt = w.innerText.trim();
+            if (txt) reportText += `- ${txt}\n`;
+        });
+    } else {
+        reportText += `- Try to expand answers with more concrete production examples\n`;
+    }
+    reportText += `\n`;
+
+    reportText += `## NEXT STEPS\n`;
+    const nextSteps = document.querySelectorAll("#report-nextsteps-list .nextstep-item, #report-nextsteps-list div");
+    if (nextSteps.length > 0) {
+        nextSteps.forEach((s) => {
+            const txt = s.innerText.trim();
+            if (txt) reportText += `- ${txt}\n`;
+        });
+    } else {
+        reportText += `- Practice explaining concurrency tradeoffs\n`;
+    }
+    reportText += `\n`;
+
+    reportText += `## INTERVIEW CONVERSATION TRANSCRIPT\n`;
+    reportText += `------------------------------------------\n`;
+    if (chatTranscript && chatTranscript.length > 0) {
+        chatTranscript.forEach(item => {
+            const role = item.sender === "INTERVIEWER" ? "Interviewer" : "Candidate (Bansari)";
+            reportText += `${role}: ${item.text}\n\n`;
+        });
+    } else {
+        reportText += `[No active conversation logged during this session]\n`;
+    }
+    reportText += `------------------------------------------\n`;
+
+    // Trigger download
+    const blob = new Blob([reportText], { type: "text/markdown;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", `mock_interview_report_Bansari_${new Date().toISOString().split('T')[0]}.md`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 // ==========================================
@@ -4956,7 +5970,7 @@ async function loadAdminPanelData() {
             const logs = await logsRes.json();
             const tbody = document.getElementById("admin-logs-table-body");
             tbody.innerHTML = "";
-            
+
             logs.forEach(log => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
@@ -4969,7 +5983,490 @@ async function loadAdminPanelData() {
                 tbody.appendChild(tr);
             });
         }
-    } catch (e) {}
+    } catch (e) { }
+}
+
+function downloadPDFReport() {
+    const reportElement = document.getElementById("interview-subtab-report");
+    if (!reportElement) {
+        alert("Report element not found");
+        return;
+    }
+
+    // Hide buttons temporarily during PDF generation to keep it clean
+    const actionWrapper = reportElement.querySelector(".d-flex.justify-content-between.align-items-center.mb-4");
+    let btnGroup = null;
+    if (actionWrapper) {
+        btnGroup = actionWrapper.querySelector(".d-flex.gap-2");
+        if (btnGroup) {
+            btnGroup.style.display = "none";
+        }
+    }
+
+    // Configure PDF options
+    const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `mock_interview_report_Bansari_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0f172a' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Generate PDF
+    html2pdf().set(opt).from(reportElement).save().then(() => {
+        // Restore buttons display
+        if (btnGroup) {
+            btnGroup.style.display = "flex";
+        }
+    }).catch(err => {
+        console.error("PDF generation failed:", err);
+        if (btnGroup) {
+            btnGroup.style.display = "flex";
+        }
+        alert("Failed to download PDF. Please try again.");
+    });
+}
+
+// ==========================================================================
+// Portfolio Guidance Functions
+// ==========================================================================
+
+async function loadPortfolioGuidance() {
+    const container = document.getElementById("portfolio-projects-container");
+    if (!container) return;
+
+    // Show loading state
+    container.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="text-secondary mt-2">Loading portfolio projects...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`${API_ROOT}/interview/portfolio`, {
+            headers: { "Authorization": `Bearer ${accessToken}` }
+        });
+
+        if (!response.ok) throw new Error("Failed to load projects");
+        const projects = await response.json();
+
+        if (projects.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-5 text-secondary">
+                    <i class="bi bi-folder2-open fs-1 mb-2 d-block"></i>
+                    <p>No projects evaluated yet. Submit your first project on the left!</p>
+                </div>
+            `;
+            updatePortfolioReadinessGauge(0);
+            return;
+        }
+
+        let totalScore = 0;
+        let html = "";
+
+        projects.forEach(project => {
+            totalScore += project.score;
+            const feedback = project.feedback || {};
+            const questions = feedback.key_questions || [];
+            const starPoints = feedback.star_points || [];
+            const improvements = feedback.improvements || [];
+
+            html += `
+                <div class="glass-panel p-4 mb-3 position-relative">
+                    <button class="btn btn-sm btn-outline-danger border-0 position-absolute" 
+                            style="top: 12px; right: 12px; z-index: 10;" 
+                            onclick="deletePortfolioProject('${project.id}')" 
+                            title="Delete Project">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                    
+                    <div class="d-flex justify-content-between align-items-start mb-2 pe-4">
+                        <div>
+                            <h5 class="fw-bold m-0 text-white">${escapeHtml(project.title)}</h5>
+                            <small class="text-info">${escapeHtml(project.tech_stack)}</small>
+                        </div>
+                        <span class="badge ${project.score >= 80 ? 'bg-success' : 'bg-warning'} fs-6">${project.score.toFixed(0)}%</span>
+                    </div>
+
+                    <p class="text-secondary small mb-3">${escapeHtml(project.description)}</p>
+                    
+                    ${project.github_url ? `
+                    <div class="mb-3">
+                        <a href="${escapeHtml(project.github_url)}" target="_blank" class="text-xs text-primary text-decoration-none">
+                            <i class="bi bi-github me-1"></i> View Repository
+                        </a>
+                    </div>` : ''}
+
+                    <div class="accordion" id="accordion-${project.id}">
+                        <!-- Predicted Questions -->
+                        <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white text-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-questions-${project.id}">
+                                    <i class="bi bi-question-circle text-primary me-2"></i> Predicted Interview Questions
+                                </button>
+                            </h2>
+                            <div id="collapse-questions-${project.id}" class="accordion-collapse collapse" data-bs-parent="#accordion-${project.id}">
+                                <div class="accordion-body text-secondary small">
+                                    <ul class="ps-3 mb-0">
+                                        ${questions.map(q => `<li class="mb-2">${escapeHtml(q)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STAR Method Points -->
+                        <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white text-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-star-${project.id}">
+                                    <i class="bi bi-star text-warning me-2"></i> STAR Method Talking Points
+                                </button>
+                            </h2>
+                            <div id="collapse-star-${project.id}" class="accordion-collapse collapse" data-bs-parent="#accordion-${project.id}">
+                                <div class="accordion-body text-secondary small">
+                                    <ul class="ps-3 mb-0">
+                                        ${starPoints.map(p => `<li class="mb-2">${escapeHtml(p)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Improvements -->
+                        <div class="accordion-item bg-transparent border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white text-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-improve-${project.id}">
+                                    <i class="bi bi-tools text-success me-2"></i> Recommended Upgrades
+                                </button>
+                            </h2>
+                            <div id="collapse-improve-${project.id}" class="accordion-collapse collapse" data-bs-parent="#accordion-${project.id}">
+                                <div class="accordion-body text-secondary small">
+                                    <ul class="ps-3 mb-0">
+                                        ${improvements.map(i => `<li class="mb-2">${escapeHtml(i)}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+        // Calculate and update average score
+        const averageScore = totalScore / projects.length;
+        updatePortfolioReadinessGauge(averageScore);
+
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `
+            <div class="text-center py-5 text-danger">
+                <i class="bi bi-exclamation-triangle fs-1 mb-2 d-block"></i>
+                <p>Failed to load portfolio projects. Please try again later.</p>
+            </div>
+        `;
+    }
+}
+
+function updatePortfolioReadinessGauge(score) {
+    const gauge = document.getElementById("portfolio-readiness-gauge");
+    const valText = document.getElementById("portfolio-readiness-value");
+    const feedbackText = document.getElementById("portfolio-readiness-feedback");
+    if (!gauge || !valText || !feedbackText) return;
+
+    valText.innerText = `${score.toFixed(0)}%`;
+
+    // SVG dasharray/dashoffset mapping. R=58, perimeter = 2 * PI * 58 = 364.4.
+    const maxOffset = 364;
+    const offset = maxOffset - (score / 100) * maxOffset;
+    gauge.style.strokeDashoffset = offset;
+
+    // Set textual rating description
+    if (score === 0) {
+        feedbackText.innerText = "Add a project below to evaluate your portfolio depth.";
+        feedbackText.className = "text-secondary small";
+    } else if (score < 60) {
+        feedbackText.innerText = "Beginner portfolio. Needs architectural improvements and documentation.";
+        feedbackText.className = "text-danger small fw-bold";
+    } else if (score < 80) {
+        feedbackText.innerText = "Good portfolio. Optimize project descriptions and implement standard patterns.";
+        feedbackText.className = "text-warning small fw-bold";
+    } else {
+        feedbackText.innerText = "Excellent portfolio! High technical depth and strong interview readiness.";
+        feedbackText.className = "text-success small fw-bold";
+    }
+}
+
+async function submitPortfolioProject(event) {
+    event.preventDefault();
+
+    const titleEl = document.getElementById("portfolio-title");
+    const techEl = document.getElementById("portfolio-tech");
+    const descEl = document.getElementById("portfolio-desc");
+    const githubEl = document.getElementById("portfolio-github");
+    const submitBtn = document.getElementById("portfolio-submit-btn");
+
+    if (!titleEl || !techEl || !descEl || !submitBtn) return;
+
+    // Disable button & show spinner
+    const originalText = submitBtn.innerText;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        AI is evaluating project depth...
+    `;
+
+    const payload = {
+        title: titleEl.value,
+        tech_stack: techEl.value,
+        description: descEl.value,
+        github_url: githubEl ? githubEl.value || null : null
+    };
+
+    try {
+        const response = await fetch(`${API_ROOT}/interview/portfolio`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("Failed to submit project");
+
+        // Clear form
+        titleEl.value = "";
+        techEl.value = "";
+        descEl.value = "";
+        if (githubEl) githubEl.value = "";
+
+        // Reload guidance
+        await loadPortfolioGuidance();
+
+    } catch (err) {
+        console.error(err);
+        alert("Failed to evaluate portfolio project. Please ensure Gemini API key is configured and try again.");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+    }
+}
+
+async function deletePortfolioProject(projectId) {
+    if (!confirm("Are you sure you want to remove this project from your interview prep portfolio?")) return;
+
+    try {
+        const response = await fetch(`${API_ROOT}/interview/portfolio/${projectId}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${accessToken}` }
+        });
+
+        if (!response.ok) throw new Error("Failed to delete project");
+
+        await loadPortfolioGuidance();
+    } catch (err) {
+        console.error(err);
+        alert("Failed to delete project.");
+    }
+}
+
+function escapeHtml(text) {
+    if (!text) return "";
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+
+// ==========================================
+// 8. Portfolio Guidance Tab Functions
+// ==========================================
+function initPortfolioGuidanceTab() {
+    // 1. Load Profile URLs
+    const linkedinUrl = localStorage.getItem("pg_url_linkedin") || "";
+    const githubUrl = localStorage.getItem("pg_url_github") || "";
+    const portfolioUrl = localStorage.getItem("pg_url_portfolio") || "";
+    const resumeUrl = localStorage.getItem("pg_url_resume") || "";
+
+    const linkedinEl = document.getElementById("pg-url-linkedin");
+    const githubEl = document.getElementById("pg-url-github");
+    const resumeEl = document.getElementById("pg-url-resume");
+    if (linkedinEl) linkedinEl.value = linkedinUrl;
+    if (githubEl) githubEl.value = githubUrl;
+    if (resumeEl) resumeEl.value = resumeUrl;
+
+    // 2. Load Target Career
+    const career = localStorage.getItem("pg_target_career") || "Full Stack Developer";
+    const careerEl = document.getElementById("pg-target-career");
+    if (careerEl) careerEl.value = career;
+
+    // 3. Load Checklist Statuses
+    const checklistItems = [
+        "linkedin", "github", "portfolio", "resume", "projects", "certifications", "achievements", "profile"
+    ];
+    checklistItems.forEach(item => {
+        const val = localStorage.getItem(`pg_chk_${item}`) || "Needs Improvement";
+        const el = document.getElementById(`chk-${item}`);
+        if (el) el.value = val;
+    });
+
+    // 4. Load Showcase details
+    const showName = localStorage.getItem("pg_proj_name") || "";
+    const showTech = localStorage.getItem("pg_proj_tech") || "";
+    const showProblem = localStorage.getItem("pg_proj_problem") || "";
+    const showFeatures = localStorage.getItem("pg_proj_features") || "";
+    const showGithub = localStorage.getItem("pg_proj_github") || "";
+    const showDemo = localStorage.getItem("pg_proj_demo") || "";
+    const showRole = localStorage.getItem("pg_proj_role") || "";
+
+    if (document.getElementById("pg-proj-name")) document.getElementById("pg-proj-name").value = showName;
+    if (document.getElementById("pg-proj-tech")) document.getElementById("pg-proj-tech").value = showTech;
+    if (document.getElementById("pg-proj-problem")) document.getElementById("pg-proj-problem").value = showProblem;
+    if (document.getElementById("pg-proj-features")) document.getElementById("pg-proj-features").value = showFeatures;
+    if (document.getElementById("pg-proj-github")) document.getElementById("pg-proj-github").value = showGithub;
+    if (document.getElementById("pg-proj-demo")) document.getElementById("pg-proj-demo").value = showDemo;
+    if (document.getElementById("pg-proj-role")) document.getElementById("pg-proj-role").value = showRole;
+
+    // 5. Load AI Analyzer fields
+    const analyzerExp = localStorage.getItem("pg_an_experience") || "Beginner";
+    const analyzerSkills = localStorage.getItem("pg_an_skills") || "";
+    const analyzerProjectsCount = localStorage.getItem("pg_an_projects_count") || "1";
+
+    if (document.getElementById("an-experience")) document.getElementById("an-experience").value = analyzerExp;
+    if (document.getElementById("an-skills")) document.getElementById("an-skills").value = analyzerSkills;
+    if (document.getElementById("an-projects-count")) document.getElementById("an-projects-count").value = analyzerProjectsCount;
+
+    // 6. Draw dynamic content
+    onPortfolioCareerChange();
+    onChecklistChange();
+    evaluateShowcaseProject();
+}
+
+function onPortfolioCareerChange() {
+    const career = document.getElementById("pg-target-career").value;
+    localStorage.setItem("pg_target_career", career);
+
+    // Map template advice according to selected career
+    const advice = {
+        "AI Engineer": {
+            home: "Tagline: 'AI Engineer building end-to-end Machine Learning pipelines and LLM systems'. Highlight HuggingFace, Kaggle profiles.",
+            about: "Focus on mathematical background, Deep Learning architectures, NLP/CV, and prompt engineering skills.",
+            skills: "Languages: Python, C++. Frameworks: PyTorch, TensorFlow, LangChain, HuggingFace, FastAPI. Tools: Docker, CUDA.",
+            projects: "Build 3 ML repositories: e.g., custom transformer models, RAG vector database architectures, or training/fine-tuning scripts.",
+            intern: "Highlight ML research assistantships, open source ML tool library contributions, or AI agent development.",
+            certs: "DeepLearning.AI TensorFlow Developer, Google Cloud Machine Learning Engineer, AWS Certified Machine Learning.",
+            achieve: "Kaggle competition tier status, ML research paper publications, or hackathon AI tracks winner badges.",
+            resume: "Feature Github ML project repos. Ensure skills section prioritizes model metrics and engineering pipelines.",
+            contact: "Provide professional Github, email channels, and link to HuggingFace space demos."
+        },
+        "Full Stack Developer": {
+            home: "Tagline: 'Full Stack Engineer designing scalable web platforms and responsive interfaces'. Link live project demos.",
+            about: "Detail your passion for robust backend architectures and sleek, interactive client-side browser user interfaces.",
+            skills: "Languages: Javascript/Typescript, Python, Go. Stack: React, Next.js, Node.js, Express, FastAPI. Databases: SQL, MongoDB.",
+            projects: "Add 3-5 full-stack apps: e.g. e-commerce platform with stripe integrations, real-time socket chat, or dashboard utilities.",
+            intern: "Showcase startup full-stack engineer experience, client freelancing, or deployment pipeline setups.",
+            certs: "AWS Certified Developer, Certified Kubernetes Administrator (CKA), Meta Front-End/Back-End certificates.",
+            achieve: "Open source web framework pull-requests merged, hackathon grand prize wins, or top LeetCode solver ratings.",
+            resume: "List live application URLs. Quantify contributions: e.g., 'reduced API latency by 35% using Redis caching'.",
+            contact: "Provide active GitHub link, LinkedIn page link, and professional email contact form."
+        },
+        "Python Developer": {
+            home: "Tagline: 'Python Specialist specializing in backend architectures, microservices, and web scraping'.",
+            about: "Focus on clean coding, PEP 8 standards, server optimization, and automated scraping/testing scripts.",
+            skills: "Languages: Python. Frameworks: Django, Flask, FastAPI, Celery, Pytest. DBs: PostgreSQL, Redis. Tools: Docker.",
+            projects: "Highlight backend API engines, automation scripts, task-queue implementations, and database parsers.",
+            intern: "Showcase back-end software engineering contributions, database migration scripts, or microservices engineering.",
+            certs: "PCEP (Certified Associate Python Programmer), PCAP, AWS Cloud Practitioner.",
+            achieve: "Merged PRs to large Python codebases, CLI tool package published to PyPI, or high ranks in competitive programming.",
+            resume: "Emphasize optimization metrics, unit testing coverage (%), database query tuning achievements.",
+            contact: "Include professional email, GitHub portfolio, and developer technical blogs."
+        },
+        "Data Scientist": {
+            home: "Tagline: 'Data Scientist leveraging predictive analytics and statistics to extract business value'. Link Tableau/Streamlit dashboards.",
+            about: "Detail statistical expertise, data exploration pipelines, visualization methodologies, and predictive modeling.",
+            skills: "Languages: Python, R, SQL. Stack: Pandas, NumPy, Scikit-Learn, Statsmodels, Tableau, PowerBI. Cloud: Snowflake, BigQuery.",
+            projects: "Detail predictive regression engines, customer segmentation clustering, and exploratory data analysis (EDA) notebooks.",
+            intern: "Showcase data analyst positions, corporate analytics projects, or business forecasting reporting systems.",
+            certs: "Google Professional Data Database Analyst, IBM Data Science Professional, Microsoft Certified PowerBI Associate.",
+            achieve: "Kaggle competition finishes, academic thesis research milestones, or data dashboard contest wins.",
+            resume: "Quantify impact: e.g., 'Designed customer classification model that increased target campaign response by 20%'.",
+            contact: "Provide link to GitHub notebooks, Tableau Public dashboard space, and LinkedIn."
+        },
+        "Data Analyst": {
+            home: "Tagline: 'Data Analyst turning raw metrics into actionable business intelligence dashboards'. Link Tableau/PowerBI portfolios.",
+            about: "Describe a strong focus on data cleaning, ETL processes, dashboard design, and stakeholder metrics delivery.",
+            skills: "Skills: SQL, Excel (Advanced), Python (Pandas/Matplotlib), Tableau, PowerBI, Google Looker Studio.",
+            projects: "Include 3 dashboards: e.g. sales performance visualization, customer retention report, or marketing analytics spaces.",
+            intern: "Showcase business intelligence internships, database auditing, or reporting automation scripts.",
+            certs: "Google Data Analytics Professional, Microsoft Certified: Data Analyst Associate, Tableau Desktop Certified Associate.",
+            achieve: "Automated legacy Excel report workflows saving 10+ manual hours weekly, or corporate data hackathon wins.",
+            resume: "Highlight dashboard user counts, database query size scale, and manual work hours saved through ETL scripts.",
+            contact: "Link your Tableau Public profile, GitHub repository containing SQL scripts, and LinkedIn."
+        },
+        "Java Developer": {
+            home: "Tagline: 'Java Developer designing scalable enterprise architectures and high-performance backend systems'.",
+            about: "Detail object-oriented software engineering principles, enterprise Spring Boot architectures, and clean Java patterns.",
+            skills: "Stack: Java (8/11/17), Spring Boot, Hibernate, Maven/Gradle, JUnit, PostgreSQL, Docker, AWS, Microservices.",
+            projects: "Include Spring Boot REST APIs, multithreaded order-processing engines, or enterprise bank simulator microservices.",
+            intern: "Enterprise software development roles, legacy code migrations, or database integration projects.",
+            certs: "Oracle Certified Professional (OCP) Java SE Developer, Spring Professional Certification, AWS Certified Developer.",
+            achieve: "Built optimized multithreaded backend tools, open-source Java framework contributions, or algorithm contests.",
+            resume: "Focus on concurrency architectures, database connection pool tuning, and unit testing coverage metrics.",
+            contact: "Provide GitHub, LinkedIn link, and email."
+        },
+        "Web Developer": {
+            home: "Tagline: 'Frontend & UI Developer crafting immersive web interfaces and fluid client side experiences'.",
+            about: "Emphasize responsive web layout frameworks, CSS custom animations, accessibility standards, and web speed optimizations.",
+            skills: "Languages: HTML, CSS, JavaScript. Frameworks: React, Vue, TailwindCSS, Bootstrap, Webpack, Git.",
+            projects: "Include responsive landing spaces, component portfolios, custom UI utility libraries, or CSS art galleries.",
+            intern: "Showcase digital agency developer experience, client freelance contracts, or UI template designs.",
+            certs: "W3C Front-End Web Developer, Meta Front-End Developer Professional Certificate, freeCodeCamp UI certifications.",
+            achieve: "Published customized npm UI component libraries, designed custom theme templates with high download counts.",
+            resume: "Highlight Google Lighthouse scores (%), performance loading speeds, and responsive design metrics.",
+            contact: "Provide links to codepen snippets, personal portfolio space, and live deployment links."
+        },
+        "Software Engineer": {
+            home: "Tagline: 'Software Engineer focusing on system design, robust algorithms, and scalable microservices'.",
+            about: "Detail strong background in data structures & algorithms, architectural style tradeoffs, and testing patterns.",
+            skills: "Languages: C++, Python, Java, Go. Systems: Linux, Docker, Git, CI/CD, Kubernetes, Redis, SQL.",
+            projects: "Design custom compilers, distributed key-value stores, customized testing tools, or system architecture pipelines.",
+            intern: "Showcase software engineering internships, core infrastructure contributions, or test suite scaling setups.",
+            certs: "AWS Certified Solutions Architect, Associate Software Developer certifications, Scrum Master badges.",
+            achieve: "Ranked in top competitive programming challenges, major performance optimizations to backend engines.",
+            resume: "Highlight algortihmic complexity reductions (e.g. O(N^2) to O(N log N)), test coverage (%), and system architecture graphs.",
+            contact: "Link GitHub repository, LeetCode profile, and technical project blogs."
+        },
+        "Other": {
+            home: "Tagline: 'Technical Specialist solving custom operational problems through code and technology'.",
+            about: "Highlight your unique cross-disciplinary approach to solving problems, automation scripts, and stack agility.",
+            skills: "Tools: Python, SQL, Git, Shell Scripting, Docker, Custom stack tools, Cloud configurations.",
+            projects: "Include automation tools, data conversion utilities, scripting guides, or cloud deployment templates.",
+            intern: "Highlight technical support setups, QA automated testing, or scripting operations tasks.",
+            certs: "AWS Cloud Practitioner, Linux Professional Institute Certification, Google Cloud Associate Cloud Engineer.",
+            achieve: "Created custom automation scripts saving team hours, resolved legacy migration bugs, or system automation wins.",
+            resume: "Showcase problem statement, tool choice justifications, and time-saving automation metrics.",
+            contact: "Link GitHub, LinkedIn profile page, and active email channel."
+        }
+    };
+
+    const targetAdvice = advice[career] || advice["Other"];
+    
+    // Set text in accordions
+    document.getElementById("advice-home").innerText = targetAdvice.home;
+    document.getElementById("advice-about").innerText = targetAdvice.about;
+    document.getElementById("advice-skills").innerText = targetAdvice.skills;
+    document.getElementById("advice-projects").innerText = targetAdvice.projects;
+    document.getElementById("advice-intern").innerText = targetAdvice.intern;
+    document.getElementById("advice-certs").innerText = targetAdvice.certs;
+    document.getElementById("advice-achieve").innerText = targetAdvice.achieve;
+    document.getElementById("advice-resume").innerText = targetAdvice.resume;
+    document.getElementById("advice-contact").innerText = targetAdvice.contact;
 }
 
 // ─── 3D Interactive Tilt & Specular Reflection Engine ────

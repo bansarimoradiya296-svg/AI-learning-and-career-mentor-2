@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -196,8 +199,55 @@
                     <span>Admin Panel</span>
                 </a>
             </nav>
+
+            <nav id="interview-sidebar-nav" class="nav flex-column d-none">
+                <div class="px-2 mb-3">
+                    <span class="text-secondary small fw-bold tracking-wider">SIMULATOR PAGES</span>
+                </div>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('dashboard'); return false;">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('setup'); return false;">
+                    <i class="bi bi-sliders"></i>
+                    <span>Interview Setup</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('live'); return false;">
+                    <i class="bi bi-person-video3"></i>
+                    <span>Live Interview</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('panel'); return false;">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Panel Interview</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('analysis'); return false;">
+                    <i class="bi bi-activity"></i>
+                    <span>Live Analysis</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('report'); return false;">
+                    <i class="bi bi-file-earmark-check-fill"></i>
+                    <span>Interview Report</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('history'); return false;">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Interview History</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('performance'); return false;">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <span>Performance</span>
+                </a>
+                <a href="#" class="nav-link-custom" onclick="switchInterviewSubTab('portfolio'); return false;">
+                    <i class="bi bi-folder-symlink-fill"></i>
+                    <span>Portfolio Guidance</span>
+                </a>
+                <hr class="border-secondary opacity-25">
+                <a href="#" class="nav-link-custom text-warning" onclick="exitInterviewSimulator(); return false;">
+                    <i class="bi bi-arrow-left-circle-fill"></i>
+                    <span>Back to Original Page</span>
+                </a>
+            </nav>
         </div>
-        
+
         <div>
             <hr class="border-secondary opacity-25">
             <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);">
@@ -1288,45 +1338,472 @@
 
             <!-- 3. Coding Mentor Tab -->
             <section id="tab-coding" class="tab-pane-custom d-none">
-                <div class="row g-4">
-                    <div class="col-lg-3">
-                        <div class="glass-panel p-4" style="height: calc(100vh - 160px); overflow-y: auto;">
-                            <h4 class="mb-3">Coding Challenges</h4>
-                            <div class="list-group list-group-flush bg-transparent" id="coding-problems-list">
-                                <span class="text-secondary">Loading problems...</span>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Sub-navigation Pills for Coding Mentor Tools -->
+                <div class="d-flex flex-wrap gap-2 mb-4 sub-nav-pills">
+                    <button class="btn btn-sm btn-sub-tab active" id="btn-sub-chat" onclick="switchCodingSubTab('chat')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chat-dots-fill me-1" viewBox="0 0 16 16" style="vertical-align: -0.125em;">
+                            <path d="M16 8c0 3.866-3.582 7-8 7a8.841 8.841 0 0 1-2.208-.307L0 16l1.397-3.72C.524 11.127 0 9.64 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                        </svg> AI Chat Assistant
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-debugger" onclick="switchCodingSubTab('debugger')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-bug-fill me-1" viewBox="0 0 16 16" style="vertical-align: -0.125em;">
+                            <path d="M4.978.855a.5.5 0 1 0-.956-.29l-.41 1.352A4.99 4.99 0 0 0 3 6h10a4.99 4.99 0 0 0-6-.086l-.41-1.352a.5.5 0 0 0-.956.29l.361 1.193a4.99 4.99 0 0 0-2.316-.367L4.978.855zM14 6h-1.5a3.5 3.5 0 0 0-7 0H4a4.5 4.5 0 0 0 9 0z"/>
+                            <path d="M12 6a3.99 3.99 0 0 1-3.99 4H12V6zM4 6h3.99a3.99 3.99 0 0 1-3.99 4V6z"/>
+                            <path d="M2.76 3.035a.5.5 0 0 1 .53-.46l2 .2a.5.5 0 1 1-.1.99l-2-.2a.5.5 0 0 1-.43-.53zm10.48 0a.5.5 0 0 0-.53-.46l-2 .2a.5.5 0 1 0 .1.99l2-.2a.5.5 0 0 0 .43-.53zM1 8.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm11 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm-9.3 3.65a.5.5 0 0 1 .65-.25l2 1a.5.5 0 1 1-.44.89l-2-1a.5.5 0 0 1-.21-.64zm9.6 0a.5.5 0 0 0-.65-.25l-2 1a.5.5 0 1 0 .44.89l2-1a.5.5 0 0 0 .21-.64z"/>
+                        </svg> AI Error Debugger
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-explain" onclick="switchCodingSubTab('explain')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-code-slash me-1" viewBox="0 0 16 16" style="vertical-align: -0.125em;">
+                            <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 1 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"/>
+                        </svg> Explain Code
+                    </button>
+                    <button class="btn btn-sm btn-sub-tab" id="btn-sub-quiz" onclick="switchCodingSubTab('quiz')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-question-circle me-1" viewBox="0 0 16 16" style="vertical-align: -0.125em;">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.274-2.255-2.509-2.255-1.276 0-2.54.747-2.54 2.213zm1.882 4.996a.683.683 0 1 0 1.366 0 .683.683 0 0 0-1.366 0z"/>
+                        </svg> Code Quiz
+                    </button>
+                </div>
 
-                    <div class="col-lg-9">
-                        <div class="coding-container">
-                            <!-- Code Editor -->
-                            <div class="coding-pane glass-panel p-4 flex-grow-1" style="height: calc(100vh - 160px);">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 id="active-problem-title" class="m-0">Challenge Workspace</h4>
-                                    <select class="form-select glass-input w-25" id="code-language" onchange="loadStarterCode()">
-                                        <option value="python">Python</option>
-                                        <option value="javascript">JavaScript</option>
-                                    </select>
+                <!-- 4 Feature Grid Cards -->
+                <div class="row g-4 mb-4 coding-features-row">
+                    <!-- Card 1: AI Chat Assistant -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column feature-card card-chat" onclick="switchCodingSubTab('chat')">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="feature-icon-circle bg-chat">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
+                                        <path d="M16 8c0 3.866-3.582 7-8 7a8.841 8.841 0 0 1-2.208-.307L0 16l1.397-3.72C.524 11.127 0 9.64 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                    </svg>
                                 </div>
-                                <div class="flex-grow-1 d-flex flex-column mb-3">
-                                    <textarea id="code-editor-box" class="editor-textarea form-control" placeholder="# Write your code solution here..."></textarea>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-outline-info" onclick="requestOptimization()">AI Optimize</button>
-                                    <button class="btn btn-primary-custom ms-auto" onclick="submitCodeSolution()">Submit Code</button>
+                                <h5 class="fw-bold m-0 text-white" style="font-size: 1.05rem;">1. AI Chat Assistant</h5>
+                            </div>
+                            <p class="text-secondary mb-4 small flex-grow-1">Ask coding questions and get instant AI-powered answers.</p>
+                            
+                            <div class="workflow-section mb-4">
+                                <span class="workflow-title d-block mb-3">Workflow</span>
+                                <div class="d-flex align-items-center justify-content-between workflow-steps">
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
+                                                <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Ask Question</span>
+                                    </div>
+                                    <div class="workflow-arrow">&rarr;</div>
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
+                                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.007c-.111-.228-.276-.456-.51-.672C11.666 9.586 10.355 9 8 9s-3.666.586-4.49 1.321c-.234.216-.399.444-.51.672H13z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">AI Analyzes</span>
+                                    </div>
+                                    <div class="workflow-arrow">&rarr;</div>
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
+                                                <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM4 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Get Answer</span>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <!-- Problem Specification / Output Console -->
-                            <div class="coding-pane" style="width: 320px; gap: 20px;">
-                                <div class="glass-panel p-4 flex-grow-1 overflow-auto" id="coding-desc-panel" style="max-height: 50%;">
-                                    <h5 class="fw-bold">Problem Prompt</h5>
-                                    <p class="text-secondary" id="coding-problem-text">Select a challenge from the list to begin coding.</p>
+                            <button class="btn btn-chat-action w-100 mt-auto" onclick="event.stopPropagation(); switchCodingSubTab('chat')">
+                                Start Chat &rarr;
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: AI Error Debugger -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column feature-card card-debugger" onclick="switchCodingSubTab('debugger')">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="feature-icon-circle bg-debugger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="text-success" viewBox="0 0 16 16">
+                                        <path d="M4.978.855a.5.5 0 1 0-.956-.29l-.41 1.352A4.99 4.99 0 0 0 3 6h10a4.99 4.99 0 0 0-6-.086l-.41-1.352a.5.5 0 0 0-.956.29l.361 1.193a4.99 4.99 0 0 0-2.316-.367L4.978.855zM14 6h-1.5a3.5 3.5 0 0 0-7 0H4a4.5 4.5 0 0 0 9 0z"/>
+                                        <path d="M12 6a3.99 3.99 0 0 1-3.99 4H12V6zM4 6h3.99a3.99 3.99 0 0 1-3.99 4V6z"/>
+                                        <path d="M2.76 3.035a.5.5 0 0 1 .53-.46l2 .2a.5.5 0 1 1-.1.99l-2-.2a.5.5 0 0 1-.43-.53zm10.48 0a.5.5 0 0 0-.53-.46l-2 .2a.5.5 0 1 0 .1.99l2-.2a.5.5 0 0 0 .43-.53zM1 8.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm11 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm-9.3 3.65a.5.5 0 0 1 .65-.25l2 1a.5.5 0 1 1-.44.89l-2-1a.5.5 0 0 1-.21-.64zm9.6 0a.5.5 0 0 0-.65-.25l-2 1a.5.5 0 1 0 .44.89l2-1a.5.5 0 0 0 .21-.64z"/>
+                                    </svg>
                                 </div>
-                                <div class="glass-panel p-4 flex-grow-1 overflow-auto" id="coding-console-panel" style="max-height: 50%;">
-                                    <h5 class="fw-bold">Evaluation Console</h5>
-                                    <pre class="text-secondary small" id="coding-output-console">Submit code to view console output logs.</pre>
+                                <h5 class="fw-bold m-0 text-white" style="font-size: 1.05rem;">2. AI Error Debugger</h5>
+                            </div>
+                            <p class="text-secondary mb-4 small flex-grow-1">Paste your code and error, AI will find and fix it.</p>
+                            
+                            <div class="workflow-section mb-4">
+                                <span class="workflow-title d-block mb-3">Workflow</span>
+                                <div class="d-flex align-items-center justify-content-between workflow-steps">
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-success" viewBox="0 0 16 16">
+                                                <path d="M5.029 6h5.942a3.995 3.995 0 0 1-5.942 0zM12 6H4a3.99 3.99 0 0 0 8 0z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Code Input</span>
+                                    </div>
+                                    <div class="workflow-arrow">&rarr;</div>
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-success" viewBox="0 0 16 16">
+                                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">AI Analyzes</span>
+                                    </div>
+                                    <div class="workflow-arrow">&rarr;</div>
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-success" viewBox="0 0 16 16">
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Finds Issue</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-debugger-action w-100 mt-auto" onclick="event.stopPropagation(); switchCodingSubTab('debugger')">
+                                Debug Now &rarr;
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Explain Code -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column feature-card card-explain" onclick="switchCodingSubTab('explain')">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="feature-icon-circle bg-explain">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="text-warning" viewBox="0 0 16 16">
+                                        <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 1 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"/>
+                                    </svg>
+                                </div>
+                                <h5 class="fw-bold m-0 text-white" style="font-size: 1.05rem;">3. Explain Code</h5>
+                            </div>
+                            <p class="text-secondary mb-4 small flex-grow-1">Understand how any code works in simple language.</p>
+                            
+                            <div class="workflow-section mb-4">
+                                <span class="workflow-title d-block mb-3">Workflow</span>
+                                <div class="d-flex align-items-center justify-content-between workflow-steps">
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-warning" viewBox="0 0 16 16">
+                                                <path d="M4.715 6.542 3.398 7.858a.5.5 0 1 1-.707-.707l1.317-1.317a1.5 1.5 0 0 0-2.122-2.122L.569 5.03a1.5 1.5 0 0 0 2.122 2.122l.453-.453a.5.5 0 1 1 .708.708l-.453.453a2.5 2.5 0 0 1-3.536-3.536L1.18 3.03a2.5 2.5 0 0 1 3.536 3.536z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Enter Code</span>
+                                    </div>
+                                    <div class="workflow-arrow">&rarr;</div>
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-warning" viewBox="0 0 16 16">
+                                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">AI Analyzes</span>
+                                    </div>
+                                    <div class="workflow-arrow">&rarr;</div>
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-warning" viewBox="0 0 16 16">
+                                                <path d="M3 9.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Explanation</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-explain-action w-100 mt-auto" onclick="event.stopPropagation(); switchCodingSubTab('explain')">
+                                Explain Code &rarr;
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Code Quiz -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column feature-card card-quiz" onclick="switchCodingSubTab('quiz')">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="feature-icon-circle bg-quiz">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="text-purple" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.274-2.255-2.509-2.255-1.276 0-2.54.747-2.54 2.213zm1.882 4.996a.683.683 0 1 0 1.366 0 .683.683 0 0 0-1.366 0z"/>
+                                    </svg>
+                                </div>
+                                <h5 class="fw-bold m-0 text-white" style="font-size: 1.05rem;">4. Code Quiz</h5>
+                            </div>
+                            <p class="text-secondary mb-4 small flex-grow-1">Test your knowledge with AI-generated quizzes.</p>
+                            
+                            <div class="workflow-section mb-4">
+                                <span class="workflow-title d-block mb-3">Workflow</span>
+                                <div class="d-flex align-items-center justify-content-between workflow-steps">
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-purple" viewBox="0 0 16 16">
+                                                <path d="M3 2.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-11z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Select Topic</span>
+                                    </div>
+                                    <div class="workflow-arrow">&rarr;</div>
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-purple" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Get Quiz</span>
+                                    </div>
+                                    <div class="workflow-arrow">&rarr;</div>
+                                    <div class="workflow-step text-center">
+                                        <div class="step-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="text-purple" viewBox="0 0 16 16">
+                                                <path d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="step-label">Answer</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-quiz-action w-100 mt-auto" onclick="event.stopPropagation(); switchCodingSubTab('quiz')">
+                                Start Quiz &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-Tab Panes -->
+                
+                <!-- 1. AI Chat Assistant Sub-pane -->
+                <div id="coding-sub-chat" class="coding-sub-pane">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Recent Chats -->
+                        <div class="col-md-3 h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
+                                    <h5 class="fw-bold m-0 text-white"><i class="bi bi-chat-left-text-fill text-primary me-2"></i>Recent</h5>
+                                    <button class="btn btn-sm btn-primary-custom px-2 py-1 d-flex align-items-center gap-1" onclick="startNewCodingChat()">
+                                        <i class="bi bi-plus-lg"></i> New Chat
+                                    </button>
+                                </div>
+                                <div class="list-group list-group-flush bg-transparent flex-grow-1 overflow-auto" id="recent-chats-list" style="max-height: calc(100% - 40px);">
+                                    <!-- Dynamic list of chats -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Active Chat window -->
+                        <div class="col-md-9 h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2 flex-shrink-0">
+                                    <div>
+                                        <h5 class="fw-bold text-white mb-0" id="chat-active-title"><i class="bi bi-robot text-primary me-2"></i>AI Chat Assistant</h5>
+                                        <small class="text-secondary">Ask anything about coding, get instant AI-powered answers.</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" onclick="clearActiveCodingChat()">
+                                        <i class="bi bi-trash3-fill"></i> Clear Chat
+                                    </button>
+                                </div>
+                                <div class="flex-grow-1 overflow-auto p-3 rounded mb-3" style="background: rgba(0, 0, 0, 0.15);" id="chat-messages-container">
+                                    <!-- Messages go here -->
+                                    <div class="text-secondary text-center py-5">
+                                        <i class="bi bi-chat-left-text-fill fs-1 mb-2 text-primary opacity-50"></i>
+                                        <p>Start a new conversation or choose an existing chat to begin.</p>
+                                    </div>
+                                </div>
+                                <form id="coding-chat-form" onsubmit="sendCodingChatMessage(event)" class="d-flex gap-2 align-items-center flex-shrink-0">
+                                    <input type="text" id="coding-chat-input" class="form-control glass-input flex-grow-1" placeholder="Ask your coding question..." required>
+                                    <button type="submit" class="btn btn-primary-custom px-4" style="min-height: 48px;">
+                                        <i class="bi bi-send-fill text-white fs-5"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. AI Error Debugger Sub-pane -->
+                <div id="coding-sub-debugger" class="coding-sub-pane d-none">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Error Input -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <h5 class="fw-bold mb-3 text-white flex-shrink-0"><i class="bi bi-code-slash text-success me-2"></i>Paste Error or Code</h5>
+                                <textarea id="debugger-input" class="editor-textarea form-control flex-grow-1 mb-3" placeholder="TypeError: unsupported operand type(s) for +: 'int' and 'str'&#10;&#10;File &quot;main.py&quot;, line 5, in &lt;module&gt;&#10;  result = 10 + '20'"></textarea>
+                                <button class="btn btn-success w-100 flex-shrink-0 d-flex align-items-center justify-content-center gap-2" onclick="analyzeError()">
+                                    <i class="bi bi-braces-asterisk"></i> Analyze Error
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Debug Analysis Output -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100 overflow-auto" id="debugger-analysis-output">
+                                <h5 class="fw-bold mb-3 text-white flex-shrink-0"><i class="bi bi-magic text-success me-2"></i>AI Analysis</h5>
+                                <div class="text-secondary text-center py-5 my-auto" id="debugger-placeholder">
+                                    <i class="bi bi-bug-fill fs-1 mb-2 text-danger opacity-50"></i>
+                                    <p>Submit an error or code snippet to receive AI-powered debugging solutions.</p>
+                                </div>
+                                <div id="debugger-details-container" class="d-none">
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold"><i class="bi bi-exclamation-triangle-fill text-danger me-1"></i> Error Type:</div>
+                                        <div class="fw-bold text-danger fs-5" id="debug-error-type">-</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold"><i class="bi bi-info-circle-fill text-info me-1"></i> Reason:</div>
+                                        <p class="m-0 text-white" id="debug-reason">-</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold"><i class="bi bi-tools text-warning me-1"></i> How to Fix:</div>
+                                        <p class="m-0 text-white" id="debug-fix">-</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold"><i class="bi bi-check-circle-fill text-success me-1"></i> Correct Code:</div>
+                                        <pre class="editor-textarea p-3" style="max-height: 200px; overflow-y: auto; background: #090d16;" id="debug-code-box">-</pre>
+                                    </div>
+                                    <div class="mb-1">
+                                        <div class="text-secondary small fw-bold"><i class="bi bi-lightbulb-fill text-warning me-1"></i> Best Practice:</div>
+                                        <p class="m-0 text-info" id="debug-best-practice">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Explain Code Sub-pane -->
+                <div id="coding-sub-explain" class="coding-sub-pane d-none">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Code Input -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
+                                    <h5 class="fw-bold m-0 text-white"><i class="bi bi-file-earmark-code text-warning me-2"></i>Your Code</h5>
+                                    <select class="form-select glass-input py-1" style="width: auto; height: auto;" id="explain-language">
+                                        <option value="python">Python</option>
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="java">Java</option>
+                                        <option value="cpp">C++</option>
+                                        <option value="sql">SQL</option>
+                                    </select>
+                                </div>
+                                <textarea id="explain-input" class="editor-textarea form-control flex-grow-1 mb-3" placeholder="def factorial(n):&#10;    if n == 0:&#10;        return 1&#10;    else:&#10;        return n * factorial(n-1)&#10;&#10;num = 5&#10;print(factorial(num))"></textarea>
+                                <button class="btn btn-warning w-100 flex-shrink-0 d-flex align-items-center justify-content-center gap-2 text-dark" onclick="explainCode()">
+                                    <i class="bi bi-magic"></i> Explain Code
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Explanation Output -->
+                        <div class="col-md-6 d-flex flex-column h-100">
+                            <div class="glass-panel p-4 d-flex flex-column h-100 overflow-auto" id="explain-output-panel">
+                                <h5 class="fw-bold mb-3 text-white flex-shrink-0"><i class="bi bi-magic text-warning me-2"></i>AI Explanation</h5>
+                                <div class="text-secondary text-center py-5 my-auto" id="explain-placeholder">
+                                    <i class="bi bi-file-earmark-code-fill fs-1 mb-2 text-info opacity-50"></i>
+                                    <p>Paste a code snippet to view a line-by-line explanation and output prediction.</p>
+                                </div>
+                                <div id="explain-details-container" class="d-none">
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold"><i class="bi bi-question-circle-fill text-primary me-1"></i> Purpose:</div>
+                                        <p class="m-0 text-white fw-semibold" id="explain-purpose">-</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="text-secondary small fw-bold"><i class="bi bi-list-ol text-info me-1"></i> Line by Line Explanation:</div>
+                                        <div class="text-white small" id="explain-steps">-</div>
+                                    </div>
+                                    <div class="mb-1">
+                                        <div class="text-secondary small fw-bold"><i class="bi bi-terminal-fill text-success me-1"></i> Predicted Output:</div>
+                                        <pre class="bg-dark text-success p-3 rounded" style="font-family: monospace; border: 1px solid var(--border-color);" id="explain-output-box">-</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Code Quiz Sub-pane -->
+                <div id="coding-sub-quiz" class="coding-sub-pane d-none">
+                    <div class="row g-4" style="height: calc(100vh - 220px);">
+                        <!-- Left Panel: Quiz Settings -->
+                        <div class="col-md-4 h-100">
+                            <div class="glass-panel p-4 h-100">
+                                <h5 class="fw-bold mb-4 text-white"><i class="bi bi-sliders text-purple me-2"></i>Quiz Configuration</h5>
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small">Select Topic</label>
+                                    <select class="form-select glass-input" id="quiz-topic">
+                                        <option value="python">Python</option>
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="java">Java</option>
+                                        <option value="cpp">C++</option>
+                                        <option value="sql">SQL</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small">Difficulty</label>
+                                    <select class="form-select glass-input" id="quiz-difficulty">
+                                        <option value="easy">Easy</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="hard">Hard</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label text-secondary small">Number of Questions</label>
+                                    <select class="form-select glass-input" id="quiz-qty">
+                                        <option value="5" selected>5</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-quiz-action w-100 d-flex align-items-center justify-content-center gap-2" id="btn-start-quiz" onclick="startCodingQuiz()">
+                                    <i class="bi bi-play-fill"></i> Start Quiz
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Active Question / Results Screen -->
+                        <div class="col-md-8 h-100">
+                            <div class="glass-panel p-4 h-100 d-flex flex-column" id="quiz-workspace-panel">
+                                <!-- Quiz Initial State Placeholder -->
+                                <div class="text-secondary text-center py-5 my-auto" id="quiz-placeholder-pane">
+                                    <i class="bi bi-question-diamond-fill fs-1 mb-2 text-success opacity-50"></i>
+                                    <p>Configure and launch the quiz on the left panel to test your skills.</p>
+                                </div>
+                                
+                                <!-- Active Quiz Content -->
+                                <div id="quiz-active-pane" class="d-none flex-grow-1 d-flex flex-column h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-10 flex-shrink-0">
+                                        <h5 class="fw-bold m-0 text-white" id="quiz-question-number">Question 1 of 5</h5>
+                                        <div class="text-warning small d-flex align-items-center gap-1">
+                                            <i class="bi bi-clock-history"></i> <span id="quiz-timer">05:00</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 overflow-auto mb-3" style="max-height: calc(100% - 250px);">
+                                        <p id="quiz-question-text" class="text-white fw-semibold mb-3" style="white-space: pre-line;">-</p>
+                                    </div>
+                                    
+                                    <!-- Quiz Options List -->
+                                    <div class="d-flex flex-column gap-2 mb-3 flex-shrink-0" id="quiz-options-container">
+                                        <!-- Dynamic options -->
+                                    </div>
+                                    
+                                    <!-- Quiz Buttons -->
+                                    <div class="d-flex justify-content-between align-items-center mt-auto flex-shrink-0">
+                                        <div class="text-info small d-none" id="quiz-feedback-box">
+                                            <i class="bi bi-info-circle-fill"></i> Select your answer.
+                                        </div>
+                                        <button class="btn btn-primary-custom ms-auto px-4" id="quiz-next-btn" onclick="nextCodingQuizQuestion()">Next Question <i class="bi bi-arrow-right-short ms-1"></i></button>
+                                    </div>
+                                </div>
+
+                                <!-- Quiz Final Result pane -->
+                                <div id="quiz-result-pane" class="d-none text-center my-auto">
+                                    <i class="bi bi-trophy-fill text-warning fs-1 mb-3"></i>
+                                    <h3 class="fw-bold text-white mb-2">Quiz Completed!</h3>
+                                    <h4 class="text-info fw-semibold mb-3">Your Score: <span id="quiz-final-score">4/5</span></h4>
+                                    <p class="text-secondary small mb-4">Great attempt! Your job readiness index has been updated accordingly.</p>
+                                    <button class="btn btn-primary-custom px-4" onclick="resetQuizWorkspace()">Retake / New Quiz</button>
                                 </div>
                             </div>
                         </div>
@@ -1343,16 +1820,18 @@
                             <form id="resume-form" onsubmit="uploadResume(event)">
                                 <div class="mb-3">
                                     <label class="form-label">Target Job Title</label>
-                                    <input type="text" id="target-job" class="form-control glass-input" placeholder="e.g., Senior FastAPI Developer" required>
+                                    <input type="text" id="target-job" class="form-control glass-input"
+                                        placeholder="e.g., Senior FastAPI Developer" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Upload Resume (PDF, DOCX)</label>
                                     <input type="file" id="resume-file" class="form-control glass-input" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary-custom w-100">Analyze Skills & Set Goals</button>
+                                <button type="submit" class="btn btn-primary-custom w-100">Analyze Skills & Set
+                                    Goals</button>
                             </form>
                         </div>
-                        
+
                         <div class="glass-panel p-4" id="skill-gap-panel">
                             <h4>Target Job Skills Map</h4>
                             <p class="text-secondary">Ingest resume to view target skills profile.</p>
@@ -1372,44 +1851,1343 @@
 
             <!-- 5. Mock Interview Tab -->
             <section id="tab-interview" class="tab-pane-custom d-none">
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="glass-panel p-4 mb-4">
-                            <h4 class="mb-3">Start Simulated Mock</h4>
-                            <div class="mb-3">
-                                <label class="form-label">Interview Type</label>
-                                <select class="form-select glass-input" id="interview-type">
-                                    <option value="TECHNICAL">Technical Interview</option>
-                                    <option value="HR">HR Interview</option>
-                                    <option value="BEHAVIORAL">Behavioral Screening</option>
-                                    <option value="CODING">Coding Discussion</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-primary-custom w-100" onclick="initiateMockInterview()">Initialize Interview</button>
-                        </div>
 
-                        <div class="glass-panel p-4">
-                            <h4 class="mb-3">Previous Mock Runs</h4>
-                            <div class="list-group list-group-flush bg-transparent" id="mock-sessions-list">
-                                <span class="text-secondary">No mock interviews completed.</span>
+                <!-- 1. INTERVIEW DASHBOARD SUB-PANE -->
+                <div id="interview-subtab-dashboard" class="interview-subpane d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-extrabold m-0">Welcome back, Bansari! 👋</h3>
+                            <p class="text-secondary m-0">Ready to ace your next interview?</p>
+                        </div>
+                        <button class="btn btn-primary-custom" onclick="switchInterviewSubTab('setup')">
+                            <i class="bi bi-plus-lg me-2"></i> Start New Interview
+                        </button>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3">
+                            <div class="glass-panel p-4 text-center">
+                                <i class="bi bi-calendar3 text-primary fs-1 mb-2"></i>
+                                <h5 class="text-secondary text-truncate">Total Interviews</h5>
+                                <h2 class="fw-bold" id="sim-dash-total">24</h2>
+                                <small class="text-success"><i class="bi bi-arrow-up-short"></i> +12 this month</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="glass-panel p-4 text-center">
+                                <i class="bi bi-award-fill text-success fs-1 mb-2"></i>
+                                <h5 class="text-secondary text-truncate">Average Score</h5>
+                                <h2 class="fw-bold" id="sim-dash-avg">78.5%</h2>
+                                <small class="text-success"><i class="bi bi-arrow-up-short"></i> +8.3%</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="glass-panel p-4 text-center">
+                                <i class="bi bi-bullseye text-warning fs-1 mb-2"></i>
+                                <h5 class="text-secondary text-truncate">Placement Readiness</h5>
+                                <h2 class="fw-bold" id="sim-dash-readiness">86%</h2>
+                                <small class="text-info">Excellent</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="glass-panel p-4 text-center">
+                                <i class="bi bi-patch-check-fill text-info fs-1 mb-2"></i>
+                                <h5 class="text-secondary text-truncate">Success Rate</h5>
+                                <h2 class="fw-bold" id="sim-dash-success">72%</h2>
+                                <small class="text-success"><i class="bi bi-arrow-up-short"></i> +10%</small>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-8">
-                        <div class="glass-panel p-4 d-flex flex-column" style="height: 500px;" id="interview-workspace">
-                            <h4 class="mb-3">Mock Live Audio/Text Stream</h4>
-                            <div class="flex-grow-1 overflow-auto p-3 rounded mb-3" style="background: rgba(0,0,0,0.15);" id="interview-chat-pane">
-                                <div class="text-secondary">Initialize session to begin interviewing.</div>
+                    <div class="row g-4">
+                        <div class="col-lg-4">
+                            <div class="glass-panel p-4 mb-4 text-center">
+                                <h4 class="mb-3">Placement Readiness</h4>
+                                <div class="circular-progress-wrapper my-4" style="width: 140px; height: 140px;">
+                                    <svg width="140" height="140">
+                                        <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="10" fill="transparent"
+                                            r="58" cx="70" cy="70" />
+                                        <circle stroke="var(--primary)" stroke-width="10" stroke-dasharray="364"
+                                            stroke-dashoffset="51" stroke-linecap="round" fill="transparent" r="58"
+                                            cx="70" cy="70" id="readiness-gauge-circle" />
+                                    </svg>
+                                    <div class="circular-progress-text text-primary" style="font-size: 1.8rem;">86%
+                                    </div>
+                                </div>
+                                <p class="text-secondary small">Excellent level (keep practicing!)</p>
                             </div>
-                            <div class="d-flex gap-2" id="interview-inputs-pane">
-                                <input type="text" id="interview-user-message" class="form-control glass-input" placeholder="Type response..." disabled>
-                                <button class="btn btn-primary-custom" id="interview-send-btn" onclick="sendInterviewResponse()" disabled>Send</button>
-                                <button class="btn btn-danger" id="interview-end-btn" onclick="endInterviewSession()" disabled>End</button>
+
+                            <div class="glass-panel p-4">
+                                <h4 class="mb-3">Quick Actions</h4>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary-custom text-start"
+                                        onclick="switchInterviewSubTab('setup')">
+                                        <i class="bi bi-play-circle-fill me-2"></i> Continue Last Interview
+                                    </button>
+                                    <button class="btn btn-outline-light border-secondary text-start"
+                                        onclick="triggerQuickInterview('TECHNICAL')">
+                                        <i class="bi bi-cpu-fill text-primary me-2"></i> Start Technical Mock
+                                    </button>
+                                    <button class="btn btn-outline-light border-secondary text-start"
+                                        onclick="triggerQuickInterview('HR')">
+                                        <i class="bi bi-person-fill text-success me-2"></i> Start HR screening
+                                    </button>
+                                    <button class="btn btn-outline-light border-secondary text-start"
+                                        onclick="triggerQuickInterview('CODING')">
+                                        <i class="bi bi-code-slash text-info me-2"></i> Start Coding Interview
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8">
+                            <div class="glass-panel p-4 mb-4">
+                                <h4 class="mb-3">Score Overview <span class="text-secondary fs-6 fw-normal">(Last 6
+                                        Interviews)</span></h4>
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="simScoreChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="glass-panel p-4 h-100">
+                                        <h4 class="mb-3">Recent Interviews</h4>
+                                        <div class="list-group list-group-flush bg-transparent" id="sim-recent-list">
+                                            <div
+                                                class="list-group-item bg-transparent text-white px-0 py-2 border-0 border-bottom border-secondary border-opacity-10 d-flex justify-content-between">
+                                                <div>
+                                                    <div class="fw-bold">Technical Interview</div>
+                                                    <small class="text-secondary">Jun 14, 2025</small>
+                                                </div>
+                                                <span class="text-success fw-bold align-self-center">85%</span>
+                                            </div>
+                                            <div
+                                                class="list-group-item bg-transparent text-white px-0 py-2 border-0 border-bottom border-secondary border-opacity-10 d-flex justify-content-between">
+                                                <div>
+                                                    <div class="fw-bold">HR Interview</div>
+                                                    <small class="text-secondary">Jun 12, 2025</small>
+                                                </div>
+                                                <span class="text-success fw-bold align-self-center">72%</span>
+                                            </div>
+                                            <div
+                                                class="list-group-item bg-transparent text-white px-0 py-2 border-0 d-flex justify-content-between">
+                                                <div>
+                                                    <div class="fw-bold">Mixed Interview</div>
+                                                    <small class="text-secondary">Jun 10, 2025</small>
+                                                </div>
+                                                <span class="text-success fw-bold align-self-center">65%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="glass-panel p-4 h-100">
+                                        <h4 class="mb-3">Recommended For You</h4>
+                                        <div class="list-group list-group-flush bg-transparent">
+                                            <div
+                                                class="list-group-item bg-transparent text-white px-0 py-2 border-0 border-bottom border-secondary border-opacity-10">
+                                                <div class="fw-bold text-info"><i
+                                                        class="bi bi-shield-check me-2"></i>Focus on System Design</div>
+                                                <small class="text-secondary">Based on your recent technical round
+                                                    reports.</small>
+                                            </div>
+                                            <div
+                                                class="list-group-item bg-transparent text-white px-0 py-2 border-0 border-bottom border-secondary border-opacity-10">
+                                                <div class="fw-bold text-success"><i
+                                                        class="bi bi-chat-left-dots me-2"></i>Improve Communication
+                                                </div>
+                                                <small class="text-secondary">Practice pacing and grammar
+                                                    structures.</small>
+                                            </div>
+                                            <div class="list-group-item bg-transparent text-white px-0 py-2 border-0">
+                                                <div class="fw-bold text-warning"><i class="bi bi-terminal me-2"></i>DSA
+                                                    Practice</div>
+                                                <small class="text-secondary">Solve medium-difficulty array
+                                                    problems.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- 2. INTERVIEW SETUP SUB-PANE -->
+                <div id="interview-subtab-setup" class="interview-subpane d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-extrabold m-0">Let's Set Up Your Interview</h3>
+                            <p class="text-secondary m-0">Customize your interview experience</p>
+                        </div>
+                        <button class="btn btn-outline-light border-secondary"
+                            onclick="switchInterviewSubTab('dashboard')">
+                            <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+                        </button>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <div class="glass-panel p-4">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-secondary">1. Interview Type</label>
+                                    <div class="setup-btn-group" id="setup-type-group">
+                                        <button class="btn active" data-value="TECHNICAL"
+                                            onclick="updateSetupPreview('type', 'TECHNICAL', this)">Technical</button>
+                                        <button class="btn" data-value="HR"
+                                            onclick="updateSetupPreview('type', 'HR', this)">HR</button>
+                                        <button class="btn" data-value="CODING"
+                                            onclick="updateSetupPreview('type', 'CODING', this)">Coding</button>
+                                        <button class="btn" data-value="BEHAVIORAL"
+                                            onclick="updateSetupPreview('type', 'BEHAVIORAL', this)">Mixed</button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-secondary">2. Difficulty</label>
+                                    <div class="setup-btn-group" id="setup-difficulty-group">
+                                        <button class="btn" data-value="EASY"
+                                            onclick="updateSetupPreview('difficulty', 'EASY', this)">Easy</button>
+                                        <button class="btn active" data-value="MEDIUM"
+                                            onclick="updateSetupPreview('difficulty', 'MEDIUM', this)">Medium</button>
+                                        <button class="btn" data-value="HARD"
+                                            onclick="updateSetupPreview('difficulty', 'HARD', this)">Hard</button>
+                                        <button class="btn" data-value="ADAPTIVE"
+                                            onclick="updateSetupPreview('difficulty', 'ADAPTIVE', this)">Adaptive</button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-secondary">3. Duration</label>
+                                    <div class="setup-btn-group" id="setup-duration-group">
+                                        <button class="btn" data-value="15"
+                                            onclick="updateSetupPreview('duration', '15 Min', this)">15 Min</button>
+                                        <button class="btn active" data-value="30"
+                                            onclick="updateSetupPreview('duration', '30 Min', this)">30 Min</button>
+                                        <button class="btn" data-value="45"
+                                            onclick="updateSetupPreview('duration', '45 Min', this)">45 Min</button>
+                                        <button class="btn" data-value="60"
+                                            onclick="updateSetupPreview('duration', '60 Min', this)">60 Min</button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-secondary">4. Language</label>
+                                    <div class="setup-btn-group" id="setup-language-group">
+                                        <button class="btn active" data-value="ENGLISH"
+                                            onclick="updateSetupPreview('language', 'ENGLISH', this)">English</button>
+                                        <button class="btn" data-value="HINDI"
+                                            onclick="updateSetupPreview('language', 'HINDI', this)">Hindi</button>
+                                        <button class="btn" data-value="GUJARATI"
+                                            onclick="updateSetupPreview('language', 'GUJARATI', this)">Gujarati</button>
+                                    </div>
+                                </div>
+
+                                <hr class="border-secondary opacity-25 my-4">
+
+                                <div class="row g-3">
+                                    <div class="col-md-6 d-flex align-items-center justify-content-between p-3 glass-panel"
+                                        style="background: rgba(255,255,255,0.01);">
+                                        <div>
+                                            <div class="fw-bold text-sm">Enable Camera</div>
+                                            <small class="text-secondary text-xs">Shows real-time video overlay</small>
+                                        </div>
+                                        <div class="form-check form-switch m-0 fs-4">
+                                            <input class="form-check-input" type="checkbox" id="setup-camera-toggle"
+                                                onchange="toggleWebcamState(this.checked)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 d-flex align-items-center justify-content-between p-3 glass-panel"
+                                        style="background: rgba(255,255,255,0.01);">
+                                        <div>
+                                            <div class="fw-bold text-sm">Enable Microphone</div>
+                                            <small class="text-secondary text-xs">Enables voice stream responses</small>
+                                        </div>
+                                        <div class="form-check form-switch m-0 fs-4">
+                                            <input class="form-check-input" type="checkbox" id="setup-mic-toggle"
+                                                checked>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="glass-panel p-4 d-flex flex-column justify-content-between"
+                                style="height: 100%;">
+                                <div>
+                                    <h4 class="mb-3">Live Preview</h4>
+
+                                    <div class="p-3 rounded mb-4" style="background: rgba(0,0,0,0.15);">
+                                        <table class="table table-borderless table-sm text-white m-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-secondary py-2" style="width: 45%;">Type</td>
+                                                    <td class="fw-bold py-2" id="preview-type">Technical Interview</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-secondary py-2">Difficulty</td>
+                                                    <td class="fw-bold py-2" id="preview-difficulty">Medium</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-secondary py-2">Duration</td>
+                                                    <td class="fw-bold py-2" id="preview-duration">30 Minutes</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-secondary py-2">Language</td>
+                                                    <td class="fw-bold py-2" id="preview-language">English</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-secondary py-2">Interviewer</td>
+                                                    <td class="fw-bold text-info py-2" id="preview-personality">Friendly
+                                                        Mentor</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-secondary py-2">Estimated Qs</td>
+                                                    <td class="fw-bold py-2 text-warning">12 - 15 questions</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-secondary py-2">Estimated Time</td>
+                                                    <td class="fw-bold py-2 text-info">28 - 32 Min</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Visual webcam feed viewport container -->
+                                    <div class="text-center py-4 border border-secondary border-dashed rounded mb-4 position-relative"
+                                        style="border-style: dashed !important; background: rgba(0,0,0,0.15); height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;"
+                                        id="setup-webcam-preview-box">
+                                        <video class="webcam-viewport d-none position-absolute w-100 h-100"
+                                            id="setup-preview-webcam" autoplay muted style="object-fit: cover;"></video>
+                                        <div id="setup-webcam-fallback">
+                                            <i class="bi bi-camera-video-fill text-secondary fs-1 mb-2 d-block"></i>
+                                            <span class="text-secondary text-xs">Toggle Camera in setup to preview
+                                                webcam feed.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary-custom w-100 py-3 fs-5 mt-3"
+                                    onclick="startSetupInterview()">
+                                    Start Interview <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. LIVE INTERVIEW SUB-PANE -->
+                <div id="interview-subtab-live" class="interview-subpane d-none">
+                    <div class="row g-4">
+                        <!-- Left Column: Interviewer Video, Candidate Video, Progress Checklist -->
+                        <div class="col-lg-4">
+                            <!-- Virtual Interviewer Viewport -->
+                            <div class="video-frame-container mb-3" style="height: 200px;">
+                                <img src="/static/images/interviewer_avatar.png" class="interviewer-viewport"
+                                    id="interviewer-live-avatar" alt="AI Interviewer">
+                                <div class="live-indicator"><span class="spinner-grow spinner-grow-sm me-1"
+                                        style="vertical-align: middle;"></span> LIVE</div>
+                                <div class="video-label-badge" id="live-interviewer-label">Interviewer (Friendly Mentor)
+                                </div>
+                            </div>
+
+                            <!-- Webcam Viewport -->
+                            <div class="video-frame-container mb-3" style="height: 140px;" id="candidate-live-viewport">
+                                <div class="text-secondary text-center p-3" id="webcam-fallback-msg">
+                                    <i class="bi bi-camera-video-off fs-3 mb-1 d-block"></i>
+                                    <span class="small">Webcam Disabled</span>
+                                </div>
+                                <video class="webcam-viewport d-none" id="candidate-webcam" autoplay muted></video>
+                                <div class="video-label-badge">You (Candidate)</div>
+                            </div>
+
+                            <!-- Interview Progress Checklist -->
+                            <div class="glass-panel p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold small text-secondary">Interview Progress</span>
+                                    <span class="badge bg-primary text-xs" id="progress-questions-badge">Question 4 of
+                                        12</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                    <div class="progress-bar bg-primary" id="progress-bar-line" role="progressbar"
+                                        style="width: 30%"></div>
+                                </div>
+                                <ul class="list-unstyled mb-0 small text-secondary" id="progress-rounds-list">
+                                    <li class="mb-1 text-success"><i class="bi bi-check-circle-fill me-2"></i>
+                                        Introduction</li>
+                                    <li class="mb-1 text-white fw-bold"><i
+                                            class="bi bi-arrow-right-circle-fill text-primary me-2"></i> Technical Round
+                                    </li>
+                                    <li class="mb-1 opacity-50"><i class="bi bi-circle me-2"></i> Problem Solving</li>
+                                    <li class="mb-1 opacity-50"><i class="bi bi-circle me-2"></i> System Design</li>
+                                    <li class="mb-1 opacity-50"><i class="bi bi-circle me-2"></i> HR Round</li>
+                                    <li class="mb-0 opacity-50"><i class="bi bi-circle me-2"></i> Final Discussion</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Middle Column: Dialogue History & Chat Area -->
+                        <div class="col-lg-6">
+                            <div class="glass-panel p-4 d-flex flex-column" style="height: 520px;">
+                                <!-- Live Header Stats -->
+                                <div
+                                    class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-10">
+                                    <div>
+                                        <h4 class="m-0" id="live-session-title">Technical Interview</h4>
+                                        <span class="text-secondary small" id="live-session-topic">Current Topic:
+                                            Database Management</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="badge bg-danger p-2 fs-6" id="live-timer-badge">28:45</div>
+                                        <button class="btn btn-sm btn-outline-danger" id="btn-end-interview"
+                                            onclick="endCurrentInterview()">End Interview</button>
+                                    </div>
+                                </div>
+
+                                <!-- Dialogue History Pane -->
+                                <div class="flex-grow-1 overflow-auto p-3 rounded mb-3"
+                                    style="background: rgba(0,0,0,0.15); max-height: 330px;" id="live-chat-pane">
+                                    <div class="text-secondary text-center py-4">Waiting for interviewer connection...
+                                    </div>
+                                </div>
+
+                                <!-- Waveform simulated visualizer -->
+                                <div class="mb-3 d-none" id="simulated-mic-waveform">
+                                    <div class="text-center text-xs text-info mb-1"><i class="bi bi-mic-fill me-1"></i>
+                                        Recording audio...</div>
+                                    <div class="audio-waves-container">
+                                        <div class="wave-bar"></div>
+                                        <div class="wave-bar"></div>
+                                        <div class="wave-bar"></div>
+                                        <div class="wave-bar"></div>
+                                        <div class="wave-bar"></div>
+                                        <div class="wave-bar"></div>
+                                        <div class="wave-bar"></div>
+                                        <div class="wave-bar"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Chat / Voice Input area -->
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-info px-3" id="live-mic-btn"
+                                        onclick="toggleSimulatedMic()" title="Talk response">
+                                        <i class="bi bi-mic-fill" id="live-mic-icon"></i>
+                                    </button>
+                                    <!-- Keep enabled when running locally or on WebSocket -->
+                                    <input type="text" id="live-user-input" class="form-control glass-input flex-grow-1"
+                                        placeholder="Type your response here..." disabled>
+                                    <button class="btn btn-primary-custom px-4" id="live-send-btn"
+                                        onclick="sendLiveResponse()" disabled>Send</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Live Dials -->
+                        <div class="col-lg-2">
+                            <div class="glass-panel p-3 h-100 d-flex flex-column justify-content-between text-center">
+                                <div>
+                                    <h5 class="small fw-bold text-secondary mb-3">Live Stats</h5>
+
+                                    <div class="mb-4">
+                                        <div class="circular-progress-wrapper" style="width: 75px; height: 75px;">
+                                            <svg width="75" height="75">
+                                                <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="6"
+                                                    fill="transparent" r="30" cx="37.5" cy="37.5" />
+                                                <circle stroke="var(--primary)" stroke-width="6" stroke-dasharray="188"
+                                                    stroke-dashoffset="41" stroke-linecap="round" fill="transparent"
+                                                    r="30" cx="37.5" cy="37.5" id="live-gauge-tech-circle" />
+                                            </svg>
+                                            <div class="circular-progress-text" style="font-size: 0.95rem;"
+                                                id="live-eval-tech">78%</div>
+                                        </div>
+                                        <small class="text-secondary text-xs d-block mt-1">Accuracy</small>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <div class="circular-progress-wrapper" style="width: 75px; height: 75px;">
+                                            <svg width="75" height="75">
+                                                <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="6"
+                                                    fill="transparent" r="30" cx="37.5" cy="37.5" />
+                                                <circle stroke="var(--success)" stroke-width="6" stroke-dasharray="188"
+                                                    stroke-dashoffset="33" stroke-linecap="round" fill="transparent"
+                                                    r="30" cx="37.5" cy="37.5" id="live-gauge-conf-circle" />
+                                            </svg>
+                                            <div class="circular-progress-text" style="font-size: 0.95rem;"
+                                                id="live-eval-conf">82%</div>
+                                        </div>
+                                        <small class="text-secondary text-xs d-block mt-1">Confidence</small>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <div class="circular-progress-wrapper" style="width: 75px; height: 75px;">
+                                            <svg width="75" height="75">
+                                                <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="6"
+                                                    fill="transparent" r="30" cx="37.5" cy="37.5" />
+                                                <circle stroke="var(--warning)" stroke-width="6" stroke-dasharray="188"
+                                                    stroke-dashoffset="48" stroke-linecap="round" fill="transparent"
+                                                    r="30" cx="37.5" cy="37.5" id="live-gauge-comm-circle" />
+                                            </svg>
+                                            <div class="circular-progress-text" style="font-size: 0.95rem;"
+                                                id="live-eval-comm">74%</div>
+                                        </div>
+                                        <small class="text-secondary text-xs d-block mt-1">Communication</small>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <div class="circular-progress-wrapper" style="width: 75px; height: 75px;">
+                                            <svg width="75" height="75">
+                                                <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="6"
+                                                    fill="transparent" r="30" cx="37.5" cy="37.5" />
+                                                <circle stroke="var(--accent)" stroke-width="6" stroke-dasharray="188"
+                                                    stroke-dashoffset="37" stroke-linecap="round" fill="transparent"
+                                                    r="30" cx="37.5" cy="37.5" id="live-gauge-prob-circle" />
+                                            </svg>
+                                            <div class="circular-progress-text" style="font-size: 0.95rem;"
+                                                id="live-eval-prob">80%</div>
+                                        </div>
+                                        <small class="text-secondary text-xs d-block mt-1">Prob Solving</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Details Info -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="glass-panel p-2 px-3 d-flex justify-content-between align-items-center text-secondary small"
+                                style="background: rgba(0,0,0,0.1);">
+                                <div>Topic: <span class="text-white fw-bold" id="footer-topic">Database
+                                        Management</span></div>
+                                <div>Difficulty: <span class="text-white fw-bold" id="footer-difficulty">Medium</span>
+                                </div>
+                                <div>Environment: <span class="text-white fw-bold" id="footer-env">MNC
+                                        Environment</span></div>
+                                <div>Interview Type: <span class="text-white fw-bold" id="footer-type">Technical</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. MULTI-PANEL INTERVIEW SUB-PANE -->
+                <div id="interview-subtab-panel" class="interview-subpane d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h3 class="fw-extrabold m-0">Panel Interview</h3>
+                            <p class="text-secondary m-0">Practice mock simulator in a simulated MNC Board environment
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="badge bg-danger p-2 fs-6">32:15 Time Left</div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="endCurrentInterview()">End
+                                Interview</button>
+                        </div>
+                    </div>
+
+                    <!-- Panel Board of Directors Row -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="panelist-card speaking p-2" id="panelist-1">
+                                <div class="panelist-img rounded"
+                                    style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&auto=format&fit=crop&q=80');">
+                                    <span class="panelist-badge text-success" id="panelist-badge-1"><i
+                                            class="bi bi-mic-fill"></i> Active</span>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <div class="fw-bold text-sm">Sarah Jenkins</div>
+                                    <small class="text-secondary text-xs">HR Manager</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="panelist-card listening p-2" id="panelist-2">
+                                <div class="panelist-img rounded"
+                                    style="background-image: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&auto=format&fit=crop&q=80');">
+                                    <span class="panelist-badge text-primary" id="panelist-badge-2"><i
+                                            class="bi bi-earbuds"></i> Listening</span>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <div class="fw-bold text-sm">David Chen</div>
+                                    <small class="text-secondary text-xs">Technical Lead</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="panelist-card waiting p-2" id="panelist-3">
+                                <div class="panelist-img rounded"
+                                    style="background-image: url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&auto=format&fit=crop&q=80');">
+                                    <span class="panelist-badge text-secondary" id="panelist-badge-3"><i
+                                            class="bi bi-hourglass-split"></i> Waiting</span>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <div class="fw-bold text-sm">Marcus Brody</div>
+                                    <small class="text-secondary text-xs">Engineering Manager</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="panelist-card waiting p-2" id="panelist-4">
+                                <div class="panelist-img rounded"
+                                    style="background-image: url('https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&auto=format&fit=crop&q=80');">
+                                    <span class="panelist-badge text-secondary" id="panelist-badge-4"><i
+                                            class="bi bi-hourglass-split"></i> Waiting</span>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <div class="fw-bold text-sm">Elena Rostova</div>
+                                    <small class="text-secondary text-xs">Project Manager</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Split lower section -->
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="panel-notes-box h-100">
+                                <h5 class="fw-bold text-secondary mb-3"><i
+                                        class="bi bi-chat-square-quote me-2"></i>Panel Notes (Private)</h5>
+                                <ul class="small text-secondary mb-0 ps-3">
+                                    <li class="mb-2">Good introduction and articulation of background context.</li>
+                                    <li class="mb-2">Logical flow explaining MVC architectural diagrams.</li>
+                                    <li class="mb-2">Maintains moderate confidence but could improve volume pace.</li>
+                                    <li class="mb-0">Nice explanation of SQL constraints and normalization rules.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="glass-panel p-4 d-flex flex-column" style="height: 320px;">
+                                <div
+                                    class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-10">
+                                    <h5 class="m-0" id="panel-speaking-header">HR Manager is speaking...</h5>
+                                    <span class="badge bg-success p-2 text-xs">Current Round: Introduction</span>
+                                </div>
+
+                                <div class="flex-grow-1 overflow-auto p-3 rounded mb-3"
+                                    style="background: rgba(0,0,0,0.12);" id="panel-chat-pane">
+                                    <div class="mb-3 text-success">
+                                        <strong>Sarah Jenkins (HR Manager):</strong> Tell me about yourself and your
+                                        journey so far.
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <input type="text" id="panel-user-input"
+                                        class="form-control glass-input flex-grow-1"
+                                        placeholder="Speak or type your answer...">
+                                    <button class="btn btn-primary-custom px-4"
+                                        onclick="sendPanelMockResponse()">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. LIVE AI ANALYSIS SUB-PANE -->
+                <div id="interview-subtab-analysis" class="interview-subpane d-none">
+                    <div class="row g-4 mb-4">
+                        <div class="col-12">
+                            <div class="glass-panel p-4">
+                                <h4 class="mb-3">Live Analysis (Real-time Insights)</h4>
+                                <div class="row g-3 text-center">
+                                    <div class="col-md-3">
+                                        <div
+                                            class="border border-secondary border-opacity-10 rounded p-3 bg-opacity-10 bg-primary">
+                                            <div class="fs-3 fw-bold text-primary">82%</div>
+                                            <div class="text-secondary small">Technical Accuracy</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div
+                                            class="border border-secondary border-opacity-10 rounded p-3 bg-opacity-10 bg-success">
+                                            <div class="fs-3 fw-bold text-success">78%</div>
+                                            <div class="text-secondary small">Confidence Level</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div
+                                            class="border border-secondary border-opacity-10 rounded p-3 bg-opacity-10 bg-info">
+                                            <div class="fs-3 fw-bold text-info">74%</div>
+                                            <div class="text-secondary small">Communication Pacing</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div
+                                            class="border border-secondary border-opacity-10 rounded p-3 bg-opacity-10 bg-warning">
+                                            <div class="fs-3 fw-bold text-warning">80%</div>
+                                            <div class="text-secondary small">Problem Solving</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Left Column: Thinking Process and Strengths -->
+                        <div class="col-md-5">
+                            <div class="glass-panel p-4 mb-4">
+                                <h4 class="mb-3">Thinking Process</h4>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="spinner-border spinner-border-sm text-info me-2"></span>
+                                    <span class="text-secondary small">Analyzing response delay & sentiment...</span>
+                                </div>
+                                <div class="progress mb-2" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                    <div class="progress-bar bg-info" style="width: 80%" id="analysis-load-bar"></div>
+                                </div>
+                                <p class="text-info small m-0">Good logical flow detected.</p>
+                            </div>
+
+                            <div class="glass-panel p-4">
+                                <h4 class="mb-3">Recruiter Notes</h4>
+                                <div class="p-3 rounded mb-3 text-secondary small"
+                                    style="background: rgba(0,0,0,0.15);">
+                                    Candidate explains database schemas clearly. Real-time NLP parsing indicates correct
+                                    terminology mapping for MVC and database index items.
+                                </div>
+
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <h6 class="fw-bold text-success text-xs mb-2">STRENGTHS</h6>
+                                        <ul class="list-unstyled small text-secondary ps-0 mb-0">
+                                            <li class="mb-1"><i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                Technical Knowledge</li>
+                                            <li class="mb-1"><i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                Problem Solving</li>
+                                            <li class="mb-0"><i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                Logical Thinking</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <h6 class="fw-bold text-warning text-xs mb-2">WEAK AREAS</h6>
+                                        <ul class="list-unstyled small text-secondary ps-0 mb-0">
+                                            <li class="mb-1"><i
+                                                    class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
+                                                Confidence</li>
+                                            <li class="mb-1"><i
+                                                    class="bi bi-exclamation-triangle-fill text-warning me-1"></i> Comm.
+                                                Pace</li>
+                                            <li class="mb-0"><i
+                                                    class="bi bi-exclamation-triangle-fill text-warning me-1"></i> Needs
+                                                Examples</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Charts & delay -->
+                        <div class="col-md-7">
+                            <div class="glass-panel p-4 mb-4">
+                                <h4 class="mb-3">Performance Radar Chart</h4>
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="analysisRadarChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="glass-panel p-3 d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="text-secondary m-0 small">Grammar Score</h6>
+                                            <h4 class="fw-bold text-primary m-0 mt-1">76%</h4>
+                                        </div>
+                                        <div class="circular-progress-wrapper"
+                                            style="width: 50px; height: 50px; margin: 0;">
+                                            <svg width="50" height="50">
+                                                <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="4"
+                                                    fill="transparent" r="20" cx="25" cy="25" />
+                                                <circle stroke="var(--primary)" stroke-width="4" stroke-dasharray="125"
+                                                    stroke-dashoffset="30" stroke-linecap="round" fill="transparent"
+                                                    r="20" cx="25" cy="25" />
+                                            </svg>
+                                            <div class="circular-progress-text" style="font-size: 0.75rem;">76%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="glass-panel p-3 d-flex align-items-center justify-content-between"
+                                        style="height: 100%;">
+                                        <div>
+                                            <h6 class="text-secondary m-0 small">Response Delay</h6>
+                                            <h4 class="fw-bold text-warning m-0 mt-1">1.8s</h4>
+                                        </div>
+                                        <i class="bi bi-hourglass-split text-warning fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. FINAL INTERVIEW REPORT SUB-PANE -->
+                <div id="interview-subtab-report" class="interview-subpane d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-extrabold m-0">Final Interview Report</h3>
+                            <p class="text-secondary m-0">Detailed evaluation and comprehensive feedback</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary-custom" id="btn-download-report"
+                                onclick="downloadSimulationReport()">
+                                <i class="bi bi-file-earmark-arrow-down-fill me-2"></i> Download MD
+                            </button>
+                            <button class="btn btn-primary-custom" id="btn-download-pdf-report"
+                                onclick="downloadPDFReport()"
+                                style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-color: #ef4444;">
+                                <i class="bi bi-file-pdf-fill me-2"></i> Download PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Left Column: Overall score and decision -->
+                        <div class="col-md-4">
+                            <div class="glass-panel p-4 text-center mb-4">
+                                <h4 class="mb-2 text-secondary">Overall Score</h4>
+                                <div class="circular-progress-wrapper my-3" style="width: 140px; height: 140px;">
+                                    <svg width="140" height="140">
+                                        <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="10" fill="transparent"
+                                            r="58" cx="70" cy="70" />
+                                        <circle stroke="var(--success)" stroke-width="10" stroke-dasharray="364"
+                                            stroke-dashoffset="58" stroke-linecap="round" fill="transparent" r="58"
+                                            cx="70" cy="70" id="report-gauge-circle" />
+                                    </svg>
+                                    <div class="circular-progress-text text-success" style="font-size: 2rem;"
+                                        id="report-overall-score">84%</div>
+                                </div>
+                                <div class="text-warning mb-2" id="report-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                </div>
+                                <div class="fw-bold fs-5" id="report-overall-comment">Very Good!</div>
+                            </div>
+
+                            <div class="glass-panel p-4 recruiter-decision-card text-center mb-4"
+                                id="report-decision-panel"
+                                style="border-left: 5px solid var(--success); background: rgba(16, 185, 129, 0.05);">
+                                <h5 class="text-secondary small">Recruiter Decision</h5>
+                                <div class="badge bg-success p-2 px-3 fs-5 my-2" id="report-decision-badge"><i
+                                        class="bi bi-check-circle-fill me-2"></i> Hire</div>
+                                <p class="text-secondary small mt-2 mb-0" id="report-decision-desc">You are a strong
+                                    candidate! Keep up the good work.</p>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Breakdown & Strengths -->
+                        <div class="col-md-8">
+                            <div class="glass-panel p-4 mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="m-0">Performance Breakdown</h4>
+                                    <!-- Placement Readiness Circular stats inside details header -->
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-secondary small me-2">Placement Readiness:</span>
+                                        <span class="fw-bold text-success me-2" id="report-readiness-val">88%</span>
+                                        <div class="circular-progress-wrapper"
+                                            style="width: 32px; height: 32px; margin: 0;">
+                                            <svg width="32" height="32">
+                                                <circle stroke="rgba(255,255,255,0.05)" stroke-width="3"
+                                                    fill="transparent" r="13" cx="16" cy="16" />
+                                                <circle stroke="var(--success)" stroke-width="3" stroke-dasharray="81"
+                                                    stroke-dashoffset="10" stroke-linecap="round" fill="transparent"
+                                                    r="13" cx="16" cy="16" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between text-sm mb-1">
+                                        <span>Technical Accuracy</span>
+                                        <span class="fw-bold text-primary" id="breakdown-tech-pct">86%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px; background: rgba(255,255,255,0.05);">
+                                        <div class="progress-bar bg-primary" id="breakdown-tech-bar" style="width: 86%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between text-sm mb-1">
+                                        <span>Communication Pacing</span>
+                                        <span class="fw-bold text-success" id="breakdown-comm-pct">78%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px; background: rgba(255,255,255,0.05);">
+                                        <div class="progress-bar bg-success" id="breakdown-comm-bar" style="width: 78%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between text-sm mb-1">
+                                        <span>Confidence Indicator</span>
+                                        <span class="fw-bold text-info" id="breakdown-conf-pct">82%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px; background: rgba(255,255,255,0.05);">
+                                        <div class="progress-bar bg-info" id="breakdown-conf-bar" style="width: 82%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between text-sm mb-1">
+                                        <span>Problem Solving Logic</span>
+                                        <span class="fw-bold text-warning" id="breakdown-prob-pct">85%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px; background: rgba(255,255,255,0.05);">
+                                        <div class="progress-bar bg-warning" id="breakdown-prob-bar" style="width: 85%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between text-sm mb-1">
+                                        <span>Grammar & Vocabulary</span>
+                                        <span class="fw-bold text-danger" id="breakdown-gram-pct">76%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px; background: rgba(255,255,255,0.05);">
+                                        <div class="progress-bar bg-danger" id="breakdown-gram-bar" style="width: 76%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-0">
+                                    <div class="d-flex justify-content-between text-sm mb-1">
+                                        <span>Logical Thinking</span>
+                                        <span class="fw-bold text-success" style="color: #22c55e !important;"
+                                            id="breakdown-logic-pct">84%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px; background: rgba(255,255,255,0.05);">
+                                        <div class="progress-bar"
+                                            style="width: 84%; background-color: #22c55e !important;"
+                                            id="breakdown-logic-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="glass-panel p-4 h-100">
+                                        <h5 class="fw-bold text-success mb-3 small"><i
+                                                class="bi bi-hand-thumbs-up-fill me-2"></i>Key Strengths</h5>
+                                        <div id="report-strengths-list" class="small text-secondary">
+                                            <div class="mb-2"><i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                Strong technical knowledge</div>
+                                            <div class="mb-2"><i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                Good problem solving skills</div>
+                                            <div class="mb-2"><i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                Explains concepts well</div>
+                                            <div class="mb-0"><i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                Logical and structured thinking</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="glass-panel p-4 h-100">
+                                        <h5 class="fw-bold text-warning mb-3 small"><i
+                                                class="bi bi-lightbulb-fill me-2"></i>Areas to Improve</h5>
+                                        <div id="report-weaknesses-list" class="small text-secondary">
+                                            <div class="mb-2"><i
+                                                    class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
+                                                Improve communication pace</div>
+                                            <div class="mb-2"><i
+                                                    class="bi bi-exclamation-triangle-fill text-warning me-1"></i> More
+                                                confident while answering</div>
+                                            <div class="mb-0"><i
+                                                    class="bi bi-exclamation-triangle-fill text-warning me-1"></i> Give
+                                                more real-world examples</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="glass-panel p-4 h-100">
+                                        <h5 class="fw-bold text-primary mb-3 small" style="color: #6366f1 !important;">
+                                            <i class="bi bi-arrow-right-circle-fill me-2"></i>Next Steps</h5>
+                                        <div id="report-nextsteps-list" class="small text-secondary">
+                                            <div class="mb-2"><i class="bi bi-play-circle text-primary me-1"></i>
+                                                Practice System Design</div>
+                                            <div class="mb-2"><i class="bi bi-play-circle text-primary me-1"></i>
+                                                Improve Communication</div>
+                                            <div class="mb-0"><i class="bi bi-play-circle text-primary me-1"></i> Solve
+                                                Advanced DSA</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. INTERVIEW HISTORY SUB-PANE -->
+                <div id="interview-subtab-history" class="interview-subpane d-none">
+                    <div class="glass-panel p-4 mb-4">
+                        <div
+                            class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                            <div>
+                                <h3 class="fw-extrabold m-0">Interview History</h3>
+                                <p class="text-secondary m-0">Track and review your previous mock sessions</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <input type="text" id="sim-history-search" class="form-control glass-input"
+                                    placeholder="Search logs..." oninput="filterHistoryLogs()">
+                                <select id="sim-history-filter" class="form-select glass-input" style="width: 160px;"
+                                    onchange="filterHistoryLogs()">
+                                    <option value="ALL">All Categories</option>
+                                    <option value="TECHNICAL">Technical</option>
+                                    <option value="HR">HR</option>
+                                    <option value="CODING">Coding</option>
+                                    <option value="BEHAVIORAL">Mixed</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Category</th>
+                                        <th>Interviewer</th>
+                                        <th>Environment</th>
+                                        <th>Score</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sim-history-tbody">
+                                    <tr>
+                                        <td>Jun 14, 2025</td>
+                                        <td><span class="badge bg-primary">Technical</span></td>
+                                        <td><i class="bi bi-person-fill text-info me-1"></i> Friendly Mentor</td>
+                                        <td>MNC Environment</td>
+                                        <td class="fw-bold text-success">85%</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-info p-1 px-2 border-secondary"
+                                                onclick="alert('Playing recorded audio session...')"><i
+                                                    class="bi bi-play-fill"></i></button>
+                                            <button class="btn btn-sm btn-outline-light p-1 px-2 border-secondary"
+                                                onclick="switchInterviewSubTab('report')"><i
+                                                    class="bi bi-file-earmark-bar-graph"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jun 12, 2025</td>
+                                        <td><span class="badge bg-success">HR</span></td>
+                                        <td><i class="bi bi-person-fill text-warning me-1"></i> Strict Recruiter</td>
+                                        <td>MNC Environment</td>
+                                        <td class="fw-bold text-success">72%</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-info p-1 px-2 border-secondary"
+                                                onclick="alert('Playing recorded audio session...')"><i
+                                                    class="bi bi-play-fill"></i></button>
+                                            <button class="btn btn-sm btn-outline-light p-1 px-2 border-secondary"
+                                                onclick="switchInterviewSubTab('report')"><i
+                                                    class="bi bi-file-earmark-bar-graph"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jun 10, 2025</td>
+                                        <td><span class="badge bg-secondary">Mixed</span></td>
+                                        <td><i class="bi bi-person-fill text-secondary me-1"></i> Senior Developer</td>
+                                        <td>Startup Environment</td>
+                                        <td class="fw-bold text-success">65%</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-info p-1 px-2 border-secondary"
+                                                onclick="alert('Playing recorded audio session...')"><i
+                                                    class="bi bi-play-fill"></i></button>
+                                            <button class="btn btn-sm btn-outline-light p-1 px-2 border-secondary"
+                                                onclick="switchInterviewSubTab('report')"><i
+                                                    class="bi bi-file-earmark-bar-graph"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Footer summary counters -->
+                        <div class="row g-3 mt-4 pt-3 border-top border-secondary border-opacity-10 text-center">
+                            <div class="col-6 col-md-3">
+                                <h6 class="text-secondary small mb-1">Total Interviews</h6>
+                                <h4 class="fw-bold text-primary m-0">24</h4>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <h6 class="text-secondary small mb-1">Average Score</h6>
+                                <h4 class="fw-bold text-success m-0">78.5%</h4>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <h6 class="text-secondary small mb-1">Best Score</h6>
+                                <h4 class="fw-bold text-warning m-0">90%</h4>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <h6 class="text-secondary small mb-1">Total Practice Time</h6>
+                                <h4 class="fw-bold text-info m-0">12h 30m</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. PERFORMANCE ANALYTICS SUB-PANE -->
+                <div id="interview-subtab-performance" class="interview-subpane d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-extrabold m-0">Performance Analytics</h3>
+                            <p class="text-secondary m-0">Detailed insights and progress tracking</p>
+                        </div>
+                        <span class="badge bg-secondary p-2">Last 6 Months</span>
+                    </div>
+
+                    <!-- Top row metrics -->
+                    <div class="row g-3 mb-4 text-center">
+                        <div class="col-6 col-md-3">
+                            <div class="glass-panel p-3">
+                                <span class="text-secondary small d-block">Average Score</span>
+                                <h3 class="fw-bold text-primary m-0 mt-1">78.5%</h3>
+                                <small class="text-success text-xs"><i class="bi bi-arrow-up-short"></i> +8.3%</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="glass-panel p-3">
+                                <span class="text-secondary small d-block">Placement Readiness</span>
+                                <h3 class="fw-bold text-success m-0 mt-1">86%</h3>
+                                <small class="text-info text-xs">Excellent</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="glass-panel p-3">
+                                <span class="text-secondary small d-block">Total Interviews</span>
+                                <h3 class="fw-bold text-warning m-0 mt-1">24</h3>
+                                <small class="text-success text-xs"><i class="bi bi-plus-lg"></i> 12 new</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="glass-panel p-3">
+                                <span class="text-secondary small d-block">Success Rate</span>
+                                <h3 class="fw-bold text-info m-0 mt-1">72%</h3>
+                                <small class="text-success text-xs"><i class="bi bi-arrow-up-short"></i> +10%</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="glass-panel p-4">
+                                <h4 class="mb-3">Score Trend</h4>
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="growthScoreChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="glass-panel p-4">
+                                <h4 class="mb-3">Confidence Trend</h4>
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="confidenceProgressionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="glass-panel p-4 h-100">
+                                <h4 class="mb-4">Skills Radar & Topic Mapping</h4>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold text-secondary mb-3 small">Weak Topics</h6>
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between text-xs mb-1">
+                                                <span>System Design</span>
+                                                <span class="text-danger fw-bold">60%</span>
+                                            </div>
+                                            <div class="progress"
+                                                style="height: 6px; background: rgba(255,255,255,0.05);">
+                                                <div class="progress-bar bg-danger" style="width: 60%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between text-xs mb-1">
+                                                <span>OS Concepts</span>
+                                                <span class="text-danger fw-bold">65%</span>
+                                            </div>
+                                            <div class="progress"
+                                                style="height: 6px; background: rgba(255,255,255,0.05);">
+                                                <div class="progress-bar bg-danger" style="width: 65%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between text-xs mb-1">
+                                                <span>DBMS</span>
+                                                <span class="text-warning fw-bold">70%</span>
+                                            </div>
+                                            <div class="progress"
+                                                style="height: 6px; background: rgba(255,255,255,0.05);">
+                                                <div class="progress-bar bg-warning" style="width: 70%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-0">
+                                            <div class="d-flex justify-content-between text-xs mb-1">
+                                                <span>Networking</span>
+                                                <span class="text-warning fw-bold">75%</span>
+                                            </div>
+                                            <div class="progress"
+                                                style="height: 6px; background: rgba(255,255,255,0.05);">
+                                                <div class="progress-bar bg-warning" style="width: 75%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold text-secondary mb-3 small">Strong Topics</h6>
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between text-xs mb-1">
+                                                <span>DSA</span>
+                                                <span class="text-success fw-bold">90%</span>
+                                            </div>
+                                            <div class="progress"
+                                                style="height: 6px; background: rgba(255,255,255,0.05);">
+                                                <div class="progress-bar bg-success" style="width: 90%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between text-xs mb-1">
+                                                <span>Coding</span>
+                                                <span class="text-success fw-bold">88%</span>
+                                            </div>
+                                            <div class="progress"
+                                                style="height: 6px; background: rgba(255,255,255,0.05);">
+                                                <div class="progress-bar bg-success" style="width: 88%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between text-xs mb-1">
+                                                <span>Projects</span>
+                                                <span class="text-success fw-bold">85%</span>
+                                            </div>
+                                            <div class="progress"
+                                                style="height: 6px; background: rgba(255,255,255,0.05);">
+                                                <div class="progress-bar bg-success" style="width: 85%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-0">
+                                            <div class="d-flex justify-content-between text-xs mb-1">
+                                                <span>SQL & Tools</span>
+                                                <span class="text-success fw-bold">80%</span>
+                                            </div>
+                                            <div class="progress"
+                                                style="height: 6px; background: rgba(255,255,255,0.05);">
+                                                <div class="progress-bar bg-success" style="width: 80%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="glass-panel p-4 h-100">
+                                <h4 class="mb-4">Achieved Milestones</h4>
+                                <div class="row g-3">
+                                    <div class="col-6 col-sm-3">
+                                        <div class="badge-card">
+                                            <div class="badge-icon">🎖️</div>
+                                            <div class="fw-bold small" style="font-size: 0.8rem;">10 Interviews</div>
+                                            <small class="text-secondary text-xs">Milestone</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-3">
+                                        <div class="badge-card">
+                                            <div class="badge-icon">🔥</div>
+                                            <div class="fw-bold small" style="font-size: 0.8rem;">7 Day Streak</div>
+                                            <small class="text-secondary text-xs">Pacing</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-3">
+                                        <div class="badge-card">
+                                            <div class="badge-icon">📈</div>
+                                            <div class="fw-bold small" style="font-size: 0.8rem;">Top 20% Learner</div>
+                                            <small class="text-secondary text-xs">Position</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-3">
+                                        <div class="badge-card">
+                                            <div class="badge-icon">💎</div>
+                                            <div class="fw-bold small" style="font-size: 0.8rem;">Consistent</div>
+                                            <small class="text-secondary text-xs">Dedication</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. PORTFOLIO GUIDANCE SUB-PANE -->
+                <div id="interview-subtab-portfolio" class="interview-subpane d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-extrabold m-0">Portfolio Guidance</h3>
+                            <p class="text-secondary m-0">AI-driven analysis of your projects from an interview perspective.</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Left Column: Add Project & Overall Score Gauge -->
+                        <div class="col-lg-5">
+                            <!-- Portfolio Readiness Score Gauge -->
+                            <div class="glass-panel p-4 mb-4 text-center">
+                                <h4 class="mb-3">Portfolio Readiness Index</h4>
+                                <div class="circular-progress-wrapper my-4" style="width: 140px; height: 140px;">
+                                    <svg width="140" height="140">
+                                        <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="10" fill="transparent" r="58" cx="70" cy="70"/>
+                                        <circle stroke="var(--primary)" stroke-width="10" stroke-dasharray="364" stroke-dashoffset="364" stroke-linecap="round" fill="transparent" r="58" cx="70" cy="70" id="portfolio-readiness-gauge"/>
+                                    </svg>
+                                    <div class="circular-progress-text text-primary" style="font-size: 1.8rem;" id="portfolio-readiness-value">0%</div>
+                                </div>
+                                <p class="text-secondary small" id="portfolio-readiness-feedback">Add a project below to evaluate your portfolio depth.</p>
+                            </div>
+
+                            <!-- Add Project Form -->
+                            <div class="glass-panel p-4">
+                                <h4 class="mb-3">Add Project to Portfolio</h4>
+                                <form id="portfolio-project-form" onsubmit="submitPortfolioProject(event)">
+                                    <div class="mb-3">
+                                        <label class="form-label text-secondary small fw-bold">Project Title</label>
+                                        <input type="text" id="portfolio-title" class="form-control glass-input" placeholder="e.g., Real-time Messaging Engine" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-secondary small fw-bold">Tech Stack</label>
+                                        <input type="text" id="portfolio-tech" class="form-control glass-input" placeholder="e.g., Python, FastAPI, WebSockets, Redis" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-secondary small fw-bold">Description / Architecture</label>
+                                        <textarea id="portfolio-desc" class="form-control glass-input" style="height: 100px; resize: none;" placeholder="Explain what the project does, key technical challenges solved, or system components..." required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-secondary small fw-bold">GitHub Repository URL (Optional)</label>
+                                        <input type="url" id="portfolio-github" class="form-control glass-input" placeholder="e.g., https://github.com/username/project">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom w-100 py-3" id="portfolio-submit-btn">
+                                        Analyze Project Depth
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Projects List -->
+                        <div class="col-lg-7">
+                            <div class="glass-panel p-4 h-100 d-flex flex-column" style="min-height: 520px;">
+                                <h4 class="mb-4">Your Portfolio Projects</h4>
+                                <div id="portfolio-projects-container" class="flex-grow-1 overflow-auto" style="max-height: 550px;">
+                                    <div class="text-center py-5 text-secondary">
+                                        <i class="bi bi-folder2-open fs-1 mb-2 d-block"></i>
+                                        <p>No projects evaluated yet. Submit your first project on the left!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </section>
 
             <!-- 6. Admin Panel Tab -->
@@ -1457,6 +3235,561 @@
                     </div>
                 </div>
             </section>
+
+            <!-- 7. PORTFOLIO GUIDANCE MAIN TAB -->
+            <section id="tab-portfolio_guidance" class="tab-pane-custom d-none">
+                <!-- TOP HEADER METRICS AND SCORE -->
+                <div class="row g-4 mb-4">
+                    <!-- Target Career & Quick Links -->
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 mb-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="mb-3"><i class="bi bi-briefcase-fill text-primary me-2"></i>Target Career</h4>
+                                <label class="form-label text-secondary small fw-bold">Select Target Path</label>
+                                <select id="pg-target-career" class="form-select glass-input mb-3" onchange="onPortfolioCareerChange()">
+                                    <option value="Full Stack Developer">Full Stack Developer</option>
+                                    <option value="AI Engineer">AI Engineer</option>
+                                    <option value="Python Developer">Python Developer</option>
+                                    <option value="Data Scientist">Data Scientist</option>
+                                    <option value="Data Analyst">Data Analyst</option>
+                                    <option value="Java Developer">Java Developer</option>
+                                    <option value="Web Developer">Web Developer</option>
+                                    <option value="Software Engineer">Software Engineer</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <!-- Quick links -->
+                            <div>
+                                <h5 class="text-secondary small fw-bold mb-3">Quick External Links</h5>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <button class="btn btn-sm btn-outline-light w-100 text-xs py-2 border-secondary" onclick="openPortfolioProfile('linkedin')">
+                                            <i class="bi bi-linkedin text-primary me-1"></i> LinkedIn
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-sm btn-outline-light w-100 text-xs py-2 border-secondary" onclick="openPortfolioProfile('github')">
+                                            <i class="bi bi-github text-white me-1"></i> GitHub
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-sm btn-outline-light w-100 text-xs py-2 border-secondary" onclick="openPortfolioProfile('portfolio')">
+                                            <i class="bi bi-globe text-info me-1"></i> Portfolio
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-sm btn-outline-light w-100 text-xs py-2 border-secondary" onclick="openPortfolioProfile('resume')">
+                                            <i class="bi bi-file-earmark-person text-success me-1"></i> Resume
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Readiness Score Gauge -->
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 mb-4 text-center">
+                            <h4 class="mb-2">Portfolio Readiness Score</h4>
+                            <div class="circular-progress-wrapper my-3" style="width: 140px; height: 140px;">
+                                <svg width="140" height="140">
+                                    <circle stroke="rgba(255, 255, 255, 0.05)" stroke-width="10" fill="transparent" r="58" cx="70" cy="70" />
+                                    <circle stroke="var(--primary)" stroke-width="10" stroke-dasharray="364" stroke-dashoffset="364" stroke-linecap="round" fill="transparent" r="58" cx="70" cy="70" id="pg-readiness-circle" />
+                                </svg>
+                                <div class="circular-progress-text text-primary" style="font-size: 2rem;" id="pg-readiness-score">0%</div>
+                            </div>
+                            <div class="badge px-3 py-2 fs-6 mb-1" id="pg-readiness-badge" style="background: rgba(99,102,241,0.2); color: var(--primary);">Needs Improvement</div>
+                        </div>
+                    </div>
+
+                    <!-- Score Breakdown Progress Bars -->
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 mb-4 h-100">
+                            <h4 class="mb-3">Readiness Breakdown</h4>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-sm mb-1">
+                                    <span>LinkedIn Profile</span>
+                                    <span class="fw-bold" id="pg-breakdown-linkedin">0/100</span>
+                                </div>
+                                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                    <div class="progress-bar bg-primary" id="pg-bar-linkedin" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-sm mb-1">
+                                    <span>GitHub Profile</span>
+                                    <span class="fw-bold" id="pg-breakdown-github">0/100</span>
+                                </div>
+                                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                    <div class="progress-bar bg-info" id="pg-bar-github" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-sm mb-1">
+                                    <span>Personal Portfolio</span>
+                                    <span class="fw-bold" id="pg-breakdown-portfolio">0/100</span>
+                                </div>
+                                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                    <div class="progress-bar bg-warning" id="pg-bar-portfolio" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-sm mb-1">
+                                    <span>Resume Optimization</span>
+                                    <span class="fw-bold" id="pg-breakdown-resume">0/100</span>
+                                </div>
+                                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                    <div class="progress-bar bg-success" id="pg-bar-resume" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-0">
+                                <div class="d-flex justify-content-between text-sm mb-1">
+                                    <span>Technical Projects</span>
+                                    <span class="fw-bold" id="pg-breakdown-projects">0/100</span>
+                                </div>
+                                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                    <div class="progress-bar bg-danger" id="pg-bar-projects" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DYNAMIC ADVICE & CHECKLIST LAYOUT -->
+                <div class="row g-4 mb-4">
+                    <!-- Dynamic Checklist -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h4 class="mb-3"><i class="bi bi-check2-square text-success me-2"></i>Interactive Checklist</h4>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-secondary small fw-bold" id="pg-checklist-summary">0 / 8 Completed</span>
+                                <span class="badge bg-success" id="pg-checklist-pct">0%</span>
+                            </div>
+                            <div class="progress mb-4" style="height: 8px; background: rgba(255,255,255,0.05);">
+                                <div class="progress-bar bg-success" id="pg-checklist-progress" style="width: 0%"></div>
+                            </div>
+
+                            <ul class="list-group list-group-flush bg-transparent">
+                                <li class="list-group-item bg-transparent text-white px-0 py-2 border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>LinkedIn Profile</span>
+                                    <select class="form-select form-select-sm glass-input w-auto border-secondary py-1" id="chk-linkedin" onchange="onChecklistChange()">
+                                        <option value="Needs Improvement">Needs Improvement</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Complete">Complete</option>
+                                    </select>
+                                </li>
+                                <li class="list-group-item bg-transparent text-white px-0 py-2 border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>GitHub Profile</span>
+                                    <select class="form-select form-select-sm glass-input w-auto border-secondary py-1" id="chk-github" onchange="onChecklistChange()">
+                                        <option value="Needs Improvement">Needs Improvement</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Complete">Complete</option>
+                                    </select>
+                                </li>
+                                <li class="list-group-item bg-transparent text-white px-0 py-2 border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>Personal Portfolio</span>
+                                    <select class="form-select form-select-sm glass-input w-auto border-secondary py-1" id="chk-portfolio" onchange="onChecklistChange()">
+                                        <option value="Needs Improvement">Needs Improvement</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Complete">Complete</option>
+                                    </select>
+                                </li>
+                                <li class="list-group-item bg-transparent text-white px-0 py-2 border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>Resume</span>
+                                    <select class="form-select form-select-sm glass-input w-auto border-secondary py-1" id="chk-resume" onchange="onChecklistChange()">
+                                        <option value="Needs Improvement">Needs Improvement</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Complete">Complete</option>
+                                    </select>
+                                </li>
+                                <li class="list-group-item bg-transparent text-white px-0 py-2 border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>Projects</span>
+                                    <select class="form-select form-select-sm glass-input w-auto border-secondary py-1" id="chk-projects" onchange="onChecklistChange()">
+                                        <option value="Needs Improvement">Needs Improvement</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Complete">Complete</option>
+                                    </select>
+                                </li>
+                                <li class="list-group-item bg-transparent text-white px-0 py-2 border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>Certifications</span>
+                                    <select class="form-select form-select-sm glass-input w-auto border-secondary py-1" id="chk-certifications" onchange="onChecklistChange()">
+                                        <option value="Needs Improvement">Needs Improvement</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Complete">Complete</option>
+                                    </select>
+                                </li>
+                                <li class="list-group-item bg-transparent text-white px-0 py-2 border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>Achievements</span>
+                                    <select class="form-select form-select-sm glass-input w-auto border-secondary py-1" id="chk-achievements" onchange="onChecklistChange()">
+                                        <option value="Needs Improvement">Needs Improvement</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Complete">Complete</option>
+                                    </select>
+                                </li>
+                                <li class="list-group-item bg-transparent text-white px-0 py-2 border-0 d-flex justify-content-between align-items-center">
+                                    <span>Professional Profile</span>
+                                    <select class="form-select form-select-sm glass-input w-auto border-secondary py-1" id="chk-profile" onchange="onChecklistChange()">
+                                        <option value="Needs Improvement">Needs Improvement</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Complete">Complete</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- AI Recommendation Priority -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h4 class="mb-3"><i class="bi bi-flag-fill text-warning me-2"></i>What Should I Improve First?</h4>
+                            <p class="text-secondary small">Your prioritized actions based on checklist categories status.</p>
+                            <div class="d-flex flex-column gap-3" id="pg-priorities-container">
+                                <div class="p-3 rounded border border-danger border-opacity-20 bg-danger bg-opacity-10">
+                                    <span class="badge bg-danger text-xs mb-1">HIGH PRIORITY</span>
+                                    <div class="fw-bold text-white text-sm">Add dynamic details to see priorities...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLATFORM SECTION DETAILS -->
+                <div class="row g-4 mb-4">
+                    <!-- LinkedIn Guidance Card -->
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="mb-3 text-primary"><i class="bi bi-linkedin me-2"></i>LinkedIn Profile</h4>
+                                <ul class="list-unstyled text-secondary small mb-4">
+                                    <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Professional profile photo</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Professional headline</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Strong About section</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Relevant technical skills</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Projects added</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Internship/experience added</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Certifications added</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Achievements added</li>
+                                    <li class="mb-0"><i class="bi bi-check2 text-primary me-2"></i>Contact information</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <label class="form-label text-secondary small fw-bold">LinkedIn Profile URL</label>
+                                <input type="url" id="pg-url-linkedin" class="form-control glass-input mb-3" placeholder="https://linkedin.com/in/username" onchange="saveProfileUrl('linkedin', this.value)">
+                                <button class="btn btn-primary-custom w-100" onclick="openPortfolioProfile('linkedin')">
+                                    Open LinkedIn <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GitHub Guidance Card -->
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="mb-3 text-white"><i class="bi bi-github me-2"></i>GitHub Profile</h4>
+                                <div style="max-height: 250px; overflow-y: auto;" class="pe-1">
+                                    <ul class="list-unstyled text-secondary small mb-4">
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Professional username</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Profile bio</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Profile README</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Pinned repositories</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Clean repository names</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Good README files</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Project screenshots</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Installation instructions</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Technologies listed</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>Consistent commits</li>
+                                        <li class="mb-2"><i class="bi bi-check2 text-info me-2"></i>No unnecessary files</li>
+                                        <li class="mb-0"><i class="bi bi-check2 text-info me-2"></i>Proper project documentation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label text-secondary small fw-bold">GitHub Profile URL</label>
+                                <input type="url" id="pg-url-github" class="form-control glass-input mb-3" placeholder="https://github.com/username" onchange="saveProfileUrl('github', this.value)">
+                                <button class="btn btn-primary-custom w-100" onclick="openPortfolioProfile('github')" style="background: linear-gradient(135deg, #475569 0%, #1e293b 100%); border: none;">
+                                    Open GitHub <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resume Guidance Card -->
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="mb-3 text-success"><i class="bi bi-file-earmark-person me-2"></i>Resume Checklist</h4>
+                                <ul class="list-unstyled text-secondary small mb-4">
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Professional summary</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Technical skills</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Projects</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Internship</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Education</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Certifications</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Achievements</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>GitHub link</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>LinkedIn link</li>
+                                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Portfolio link</li>
+                                    <li class="mb-0"><i class="bi bi-check2 text-success me-2"></i>ATS-friendly formatting</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <label class="form-label text-secondary small fw-bold">Upload/Analyze Resume</label>
+                                <div class="d-flex gap-2 mb-2">
+                                    <input type="file" id="pg-resume-file" class="form-control glass-input text-xs" style="padding: 8px 12px;">
+                                    <button type="button" class="btn btn-sm btn-success" id="pg-resume-upload-btn" onclick="uploadPortfolioResume(event)">Upload</button>
+                                </div>
+                                <small id="pg-resume-upload-status" class="text-secondary text-xs d-block mb-2"></small>
+                                <input type="url" id="pg-url-resume" class="form-control glass-input mb-1 text-xs" placeholder="Or paste Resume Drive Link" onchange="saveProfileUrl('resume', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PORTFOLIO RECOMMENDATIONS BY CAREER -->
+                <div class="row g-4 mb-4">
+                    <!-- Personal Portfolio Guidance -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h4 class="mb-3"><i class="bi bi-window-sidebar text-info me-2"></i>Personal Portfolio Template</h4>
+                            <p class="text-secondary small mb-3">Sections and target content recommended for your selected career.</p>
+                            <div class="accordion accordion-flush" id="pg-portfolio-sections-accordion">
+                                <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-home">
+                                            🏠 Home / Landing Page
+                                        </button>
+                                    </h2>
+                                    <div id="sec-home" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-home">
+                                            Clean landing section featuring a high-impact technical tagline and quick links to contact details.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-about">
+                                            👩‍💻 About Me
+                                        </button>
+                                    </h2>
+                                    <div id="sec-about" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-about">
+                                            Brief description detailing core technical motivations, focus areas, and learning history.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-skills">
+                                            🛠 Skills Map
+                                        </button>
+                                    </h2>
+                                    <div id="sec-skills" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-skills">
+                                            Categorized list of tools and languages. Highlight frameworks and operational architectures.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-projects">
+                                            💼 Project Showcase
+                                        </button>
+                                    </h2>
+                                    <div id="sec-projects" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-projects">
+                                            Present 3-5 high-quality projects containing stack, problem statement, features, and source repository.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-intern">
+                                            🏢 Internship & Experience
+                                        </button>
+                                    </h2>
+                                    <div id="sec-intern" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-intern">
+                                            Previous internships, open-source achievements, or technical freelance client mappings.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-certs">
+                                            📜 Certifications
+                                        </button>
+                                    </h2>
+                                    <div id="sec-certs" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-certs">
+                                            Professional certification badges mapping to cloud architecture or programming courses.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-achieve">
+                                            🏆 Achievements & Hackathons
+                                        </button>
+                                    </h2>
+                                    <div id="sec-achieve" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-achieve">
+                                            Technical coding competition ranks, hackathon placements, or academic milestone achievements.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-secondary border-opacity-10">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-resume">
+                                            📄 Integrated Resume
+                                        </button>
+                                    </h2>
+                                    <div id="sec-resume" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-resume">
+                                            Easily accessible PDF download option for ATS-optimized resume directly inside standard site header.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-0">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-transparent text-white text-sm fw-bold border-0 shadow-none py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#sec-contact">
+                                            📞 Contact Channel
+                                        </button>
+                                    </h2>
+                                    <div id="sec-contact" class="accordion-collapse collapse" data-bs-parent="#pg-portfolio-sections-accordion">
+                                        <div class="accordion-body px-0 py-2 text-secondary small" id="advice-contact">
+                                            Provide mail links, interactive web forms, or LinkedIn message portal icons.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Showcase Guidance -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="mb-3"><i class="bi bi-code-square text-accent me-2"></i>Project Showcase Presentation</h4>
+                                <p class="text-secondary small mb-3">Submit a single project details to see AI suggestions on how to showcase it professionally.</p>
+                                <div class="row g-2">
+                                    <div class="col-md-6 mb-2">
+                                        <label class="form-label text-secondary text-xs fw-bold">Project Name</label>
+                                        <input type="text" id="pg-proj-name" class="form-control glass-input py-1 text-xs" placeholder="e.g. Chat Engine" oninput="evaluateShowcaseProject()">
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label class="form-label text-secondary text-xs fw-bold">Tech Stack</label>
+                                        <input type="text" id="pg-proj-tech" class="form-control glass-input py-1 text-xs" placeholder="e.g. FastAPI, WebSockets" oninput="evaluateShowcaseProject()">
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <label class="form-label text-secondary text-xs fw-bold">Problem Statement</label>
+                                        <input type="text" id="pg-proj-problem" class="form-control glass-input py-1 text-xs" placeholder="What pain point does this solve?" oninput="evaluateShowcaseProject()">
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <label class="form-label text-secondary text-xs fw-bold">Key Features</label>
+                                        <input type="text" id="pg-proj-features" class="form-control glass-input py-1 text-xs" placeholder="e.g. Live messaging, rate limiting" oninput="evaluateShowcaseProject()">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-secondary text-xs fw-bold">GitHub URL</label>
+                                        <input type="url" id="pg-proj-github" class="form-control glass-input py-1 text-xs" placeholder="https://github.com/..." oninput="evaluateShowcaseProject()">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-secondary text-xs fw-bold">Live Demo URL</label>
+                                        <input type="url" id="pg-proj-demo" class="form-control glass-input py-1 text-xs" placeholder="https://demo.com/..." oninput="evaluateShowcaseProject()">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label text-secondary text-xs fw-bold">Role / Contribution</label>
+                                        <input type="text" id="pg-proj-role" class="form-control glass-input py-1 text-xs" placeholder="e.g. Sole developer" oninput="evaluateShowcaseProject()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div id="pg-showcase-advice" class="p-3 rounded text-secondary small bg-opacity-10 bg-info border border-info border-opacity-10">
+                                    Please enter project details above to dynamically generate guidance tips.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI PORTFOLIO ANALYZER CARD -->
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="glass-panel p-4">
+                            <h4 class="mb-3"><i class="bi bi-cpu-fill text-primary me-2"></i>AI Portfolio Analyzer</h4>
+                            <p class="text-secondary small mb-4">Leverage Gemini AI to analyze all details of your portfolio presence and output actionable items.</p>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label text-secondary small fw-bold">Experience Level</label>
+                                    <select id="an-experience" class="form-select glass-input">
+                                        <option value="Beginner">Beginner / Student</option>
+                                        <option value="Intermediate">Intermediate (1-3 yrs)</option>
+                                        <option value="Advanced">Advanced (4+ yrs)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label text-secondary small fw-bold">Current Skills (Comma Separated)</label>
+                                    <input type="text" id="an-skills" class="form-control glass-input" placeholder="e.g. Python, SQL, Git, HTML/CSS">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-secondary small fw-bold">Number of Projects</label>
+                                    <input type="number" id="an-projects-count" class="form-control glass-input" value="1" min="0">
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button class="btn btn-primary-custom w-100 py-3" onclick="triggerAIPortfolioAnalyzer()" id="pg-analyzer-btn">
+                                        ✨ Generate AI Guidance
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- AI Output Sections -->
+                            <div id="pg-analyzer-output" class="d-none mt-4 border-top border-secondary border-opacity-10 pt-4">
+                                <h5 class="fw-bold mb-3 text-white">Gemini AI Audit Readiness Report</h5>
+                                
+                                <div class="row g-4">
+                                    <div class="col-md-4">
+                                        <div class="p-3 rounded h-100" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25);">
+                                            <h6 class="fw-bold text-success text-xs mb-2">PORTFOLIO STRENGTHS</h6>
+                                            <ul class="ps-3 mb-0 small" style="color: rgba(255, 255, 255, 0.85);" id="an-out-strengths"></ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-3 rounded h-100" style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.25);">
+                                            <h6 class="fw-bold text-warning text-xs mb-2">WEAK AREAS & MISSING ELEMENTS</h6>
+                                            <ul class="ps-3 mb-0 small" style="color: rgba(255, 255, 255, 0.85);" id="an-out-weaknesses"></ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-3 rounded h-100" style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.25);">
+                                            <h6 class="fw-bold text-danger text-xs mb-2">PRIORITY ACTIONS</h6>
+                                            <ul class="ps-3 mb-0 small" style="color: rgba(255, 255, 255, 0.85);" id="an-out-priority"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row g-4 mt-1">
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded h-100" style="background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.25); color: rgba(255, 255, 255, 0.85);">
+                                            <h6 class="fw-bold text-info text-xs mb-2">RECOMMENDED PROFILE UPGRADES</h6>
+                                            <div class="small mb-1"><strong>LinkedIn:</strong> <span id="an-out-linkedin"></span></div>
+                                            <div class="small mb-1"><strong>GitHub:</strong> <span id="an-out-github"></span></div>
+                                            <div class="small mb-1"><strong>Resume:</strong> <span id="an-out-resume"></span></div>
+                                            <div class="small text-truncate"><strong>Portfolio:</strong> <span id="an-out-portfolio"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded h-100" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.25);">
+                                            <h6 class="fw-bold text-primary text-xs mb-2">RECOMMENDED PROJECTS</h6>
+                                            <ul class="ps-3 mb-0 small" style="color: rgba(255, 255, 255, 0.85);" id="an-out-projects"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <!-- 🌟 GLOBAL WEBSITE FOOTER 🌟 -->
@@ -1486,45 +3819,55 @@
     <!-- AUTHENTICATION DIALOG (Login / Register Modal) -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
+            <div class="modal-content glass-panel p-4 text-white"
+                style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
                 <div class="modal-header border-0 pb-0">
                     <h3 class="modal-title fw-bold" id="auth-modal-title">Welcome Back</h3>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="resetAuthError()"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"
+                        onclick="resetAuthError()"></button>
                 </div>
                 <div class="modal-body">
                     <form id="auth-form" onsubmit="executeAuthAction(event)">
                         <div class="mb-3">
                             <label class="form-label">Email Address</label>
-                            <input type="email" id="auth-email" class="form-control glass-input" placeholder="student@aimentor.com" required>
+                            <input type="email" id="auth-email" class="form-control glass-input"
+                                placeholder="student@aimentor.com" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input type="password" id="auth-password" class="form-control glass-input" placeholder="••••••••" required>
+                            <input type="password" id="auth-password" class="form-control glass-input"
+                                placeholder="••••••••" required>
                         </div>
                         <div class="mb-3 d-none" id="auth-name-fields">
                             <div class="row">
                                 <div class="col">
                                     <label class="form-label">First Name</label>
-                                    <input type="text" id="auth-fname" class="form-control glass-input" placeholder="John">
+                                    <input type="text" id="auth-fname" class="form-control glass-input"
+                                        placeholder="John">
                                 </div>
                                 <div class="col">
                                     <label class="form-label">Last Name</label>
-                                    <input type="text" id="auth-lname" class="form-control glass-input" placeholder="Doe">
+                                    <input type="text" id="auth-lname" class="form-control glass-input"
+                                        placeholder="Doe">
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3 d-none" id="auth-otp-field">
                             <label class="form-label text-warning">OTP Verification Code</label>
-                            <input type="text" id="auth-otp" class="form-control glass-input" placeholder="123456" minlength="6" maxlength="6">
-                            <small class="text-info d-block mt-2"><i class="bi bi-info-circle-fill me-1"></i> Check the python server terminal logs to retrieve your simulated 6-digit OTP code.</small>
+                            <input type="text" id="auth-otp" class="form-control glass-input" placeholder="123456"
+                                minlength="6" maxlength="6">
+                            <small class="text-info d-block mt-2"><i class="bi bi-info-circle-fill me-1"></i> Check the
+                                python server terminal logs to retrieve your simulated 6-digit OTP code.</small>
                         </div>
                         <div id="auth-error-block" class="alert alert-danger d-none mt-2"></div>
-                        <button type="submit" class="btn btn-primary-custom w-100 mt-3" id="auth-submit-btn">Login</button>
+                        <button type="submit" class="btn btn-primary-custom w-100 mt-3"
+                            id="auth-submit-btn">Login</button>
                     </form>
                 </div>
                 <div class="modal-footer border-0 pt-0 justify-content-center">
                     <span id="auth-toggle-msg" class="text-secondary">Don't have an account?</span>
-                    <a href="#" class="text-primary fw-bold" id="auth-toggle-link" onclick="toggleAuthMode()">Register Now</a>
+                    <a href="#" class="text-primary fw-bold" id="auth-toggle-link" onclick="toggleAuthMode()">Register
+                        Now</a>
                 </div>
             </div>
         </div>
@@ -2052,6 +4395,8 @@
 
     <!-- Bootstrap 5 JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js for AI Career Coach Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Core Application Logic Bundle -->
     <script src="/static/js/main.js?v=31.0.0"></script>
 </body>

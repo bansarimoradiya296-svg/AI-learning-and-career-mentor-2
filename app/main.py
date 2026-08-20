@@ -22,7 +22,7 @@ from app.models.auth import Role, Permission, User, UserSession, LoginHistory, A
 from app.models.study import Document, Flashcard, Course, Topic, Chapter, Quiz, Question, QuizResult, MindMap, PlannerProfile, PlannerActivity, PlannerGoal, PlannerStreak
 from app.models.coding import CodingProblem, CodingSubmission
 from app.models.career import CareerGoal, Roadmap, RecommendedProject, Certification
-from app.models.interview import InterviewSession, InterviewMessage, InterviewReport
+from app.models.interview import InterviewSession, InterviewMessage, InterviewReport, PortfolioProject
 from app.models.billing import Subscription, Payment, Badge, UserAchievement
 
 # Setup roles and permissions list for database seeding
@@ -114,30 +114,13 @@ async def lifespan(app: FastAPI):
     # Startup actions
     # Auto create tables if running in development (fallback if migration is skipped)
     from app.core import database
-    global engine, AsyncSessionLocal
     try:
         async with database.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
     except Exception as db_err:
-        print(f"Database connection failed: {db_err}")
-        print("Falling back to local SQLite database: file:///c:/Users/JEMIN/Desktop/carear/ai_mentor.db")
-        from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-        sqlite_url = "sqlite+aiosqlite:///./ai_mentor.db"
-        sqlite_engine = create_async_engine(
-            sqlite_url,
-            connect_args={"check_same_thread": False}
-        )
-        # Override module-level database variables
-        database.engine = sqlite_engine
-        database.AsyncSessionLocal = async_sessionmaker(
-            bind=sqlite_engine,
-            class_=AsyncSession,
-            expire_on_commit=False,
-            autocommit=False,
-            autoflush=False
-        )
-        async with sqlite_engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+        print(f"Database connection/initialization failed: {db_err}")
+        print("Please ensure your PostgreSQL server is running and database configuration is correct.")
+        raise db_err
 
     await seed_database()
     yield

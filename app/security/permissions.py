@@ -49,6 +49,33 @@ async def get_current_user(
     return user
 
 
+async def get_optional_current_user(
+    credentials: HTTPAuthorizationCredentials = Security(security_scheme),
+    db: AsyncSession = Depends(get_db)
+) -> User | None:
+    """
+    Extracts access token from request header if present, validates it, and fetches the User.
+    Returns None if credentials are missing or invalid, without raising 401.
+    """
+    if not credentials:
+        return None
+    try:
+        token = credentials.credentials
+        payload = decode_access_token(token)
+        user_id_str = payload.get("sub")
+        if not user_id_str:
+            return None
+        user_uuid = uuid.UUID(user_id_str)
+        result = await db.execute(select(User).filter(User.id == user_uuid))
+        user = result.scalars().first()
+        if user and user.is_active:
+            return user
+    except Exception:
+        pass
+    return None
+
+
+
 async def get_current_verified_user(
     current_user: User = Depends(get_current_user)
 ) -> User:

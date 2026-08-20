@@ -9,8 +9,9 @@ from app.core.database import get_db
 from app.core import database
 from app.core.exceptions import NotFoundError, BadRequestError, AuthError
 from app.models.auth import User
-from app.models.interview import InterviewSession, InterviewMessage, InterviewReport
+from app.models.interview import InterviewSession, InterviewMessage, InterviewReport, PortfolioProject
 from app.schemas.interview import InterviewSessionResponse, InterviewSessionRequest, InterviewReportResponse
+from app.schemas.portfolio import PortfolioProjectRequest, PortfolioProjectResponse
 from app.services.interview_coach import InterviewCoachService
 from app.security.permissions import get_current_user
 from app.security.auth_handler import decode_access_token
@@ -36,7 +37,10 @@ async def create_interview_session(
     stmt = (
         select(InterviewSession)
         .filter(InterviewSession.id == session.id)
-        .options(selectinload(InterviewSession.messages))
+        .options(
+            selectinload(InterviewSession.messages),
+            selectinload(InterviewSession.report)
+        )
     )
     result = await db.execute(stmt)
     return result.scalars().first()
@@ -78,7 +82,14 @@ async def get_session_details(
 
 
 @router.websocket("/ws/{session_id}")
-async def interview_websocket(websocket: WebSocket, session_id: uuid.UUID, token: str = Query(None)):
+async def interview_websocket(
+    websocket: WebSocket,
+    session_id: uuid.UUID,
+    token: str = Query(None),
+    difficulty: str = Query("MEDIUM"),
+    duration: int = Query(30),
+    language: str = Query("ENGLISH")
+):
     """
     WebSocket endpoint handling real-time interview discussions.
     Verifies JWT token, loads session logs, and streams dynamic interviewer questions.
@@ -124,7 +135,7 @@ async def interview_websocket(websocket: WebSocket, session_id: uuid.UUID, token
         
         # If no messages, seed greeting
         if not messages:
-            greeting = await coach.generate_first_question(session)
+            greeting = await coach.generate_first_question(session, difficulty=difficulty, language=language)
             await db.commit()
             await websocket.send_json({"sender": "INTERVIEWER", "text": greeting})
         else:
@@ -159,7 +170,12 @@ async def interview_websocket(websocket: WebSocket, session_id: uuid.UUID, token
                     break
                 
                 # Process response and yield next question
-                next_question = await coach.process_response_and_ask_next(session, student_response=data)
+                next_question = await coach.process_response_and_ask_next(
+                    session,
+                    student_response=data,
+                    difficulty=difficulty,
+                    language=language
+                )
                 await db.commit()
                 
                 await websocket.send_json({"sender": "INTERVIEWER", "text": next_question})
@@ -174,3 +190,60 @@ async def interview_websocket(websocket: WebSocket, session_id: uuid.UUID, token
                 await websocket.close()
             except Exception:
                 pass
+
+
+@router.get("/portfolio", response_model=List[PortfolioProjectResponse])
+async def list_portfolio_projects(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Retrieves all analyzed portfolio projects for the student."""
+    stmt = select(PortfolioProject).filter(PortfolioProject.user_id == current_user.id).order_by(PortfolioProject.created_at.desc())
+    result = await db.execute(stmt)
+    return result.scalars().all()
+
+
+@router.post("/portfolio", response_model=PortfolioProjectResponse, status_code=status.HTTP_201_CREATED)
+async def add_portfolio_project(
+    payload: PortfolioProjectRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Evaluates a new portfolio project using AI and saves it."""
+    coach = InterviewCoachService(db)
+    score, feedback = await coach.evaluate_portfolio_project(
+        title=payload.title,
+        tech_stack=payload.tech_stack,
+        description=payload.description
+    )
+    
+    project = PortfolioProject(
+        user_id=current_user.id,
+        title=payload.title,
+        tech_stack=payload.tech_stack,
+        description=payload.description,
+        github_url=payload.github_url,
+        score=score,
+        feedback=feedback
+    )
+    db.add(project)
+    await db.commit()
+    await db.refresh(project)
+    return project
+
+
+@router.delete("/portfolio/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_portfolio_project(
+    project_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Deletes a portfolio project from the system."""
+    stmt = select(PortfolioProject).filter(PortfolioProject.id == project_id, PortfolioProject.user_id == current_user.id)
+    result = await db.execute(stmt)
+    project = result.scalars().first()
+    if not project:
+        raise NotFoundError("Portfolio project not found")
+    await db.delete(project)
+    await db.commit()
+    return

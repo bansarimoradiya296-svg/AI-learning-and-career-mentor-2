@@ -29,3 +29,34 @@ class CodingSubmissionResponse(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class CodingChatRequest(BaseModel):
+    message: str
+    history: List[Dict] = []
+
+
+class CodingDebugRequest(BaseModel):
+    code_or_error: str
+
+
+class CodeExplainRequest(BaseModel):
+    code: str
+    language: str
+
+
+class CodeConvertRequest(BaseModel):
+    code: str
+    from_language: str
+    to_language: str
+
+
+class CodingQuizRequest(BaseModel):
+    topic: str
+    difficulty: str
+    num_questions: int
+
+
+class CodingRoadmapRequest(BaseModel):
+    goal: str
+

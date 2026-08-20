@@ -29,9 +29,9 @@ class InterviewCoachService:
         await self.db.flush()
         return session
 
-    async def generate_first_question(self, session: InterviewSession) -> str:
+    async def generate_first_question(self, session: InterviewSession, difficulty: str = "MEDIUM", language: str = "ENGLISH") -> str:
         """
-        Generates the opening greeting and first question based on interview type.
+        Generates the opening greeting and first question based on interview type, difficulty, and language.
         """
         role_mapping = {
             "TECHNICAL": "Software Engineer (Backend)",
@@ -42,8 +42,10 @@ class InterviewCoachService:
         target_role = role_mapping.get(session.type, "Software Engineer")
 
         prompt = (
-            f"You are an expert interviewer conducting a '{session.type}' mock interview for a '{target_role}' role.\n"
-            f"Start the interview. Greet the candidate and ask the first question to begin.\n"
+            f"You are conducting a '{session.type}' mock interview for a candidate seeking a '{target_role}' role.\n"
+            f"Set the interview difficulty strictly to '{difficulty}' level.\n"
+            f"You MUST conduct the interview and ask all questions entirely in the '{language}' language.\n"
+            f"Start the interview now. Greet the candidate in '{language}', and ask the first question to begin.\n"
             f"Keep your response concise, conversational, and direct (max 3 sentences)."
         )
 
@@ -64,9 +66,9 @@ class InterviewCoachService:
         await self.db.flush()
         return question
 
-    async def process_response_and_ask_next(self, session: InterviewSession, student_response: str) -> str:
+    async def process_response_and_ask_next(self, session: InterviewSession, student_response: str, difficulty: str = "MEDIUM", language: str = "ENGLISH") -> str:
         """
-        Logs the student's answer, fetches conversation history, and compiles the interviewer's next follow-up.
+        Logs the student's answer, fetches conversation history, and compiles the interviewer's next follow-up tailored to difficulty and language.
         """
         # Save student message
         student_msg = InterviewMessage(
@@ -95,6 +97,7 @@ class InterviewCoachService:
         prompt = (
             f"You are conducting a '{session.type}' mock interview. Below is the transcript of the conversation so far:\n"
             f"{history_text}\n\n"
+            f"The interview difficulty is '{difficulty}' level, and you MUST speak and ask questions only in the '{language}' language.\n"
             f"Evaluate the candidate's last answer and ask the next logical follow-up question. "
             f"Do not give explicit grading feedback yet. Remain in interviewer character.\n"
             f"Keep your question/response concise, conversational, and direct (max 4 sentences)."
@@ -148,9 +151,9 @@ class InterviewCoachService:
             f"You are a Senior Recruiter and Technical Assessment Specialist.\n"
             f"Examine the interview transcript below and rate the candidate.\n\n"
             f"Transcript:\n{history_text}\n\n"
-            f"Respond ONLY with a JSON object in this format:\n"
+            f"Respond ONLY with a valid JSON object in this format:\n"
             f'{{\n'
-            f'  "technical_score": 82, // scale 1-100\n'
+            f'  "technical_score": 82,\n'
             f'  "communication_score": 75,\n'
             f'  "confidence_score": 80,\n'
             f'  "overall_score": 79,\n'
@@ -167,14 +170,39 @@ class InterviewCoachService:
             model = genai.GenerativeModel(settings.GEMINI_MODEL)
             response = model.generate_content(prompt)
             raw_text = response.text.replace("```json", "").replace("```", "").strip()
-            grading = json.loads(raw_text)
+            
+            # Remove any single-line comments in case Gemini still inserts them
+            import re
+            raw_text_clean = re.sub(r'//.*$', '', raw_text, flags=re.MULTILINE)
+            
+            grading = json.loads(raw_text_clean)
+            
+            # Ensure required keys exist and are of correct type
+            required_keys = ["technical_score", "communication_score", "confidence_score", "overall_score"]
+            for k in required_keys:
+                if k not in grading:
+                    grading[k] = 70.0
+                else:
+                    try:
+                        grading[k] = float(grading[k])
+                    except (ValueError, TypeError):
+                        grading[k] = 70.0
+            
+            if "evaluation_summary" not in grading or not isinstance(grading["evaluation_summary"], dict):
+                grading["evaluation_summary"] = {}
+                
+            summary = grading["evaluation_summary"]
+            for subkey in ["strengths", "weaknesses", "suggestions"]:
+                if subkey not in summary or not isinstance(summary[subkey], list):
+                    summary[subkey] = []
+                    
         except Exception as e:
             print(f"Failed to generate grading report: {e}")
             grading = {
-                "technical_score": 70,
-                "communication_score": 70,
-                "confidence_score": 70,
-                "overall_score": 70,
+                "technical_score": 70.0,
+                "communication_score": 70.0,
+                "confidence_score": 70.0,
+                "overall_score": 70.0,
                 "evaluation_summary": {
                     "strengths": ["Completed mock run"],
                     "weaknesses": ["Analysis compilation failure"],
@@ -193,3 +221,60 @@ class InterviewCoachService:
         self.db.add(report)
         await self.db.flush()
         return report
+
+    async def evaluate_portfolio_project(self, title: str, tech_stack: str, description: str) -> Tuple[float, dict]:
+        """
+        Uses Gemini to assess the portfolio project's mock-interview preparation depth,
+        generating likely questions, STAR talking points, and architectural recommendations.
+        """
+        from typing import Tuple
+        prompt = (
+            f"You are a Principal Software Architect and Senior Technical Interviewer.\n"
+            f"Evaluate the candidate's portfolio project based on the details below:\n"
+            f"Project Title: {title}\n"
+            f"Tech Stack: {tech_stack}\n"
+            f"Description: {description}\n\n"
+            f"Generate a mock interview preparation guide for this project.\n"
+            f"Provide the assessment in JSON format with the following keys:\n"
+            f'  "score": a number from 0 to 100 representing the project\'s strength and depth for a professional portfolio,\n'
+            f'  "key_questions": an array of 3-5 technical questions an interviewer is highly likely to ask about this project,\n'
+            f'  "star_points": an array of key achievements/architecture points the candidate should highlight using the STAR method (Situation, Task, Action, Result),\n'
+            f'  "improvements": an array of actionable suggestions/features the candidate can add to make this project look more professional (e.g. CI/CD, caching, indexing, dockerization).\n\n'
+            f"Return raw JSON text only. Do not include markdown formatting or comments."
+        )
+
+        try:
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            response = model.generate_content(prompt)
+            raw_text = response.text.replace("```json", "").replace("```", "").strip()
+            
+            import re
+            raw_text_clean = re.sub(r'//.*$', '', raw_text, flags=re.MULTILINE)
+            
+            result = json.loads(raw_text_clean)
+            score = float(result.get("score", 70.0))
+            feedback = {
+                "key_questions": result.get("key_questions", []),
+                "star_points": result.get("star_points", []),
+                "improvements": result.get("improvements", [])
+            }
+        except Exception as e:
+            print(f"Failed to generate portfolio project evaluation: {e}")
+            score = 70.0
+            feedback = {
+                "key_questions": [
+                    f"Can you walk us through the system architecture of {title}?",
+                    "What was the most challenging technical roadblock you hit while building this?"
+                ],
+                "star_points": [
+                    f"Initiated {title} to explore integrating modern tools like {tech_stack}.",
+                    "Structured logic components cleanly for maintainability and modular deployment."
+                ],
+                "improvements": [
+                    "Add comprehensive unit testing suite using pytest.",
+                    "Document installation, API endpoints, and configuration options in a clean README."
+                ]
+            }
+
+        return score, feedback
+
