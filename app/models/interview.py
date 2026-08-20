@@ -54,3 +54,18 @@ class InterviewReport(Base):
 
     # Relationships
     session: Mapped[InterviewSession] = relationship("InterviewSession", back_populates="report")
+
+
+class PortfolioProject(Base):
+    __tablename__ = "portfolio_projects"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    tech_stack: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    github_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    score: Mapped[float] = mapped_column(Float, default=70.0)
+    feedback: Mapped[dict] = mapped_column(JSON, nullable=False) # Evaluated questions, STAR points, improvements
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+

@@ -22,7 +22,7 @@ from app.models.auth import Role, Permission, User, UserSession, LoginHistory, A
 from app.models.study import Document, Flashcard, Course, Topic, Chapter, Quiz, Question, QuizResult
 from app.models.coding import CodingProblem, CodingSubmission
 from app.models.career import CareerGoal, Roadmap, RecommendedProject, Certification
-from app.models.interview import InterviewSession, InterviewMessage, InterviewReport
+from app.models.interview import InterviewSession, InterviewMessage, InterviewReport, PortfolioProject
 from app.models.billing import Subscription, Payment, Badge, UserAchievement
 
 # Setup roles and permissions list for database seeding
