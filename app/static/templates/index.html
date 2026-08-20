@@ -15,47 +15,187 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Three.js 3D Engine CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Marked Markdown Parser CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Custom Style System -->
-    <link rel="stylesheet" href="/static/css/style.css?v=1.0.6">
+    <link rel="stylesheet" href="/static/css/style.css?v=31.0.0">
 </head>
+<body data-theme="dark" class="landing-active">
 
-<body data-theme="dark">
+    <!-- GLOBAL 3D CANVAS (Behind All Pages) -->
+    <canvas id="global-3d-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; opacity: 0.9;"></canvas>
+
+    <!-- 3D HERO LANDING PAGE OVERLAY -->
+    <div id="landing-hero-overlay" class="d-flex flex-column justify-content-between">
+        
+        <!-- Dedicated Landing 3D Interactive Canvas -->
+        <canvas id="landing-3d-bg-canvas"></canvas>
+
+        <!-- 🌟 1. LANDING TOP NAVIGATION HEADER 🌟 -->
+        <header class="w-100 position-relative d-flex justify-content-between align-items-center py-3 px-4 px-md-5 border-bottom border-secondary border-opacity-25" style="z-index: 10; backdrop-filter: blur(12px); background: rgba(15, 23, 42, 0.4);">
+            <div class="d-flex align-items-center gap-3">
+                <div class="logo-3d-container">
+                    <span class="logo-3d-icon">🧠</span>
+                </div>
+                <div>
+                    <h5 class="logo-brand-title m-0 fw-bold" style="font-size: 1.15rem;">AI Learning & Career Mentor</h5>
+                    <small class="text-secondary fw-semibold" style="font-size: 0.68rem; letter-spacing: 0.8px;">AI-POWERED EDUCATION STUDIO</small>
+                </div>
+            </div>
+
+            <div class="d-none d-lg-flex align-items-center gap-4">
+                <button class="btn btn-sm btn-link text-secondary text-decoration-none fw-semibold p-0" onclick="enterMainDashboardFromLanding(); switchTab('study')">📚 Study Companion</button>
+                <button class="btn btn-sm btn-link text-secondary text-decoration-none fw-semibold p-0" onclick="enterMainDashboardFromLanding(); switchTab('coding')">💻 Coding Mentor</button>
+                <button class="btn btn-sm btn-link text-secondary text-decoration-none fw-semibold p-0" onclick="enterMainDashboardFromLanding(); switchTab('career')">🎯 Career Roadmap</button>
+                <button class="btn btn-sm btn-link text-secondary text-decoration-none fw-semibold p-0" onclick="enterMainDashboardFromLanding(); switchTab('interview')">🎙️ Mock Interviews</button>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-light px-3 py-2 fw-semibold rounded-pill" data-bs-toggle="modal" data-bs-target="#loginModal">🔑 Sign In</button>
+                <button class="btn btn-sm btn-primary-custom px-4 py-2 fw-bold rounded-pill shadow" onclick="enterMainDashboardFromLanding()">⭐ Launch App 🚀</button>
+            </div>
+        </header>
+
+        <!-- 🌟 2. LANDING HERO MAIN BODY 🌟 -->
+        <div class="container text-center position-relative my-auto py-5" style="z-index: 2; max-width: 960px;">
+            <!-- 3D Hero Animated Logo Badge -->
+            <div class="mb-4">
+                <div class="logo-3d-hero-box d-inline-flex align-items-center">
+                    <span class="logo-3d-hero-icon">🧠</span>
+                    <span class="logo-brand-title fs-3 fw-bold">AI Learning & Career Mentor</span>
+                </div>
+            </div>
+
+            <!-- Hero Headline -->
+            <h1 class="display-4 fw-bold text-white mb-3 landing-title-3d" style="font-family: 'Outfit', sans-serif; letter-spacing: -1px; line-height: 1.15;">
+                Empower Your Education & Career with <span class="gradient-text">Advanced AI</span>
+            </h1>
+
+            <p class="fs-5 text-secondary mb-5 mx-auto" style="max-width: 720px; line-height: 1.6;">
+                Ingest PDF syllabi, build dynamic day-by-day study schedules, explore interactive 3D concept maps, practice flashcards, and master live technical mock interviews.
+            </p>
+
+            <!-- 🌟 ⭐ PRIMARY 3D ACTION BUTTON ⭐ 🌟 -->
+            <div class="mb-5">
+                <button class="btn btn-lg btn-primary-custom px-5 py-3 fs-5 fw-bold btn-3d-hero shadow-lg" onclick="enterMainDashboardFromLanding()">
+                    <span class="me-2">⭐</span> Start Learning Now <span class="ms-2">🚀</span>
+                </button>
+                <div class="text-secondary small mt-2 opacity-75">Click to trigger 3D warp entrance into your workspace</div>
+            </div>
+
+            <!-- 3D Feature Cards Grid -->
+            <div class="row g-3 text-start mt-2">
+                <div class="col-md-4">
+                    <div class="landing-card-3d p-4 rounded-4 h-100">
+                        <span class="fs-2 d-block mb-2">📅</span>
+                        <h5 class="fw-bold text-white mb-2">AI Study Planner</h5>
+                        <p class="text-secondary small m-0">Upload multi-page PDFs to generate exact day-by-day syllabus roadmaps with 70/30 mastery time allocations.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="landing-card-3d p-4 rounded-4 h-100">
+                        <span class="fs-2 d-block mb-2">🗺️</span>
+                        <h5 class="fw-bold text-white mb-2">3D Concept Maps</h5>
+                        <p class="text-secondary small m-0">Interactive visual knowledge graphs with 1-click note generators, flashcards deck creation, and MCQ quizzes.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="landing-card-3d p-4 rounded-4 h-100">
+                        <span class="fs-2 d-block mb-2">📚</span>
+                        <h5 class="fw-bold text-white mb-2">RAG Study Companion</h5>
+                        <p class="text-secondary small m-0">Upload documents and ask AI instant questions with semantic vector search & exam note generation.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="landing-card-3d p-4 rounded-4 h-100">
+                        <span class="fs-2 d-block mb-2">📇</span>
+                        <h5 class="fw-bold text-white mb-2">Flashcards (SM-2)</h5>
+                        <p class="text-secondary small m-0">Spaced repetition memory deck with realistic 3D card flip physics for active recall learning.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="landing-card-3d p-4 rounded-4 h-100">
+                        <span class="fs-2 d-block mb-2">💻</span>
+                        <h5 class="fw-bold text-white mb-2">Coding Mentor</h5>
+                        <p class="text-secondary small m-0">Practice LeetCode-style algorithmic challenges with real-time sandbox code execution and AI hints.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="landing-card-3d p-4 rounded-4 h-100">
+                        <span class="fs-2 d-block mb-2">🎙️</span>
+                        <h5 class="fw-bold text-white mb-2">AI Mock Interviews</h5>
+                        <p class="text-secondary small m-0">Simulate real technical and behavioral interviews with instant STAR scoring, feedback, and transcripts.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🌟 3. LANDING BOTTOM FOOTER 🌟 -->
+        <footer class="w-100 position-relative pt-3 pb-3 border-top border-secondary border-opacity-25 text-secondary" style="z-index: 10; backdrop-filter: blur(12px); background: rgba(15, 23, 42, 0.4);">
+            <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="logo-3d-container" style="width: 26px; height: 26px;">
+                        <span style="font-size: 0.9rem;">🧠</span>
+                    </div>
+                    <span class="fw-bold text-white small">AI Learning & Career Mentor</span>
+                    <span class="small text-secondary d-none d-md-inline">| AI-Powered Education Studio</span>
+                </div>
+                <div class="d-flex align-items-center gap-3 small">
+                    <span>© 2026 AI Learning & Career Mentor. All rights reserved.</span>
+                    <span class="badge bg-success-subtle text-success">🟢 System Online</span>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <!-- Sidebar Navigation -->
     <div class="sidebar glass-panel d-flex flex-column justify-content-between">
         <div>
-            <div class="d-flex align-items-center mb-4 px-2">
-                <i class="bi bi-cpu-fill text-primary fs-3 me-2"></i>
-                <h4 class="logo-text m-0 fw-bold">AI Mentor</h4>
+            <div class="d-flex align-items-center mb-4 px-2 gap-2">
+                <div class="logo-3d-container">
+                    <span class="logo-3d-icon">🧠</span>
+                </div>
+                <div>
+                    <h5 class="logo-brand-title m-0 lh-1">AI Learning</h5>
+                    <small class="text-secondary fw-bold" style="font-size: 0.68rem; letter-spacing: 0.8px;">& CAREER MENTOR</small>
+                </div>
             </div>
-            <nav id="main-sidebar-nav" class="nav flex-column">
-                <a href="#" class="nav-link-custom active" onclick="switchTab('dashboard', this); return false;">
-                    <i class="bi bi-grid-1x2-fill"></i>
+            
+            <!-- Nav Items -->
+            <nav class="nav flex-column gap-1">
+                <a href="#" class="nav-link-custom d-flex align-items-center gap-2" onclick="showLandingPage()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Welcome Home</span>
+                </a>
+                <a href="#" class="nav-link-custom active d-flex align-items-center gap-2" onclick="switchTab('dashboard')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="nav-link-custom" onclick="switchTab('study', this); return false;">
-                    <i class="bi bi-book-half"></i>
+                <a href="#" class="nav-link-custom d-flex align-items-center gap-2" onclick="switchTab('study')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path></svg>
                     <span>Study Companion</span>
                 </a>
-                <a href="#" class="nav-link-custom" onclick="switchTab('coding', this); return false;">
-                    <i class="bi bi-terminal-fill"></i>
+                <a href="#" class="nav-link-custom d-flex align-items-center gap-2" onclick="switchTab('coding')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                     <span>Coding Mentor</span>
                 </a>
-                <a href="#" class="nav-link-custom" onclick="switchTab('career', this); return false;">
-                    <i class="bi bi-briefcase-fill"></i>
+                <a href="#" class="nav-link-custom d-flex align-items-center gap-2" onclick="switchTab('career')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
                     <span>Career Roadmap</span>
                 </a>
-                <a href="#" class="nav-link-custom" onclick="switchTab('interview', this); return false;">
-                    <i class="bi bi-chat-dots-fill"></i>
+                <a href="#" class="nav-link-custom d-flex align-items-center gap-2" onclick="switchTab('interview')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
                     <span>Mock Interviews</span>
                 </a>
-                <a href="#" class="nav-link-custom" onclick="switchTab('portfolio_guidance', this); return false;">
-                    <i class="bi bi-globe"></i>
-                    <span>Portfolio Guidance</span>
-                </a>
-                <a href="#" id="admin-nav" class="nav-link-custom d-none"
-                    onclick="switchTab('admin', this); return false;">
-                    <i class="bi bi-shield-lock-fill"></i>
+                <a href="#" id="admin-nav" class="nav-link-custom d-none d-flex align-items-center gap-2" onclick="switchTab('admin')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                     <span>Admin Panel</span>
                 </a>
             </nav>
@@ -110,20 +250,18 @@
 
         <div>
             <hr class="border-secondary opacity-25">
-            <div class="d-flex align-items-center justify-content-between p-2 rounded glass-panel"
-                style="background: rgba(255, 255, 255, 0.02); border-color: rgba(255, 255, 255, 0.05);">
-                <div class="d-flex align-items-center">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80"
-                        class="rounded-circle me-2 border border-secondary border-opacity-50"
-                        style="width: 38px; height: 38px; object-fit: cover;" alt="Profile">
-                    <div style="font-size: 0.82rem;" class="logo-text">
-                        <div class="fw-bold text-white text-truncate" id="user-email-display" style="max-width: 130px;">
-                            Bansari Moradiya</div>
-                        <span class="text-secondary small" id="user-role-display">MCA Student</span>
+            <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);">
+                <div class="d-flex align-items-center gap-2 text-truncate" style="max-width: 80%;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" style="width:34px; height:34px; background: linear-gradient(135deg, #6366f1, #4f46e5); font-size: 0.85rem; font-weight: 700;">
+                        <span>AI</span>
+                    </div>
+                    <div style="font-size: 0.82rem;" class="logo-text text-truncate">
+                        <div class="fw-bold text-white text-truncate" id="user-email-display">Guest User</div>
+                        <span class="badge bg-primary bg-opacity-25 text-primary" id="user-role-display" style="font-size: 0.65rem; padding: 2px 6px;">STUDENT</span>
                     </div>
                 </div>
-                <button class="btn btn-sm btn-outline-danger border-0 p-1" onclick="logout()" title="Logout">
-                    <i class="bi bi-box-arrow-right fs-5"></i>
+                <button class="btn btn-sm btn-outline-danger p-1 rounded-circle" onclick="logout()" title="Logout" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 </button>
             </div>
         </div>
@@ -132,21 +270,30 @@
     <!-- Main Workspace -->
     <div class="main-content">
         <!-- Header Bar -->
-        <header class="d-flex justify-content-between align-items-center mb-5">
+        <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
             <div>
-                <h2 id="tab-title" class="fw-extrabold m-0">Student Dashboard</h2>
-                <p id="tab-subtitle" class="text-secondary m-0">Track your learning statistics and readiness indicators.
-                </p>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <div class="logo-3d-container" style="width: 26px; height: 26px;">
+                        <span style="font-size: 0.95rem;">🧠</span>
+                    </div>
+                    <span class="logo-brand-title fw-bold" style="font-size: 1rem;">AI Learning &amp; Career Mentor</span>
+                    <span class="text-secondary opacity-50">/</span>
+                    <span id="tab-breadcrumb" class="badge rounded-pill bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 fw-bold px-3 py-1" style="font-size: 0.75rem;">Dashboard</span>
+                </div>
+                <h2 id="tab-title" class="fw-bold m-0 mt-1 text-white">Student Dashboard</h2>
+                <p id="tab-subtitle" class="text-secondary m-0 small">Track your learning statistics and readiness indicators.</p>
             </div>
-
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn glass-panel border-0 px-3 py-2" onclick="toggleTheme()"
-                    title="Toggle Dark/Light Mode">
-                    <i class="bi bi-moon-stars-fill" id="theme-icon"></i>
+            
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-light px-3 py-2 fw-semibold rounded-pill d-none d-md-flex align-items-center gap-1" onclick="showLandingPage()" style="font-size: 0.82rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Welcome Home</span>
+                </button>
+                <button class="btn glass-panel border-0 px-3 py-2" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                    <span id="theme-icon" style="font-size: 1rem;">🌙</span>
                 </button>
                 <div id="auth-buttons-wrapper">
-                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#loginModal">Sign
-                        In</button>
+                    <button class="btn btn-primary-custom fw-bold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#loginModal" style="font-size: 0.85rem;">Sign In</button>
                 </div>
             </div>
         </header>
@@ -156,122 +303,1037 @@
             <!-- 1. Dashboard Tab -->
             <section id="tab-dashboard" class="tab-pane-custom">
                 <div class="row g-4 mb-4">
+                    <!-- Stat 1: Learning XP -->
                     <div class="col-md-3">
-                        <div class="glass-panel p-4 text-center">
-                            <i class="bi bi-lightning-charge-fill text-warning fs-1 mb-2"></i>
-                            <h5 class="text-secondary">Learning XP</h5>
-                            <h2 id="dash-xp" class="fw-bold">0</h2>
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between" style="border-top: 3px solid #6366f1; background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95));">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="text-secondary small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Learning XP</span>
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); display: flex; align-items: center; justify-content: center; color: #818cf8;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 id="dash-xp" class="fw-bold text-white mb-1" style="font-size: 2rem;">0</h2>
+                                <small class="text-secondary" style="font-size: 0.75rem;">Total Accumulated Points</small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Stat 2: Job Readiness -->
                     <div class="col-md-3">
-                        <div class="glass-panel p-4 text-center">
-                            <i class="bi bi-trophy-fill text-primary fs-1 mb-2"></i>
-                            <h5 class="text-secondary">Job Readiness</h5>
-                            <h2 id="dash-readiness" class="fw-bold">0%</h2>
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between" style="border-top: 3px solid #10b981; background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95));">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="text-secondary small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Job Readiness</span>
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; color: #34d399;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 id="dash-readiness" class="fw-bold text-white mb-1" style="font-size: 2rem;">0%</h2>
+                                <small class="text-secondary" style="font-size: 0.75rem;">Industry Benchmark Score</small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Stat 3: Quizzes Completed -->
                     <div class="col-md-3">
-                        <div class="glass-panel p-4 text-center">
-                            <i class="bi bi-check-circle-fill text-success fs-1 mb-2"></i>
-                            <h5 class="text-secondary">Quizzes Completed</h5>
-                            <h2 id="dash-quizzes" class="fw-bold">0</h2>
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between" style="border-top: 3px solid #38bdf8; background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95));">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="text-secondary small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Quizzes Completed</span>
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); display: flex; align-items: center; justify-content: center; color: #38bdf8;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 id="dash-quizzes" class="fw-bold text-white mb-1" style="font-size: 2rem;">0</h2>
+                                <small class="text-secondary" style="font-size: 0.75rem;">Knowledge Assessments</small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Stat 4: Coding Solved -->
                     <div class="col-md-3">
-                        <div class="glass-panel p-4 text-center">
-                            <i class="bi bi-code-slash text-info fs-1 mb-2"></i>
-                            <h5 class="text-secondary">Coding Solved</h5>
-                            <h2 id="dash-coding" class="fw-bold">0</h2>
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between" style="border-top: 3px solid #f59e0b; background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95));">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="text-secondary small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Coding Solved</span>
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; color: #fbbf24;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 id="dash-coding" class="fw-bold text-white mb-1" style="font-size: 2rem;">0</h2>
+                                <small class="text-secondary" style="font-size: 0.75rem;">Algorithmic Challenges</small>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="row g-4">
                     <div class="col-lg-8">
-                        <div class="glass-panel p-4 mb-4">
-                            <h4 class="mb-3">Active Roadmap Target: <span class="text-primary"
-                                    id="dash-target-title">Loading...</span></h4>
-                            <div class="progress mb-3" style="height: 10px; background: rgba(255,255,255,0.05);">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 0%"
-                                    id="dash-roadmap-progress-bar"></div>
+                        <div class="glass-panel p-4 mb-4" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.9) 100%);">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h5 class="fw-bold m-0 text-white">Active Roadmap Target: <span class="text-primary" id="dash-target-title">Software Engineer</span></h5>
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="switchTab('career')">View Full Roadmap</button>
                             </div>
-                            <span class="text-secondary" id="dash-roadmap-progress-text">0% Roadmap Milestones
-                                Complete</span>
+                            <div class="progress mb-3 rounded-pill" style="height: 12px; background: rgba(255,255,255,0.08);">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%;" id="dash-roadmap-progress-bar"></div>
+                            </div>
+                            <span class="text-secondary small fw-semibold" id="dash-roadmap-progress-text">0% Roadmap Milestones Complete</span>
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="glass-panel p-4">
-                            <h4>Activity Overview</h4>
-                            <div class="py-4 text-center text-secondary">
-                                <i class="bi bi-bar-chart-line fs-1 mb-2"></i>
-                                <p>Progress metrics are fully interactive.</p>
+                        <div class="glass-panel p-4" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.9) 100%);">
+                            <h5 class="fw-bold text-white mb-3">Quick Actions</h5>
+                            <div class="d-flex flex-column gap-2">
+                                <button class="btn btn-sm btn-outline-info text-start d-flex align-items-center gap-2 py-2 rounded-3" onclick="switchTab('study')">
+                                    <span>📚</span> <span>Study Companion &amp; RAG</span>
+                                </button>
+                                <button class="btn btn-sm btn-outline-warning text-start d-flex align-items-center gap-2 py-2 rounded-3" onclick="switchTab('coding')">
+                                    <span>💻</span> <span>Solve Coding Problem</span>
+                                </button>
+                                <button class="btn btn-sm btn-outline-success text-start d-flex align-items-center gap-2 py-2 rounded-3" onclick="switchTab('interview')">
+                                    <span>🎙️</span> <span>Start AI Mock Interview</span>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
+
             <!-- 2. Study Companion Tab -->
             <section id="tab-study" class="tab-pane-custom d-none">
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <!-- Upload Document Card -->
-                        <div class="glass-panel p-4 mb-4">
-                            <h4 class="mb-3">Ingest Study Material</h4>
-                            <form id="upload-doc-form" onsubmit="uploadDocument(event)">
-                                <div class="mb-3">
-                                    <input type="file" id="study-file" class="form-control glass-input" required>
+                <!-- Sleek Capsule Sub-Navigation Bar -->
+                <div class="d-flex justify-content-center mb-4">
+                    <div class="study-sub-nav">
+                        <button class="study-sub-btn active" id="subbtn-workspace" onclick="switchStudySubTab('workspace')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                            <span>Ingest &amp; RAG Workspace</span>
+                        </button>
+                        <button class="study-sub-btn" id="subbtn-mindmap" onclick="switchStudySubTab('mindmap')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                            <span>Concept Mindmap</span>
+                        </button>
+                        <button class="study-sub-btn" id="subbtn-planner" onclick="switchStudySubTab('planner')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            <span>AI Study Planner &amp; Coach</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pane 1: Ingest & RAG Workspace -->
+                <div id="study-subpane-workspace">
+                    <div class="row g-4 mb-4">
+                        <!-- Left Column: Ingestion Studio -->
+                        <div class="col-lg-4">
+                            <!-- Upload Document Card -->
+                            <div class="glass-panel p-4 mb-4" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.35); display: flex; align-items: center; justify-content: center; color: #818cf8;">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold m-0 text-white" style="font-size: 1.05rem;">Ingest Material</h5>
+                                            <small class="text-secondary" style="font-size: 0.72rem;">AI Vectorization &amp; Notes</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); font-size: 0.72rem; padding: 4px 8px;">Gemini 3.7</span>
                                 </div>
-                                <button type="submit" class="btn btn-primary-custom w-100">Upload & Vectorize</button>
-                            </form>
-                            <div id="upload-status" class="mt-2 small text-secondary"></div>
+
+                                <form id="upload-doc-form" onsubmit="uploadDocument(event)">
+                                    <!-- Drag and drop zone -->
+                                    <div class="mb-3">
+                                        <div class="dropzone-container" id="study-dropzone" onclick="document.getElementById('study-file').click()" style="border: 2px dashed rgba(99, 102, 241, 0.45); background: radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.12) 0%, rgba(15, 23, 42, 0.7) 100%); border-radius: 16px; padding: 22px 14px; text-align: center; cursor: pointer; transition: all 0.3s ease;">
+                                            <input type="file" id="study-file" class="d-none" required onchange="handleStudyFileSelected(this)">
+                                            
+                                            <!-- SVG Cloud Upload Icon -->
+                                            <div class="dropzone-icon-wrap" style="width: 50px; height: 50px; margin: 0 auto 10px auto; border-radius: 50%; background: rgba(99, 102, 241, 0.18); border: 1px solid rgba(99, 102, 241, 0.35); display: flex; align-items: center; justify-content: center; color: #818cf8;">
+                                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                                                    <path d="M12 12v9"></path>
+                                                    <path d="m16 16-4-4-4 4"></path>
+                                                </svg>
+                                            </div>
+
+                                            <div class="dropzone-title" style="font-size: 0.95rem; font-weight: 700; color: #ffffff; margin-bottom: 2px;">Upload Study Document</div>
+                                            <div class="dropzone-subtitle" style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 10px;">Drag &amp; drop file or <span style="color: #818cf8; font-weight: 700; text-decoration: underline;">browse</span></div>
+                                            
+                                            <!-- File Format Badges -->
+                                            <div class="d-flex justify-content-center gap-1 flex-wrap">
+                                                <span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.68rem; padding: 3px 6px;">PDF</span>
+                                                <span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); font-size: 0.68rem; padding: 3px 6px;">DOCX</span>
+                                                <span class="badge" style="background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); font-size: 0.68rem; padding: 3px 6px;">PPTX</span>
+                                                <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.68rem; padding: 3px 6px;">TXT</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected File Information Box -->
+                                        <div id="study-file-selected-display" class="d-none selected-file-card" style="background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px;">
+                                            <div class="d-flex align-items-center gap-2 text-truncate">
+                                                <div style="width: 28px; height: 28px; border-radius: 6px; background: rgba(99, 102, 241, 0.2); display: flex; align-items: center; justify-content: center; color: #818cf8; flex-shrink: 0;">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                                    </svg>
+                                                </div>
+                                                <div class="text-truncate">
+                                                    <div id="selected-file-name" class="fw-bold small text-white text-truncate" style="max-width: 170px;">filename.pdf</div>
+                                                    <div id="selected-file-size" class="text-secondary" style="font-size: 0.7rem;">1.2 MB</div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-circle" onclick="clearSelectedStudyFile(event)" title="Remove file" style="width: 24px; height: 24px; line-height: 22px; padding: 0; text-align: center; font-size: 0.75rem;">✕</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- AI Generator Option Tiles -->
+                                    <div class="mb-3">
+                                        <label class="form-label text-secondary small fw-bold mb-2 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">AI Generation Modules:</label>
+                                        
+                                        <label class="ai-option-tile" for="gen-short">
+                                            <span class="small text-white">Executive Short Summary</span>
+                                            <input class="form-check-input" type="checkbox" id="gen-short" checked>
+                                        </label>
+
+                                        <label class="ai-option-tile" for="gen-detailed">
+                                            <span class="small text-white">Detailed Chapter Breakdown</span>
+                                            <input class="form-check-input" type="checkbox" id="gen-detailed" checked>
+                                        </label>
+
+                                        <label class="ai-option-tile" for="gen-notes">
+                                            <span class="small text-white">High-Yield Exam Cram Notes</span>
+                                            <input class="form-check-input" type="checkbox" id="gen-notes" checked>
+                                        </label>
+
+                                        <label class="ai-option-tile" for="gen-flashcards">
+                                            <span class="small text-white">Auto Spaced Repetition Flashcards</span>
+                                            <input class="form-check-input" type="checkbox" id="gen-flashcards" checked>
+                                        </label>
+
+                                        <label class="ai-option-tile" for="gen-quiz">
+                                            <span class="small text-white">Auto Practice Quiz (MCQs)</span>
+                                            <input class="form-check-input" type="checkbox" id="gen-quiz" checked>
+                                        </label>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary-custom w-100 fw-bold d-flex align-items-center justify-content-center gap-2 py-2" style="font-size: 0.92rem;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                        Upload &amp; Index with AI
+                                    </button>
+                                </form>
+                                <div id="upload-status" class="mt-2 small text-secondary"></div>
+                            </div>
+
+                            <!-- Processed Documents List -->
+                            <div class="glass-panel p-4" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h5 class="fw-bold m-0 text-white d-flex align-items-center gap-2" style="font-size: 1.05rem;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                        Indexed Resources
+                                    </h5>
+                                    <button class="btn btn-sm btn-link text-secondary p-0 text-decoration-none" onclick="loadStudyCompanionData()" title="Refresh files">🔄</button>
+                                </div>
+                                <div id="processed-docs-list" class="list-group list-group-flush bg-transparent gap-2" style="max-height: 260px; overflow-y: auto;">
+                                    <span class="text-secondary small">No files loaded yet.</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Documents List -->
-                        <div class="glass-panel p-4 mb-4">
-                            <h4 class="mb-3">Processed Resources</h4>
-                            <div id="processed-docs-list" class="list-group list-group-flush bg-transparent">
-                                <span class="text-secondary">No files loaded yet.</span>
+                        <!-- Right Column: AI Document Intelligence RAG Workspace -->
+                        <div class="col-lg-8">
+                            <!-- RAG Conversational Interface -->
+                            <div class="glass-panel p-4 mb-4 d-flex flex-column" style="height: 480px; background: linear-gradient(145deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); display: flex; align-items: center; justify-content: center; color: #38bdf8;">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold m-0 text-white" style="font-size: 1.05rem;">Query AI Study Companion</h5>
+                                            <small class="text-secondary" style="font-size: 0.72rem;">Ask anything about your uploaded textbooks, lectures &amp; notes</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-1 small fw-bold">
+                                        ● Ready for Queries
+                                    </span>
+                                </div>
+
+                                <!-- Quick Prompt Suggestions -->
+                                <div class="d-flex gap-2 flex-wrap mb-2">
+                                    <button type="button" class="quick-prompt-chip" onclick="document.getElementById('rag-query').value='Summarize the main core concepts in 3 bullet points'; document.getElementById('rag-ask-form').requestSubmit();">
+                                        <span>⚡</span> Summarize Core Concepts
+                                    </button>
+                                    <button type="button" class="quick-prompt-chip" onclick="document.getElementById('rag-query').value='Generate 3 practice exam questions with answers'; document.getElementById('rag-ask-form').requestSubmit();">
+                                        <span>❓</span> 3 Exam Questions
+                                    </button>
+                                    <button type="button" class="quick-prompt-chip" onclick="document.getElementById('rag-query').value='Explain the most complex topic in simple, beginner terms'; document.getElementById('rag-ask-form').requestSubmit();">
+                                        <span>💡</span> Explain in Simple Terms
+                                    </button>
+                                </div>
+
+                                <!-- Chat Output Window -->
+                                <div id="rag-chat-history" class="flex-grow-1 overflow-auto mb-3 p-3 rounded" style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.06); max-height: 280px;">
+                                    <div class="text-center py-4 text-secondary">
+                                        <div class="mb-2" style="font-size: 2rem; opacity: 0.6;">💬</div>
+                                        <div class="fw-semibold text-white small">AI Retrieval-Augmented Generation (RAG)</div>
+                                        <div class="small text-secondary mt-1">Ask questions or select a quick prompt above to query your uploaded study material.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Chat Input -->
+                                <form id="rag-ask-form" onsubmit="askRAG(event)" class="d-flex gap-2">
+                                    <input type="text" id="rag-query" class="form-control glass-input" placeholder="Ask a question about your uploaded documents..." required style="border-radius: 12px; font-size: 0.9rem;">
+                                    <button type="submit" class="btn btn-primary-custom fw-bold d-flex align-items-center gap-1 px-4" style="border-radius: 12px;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                        <span>Ask AI</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Study Action Cards (Bottom Row) -->
+                            <div class="row g-3">
+                                <!-- Card 1: Note Generator -->
+                                <div class="col-md-4">
+                                    <div class="study-tool-card card-notes h-100 d-flex flex-column justify-content-between text-center" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(56, 189, 248, 0.25);">
+                                        <div>
+                                            <div class="study-tool-icon-wrap" style="background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                            </div>
+                                            <h6 class="fw-bold text-white mb-1" style="font-size: 1rem;">Study Notes Studio</h6>
+                                            <p class="mb-3" style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.4;">Summaries, chapter notes &amp; key formulas</p>
+                                        </div>
+                                        <button class="btn w-100 fw-bold py-2 rounded-pill text-white shadow-sm" onclick="openNotesModalForSelected()" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; font-size: 0.88rem;">
+                                            View Notes
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2: Flashcards SM-2 -->
+                                <div class="col-md-4">
+                                    <div class="study-tool-card card-flashcards h-100 d-flex flex-column justify-content-between text-center" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(99, 102, 241, 0.35);">
+                                        <div>
+                                            <div class="study-tool-icon-wrap" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.4);">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                                            </div>
+                                            <h6 class="fw-bold text-white mb-1" style="font-size: 1rem;">Flashcards (SM-2)</h6>
+                                            <p class="mb-3" style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.4;">Adaptive 3D spaced repetition review</p>
+                                        </div>
+                                        <button class="btn w-100 fw-bold py-2 rounded-pill text-white shadow-sm" onclick="triggerFlashcardReview()" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: none; font-size: 0.88rem;">
+                                            Review 3D Deck
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Card 3: AI Quiz Generator -->
+                                <div class="col-md-4">
+                                    <div class="study-tool-card card-quiz h-100 d-flex flex-column justify-content-between text-center" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(16, 185, 129, 0.3);">
+                                        <div>
+                                            <div class="study-tool-icon-wrap" style="background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                            </div>
+                                            <h6 class="fw-bold text-white mb-1" style="font-size: 1rem;">AI Practice Quiz</h6>
+                                            <p class="mb-3" style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.4;">Test knowledge with adaptive MCQs</p>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn flex-grow-1 fw-bold py-2 rounded-pill text-white shadow-sm" onclick="triggerQuizGen()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-size: 0.88rem;">
+                                                Take Quiz
+                                            </button>
+                                            <button class="btn btn-outline-warning fw-bold py-2 px-3 rounded-pill d-flex align-items-center justify-content-center" onclick="loadWeaknessAnalysis()" title="View Weakness Analysis Matrix" style="border-color: rgba(245, 158, 11, 0.4); color: #fbbf24;">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-8">
-                        <!-- RAG Q&A Interface -->
-                        <div class="glass-panel p-4 mb-4 d-flex flex-column" style="height: 400px;">
-                            <h4 class="mb-3">Query AI Study Companion</h4>
-                            <div id="rag-chat-history" class="flex-grow-1 overflow-auto mb-3 p-3 rounded"
-                                style="background: rgba(0,0,0,0.1); max-height: 280px;">
-                                <div class="text-secondary">Ask questions about your uploaded PDFs or PPTXs.</div>
-                            </div>
-                            <form id="rag-ask-form" onsubmit="askRAG(event)" class="d-flex gap-2">
-                                <input type="text" id="rag-query" class="form-control glass-input"
-                                    placeholder="Type your query here..." required>
-                                <button type="submit" class="btn btn-primary-custom">Ask</button>
-                            </form>
-                        </div>
+                </div>
 
-                        <!-- Study Tools: Flashcard & Quiz triggers -->
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="glass-panel p-4 text-center">
-                                    <i class="bi bi-card-text fs-2 text-primary mb-2"></i>
-                                    <h5>Spaced Repetition</h5>
-                                    <button class="btn btn-sm btn-primary-custom mt-2"
-                                        onclick="triggerFlashcardReview()">Review Cards</button>
+
+                <!-- Pane 2: AI Mind Map Visualizer -->
+                <div id="study-subpane-mindmap" class="d-none">
+                    <!-- AI Learning Overview Header -->
+                    <div class="glass-panel p-3 mb-3" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(99, 102, 241, 0.3);">
+                        <div class="row align-items-center g-3">
+                            <div class="col-lg-5">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-primary rounded-circle p-2 px-3 text-white d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                        <span class="fs-4">🗺️</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="m-0 fw-bold" id="mindmap-active-title">AI Mind Map Visualizer</h4>
+                                        <div class="text-secondary small" id="mindmap-ai-insight-text">
+                                            Turn learning material into an interactive visual knowledge map.
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="glass-panel p-4 text-center">
-                                    <i class="bi bi-question-square fs-2 text-success mb-2"></i>
-                                    <h5>AI Quiz Maker</h5>
-                                    <button class="btn btn-sm btn-primary-custom mt-2" onclick="triggerQuizGen()">Take
-                                        Quiz</button>
+                            <div class="col-lg-7">
+                                <div class="d-flex justify-content-lg-end align-items-center gap-2 flex-wrap">
+                                    <div class="d-flex gap-1 flex-grow-1" style="max-width: 320px;">
+                                        <input type="text" id="mindmap-topic-input" class="form-control form-control-sm glass-input" placeholder="Enter topic (e.g. Operating Systems)...">
+                                        <button class="btn btn-sm btn-primary-custom fw-bold" onclick="generateMindmapUI()">⚡ Generate</button>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="openCreateMindMapModal()">✨ New Map</button>
+                                    <button class="btn btn-sm btn-outline-info" onclick="saveActiveMindMapUI()">💾 Save</button>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="openMyMindMapsModal()">📁 My Maps</button>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">📥 Export</button>
+                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                            <li><a class="dropdown-item" href="#" onclick="exportMindMap('png')">🖼️ Export PNG Image</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="exportMindMap('pdf')">📄 Export PDF Document</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="exportMindMap('json')">📦 Export JSON Data</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quantitative Stats Bar -->
+                        <div class="row g-2 mt-2 pt-2 border-top border-secondary">
+                            <div class="col-6 col-md-2">
+                                <div class="bg-dark bg-opacity-50 p-2 rounded text-center">
+                                    <small class="text-secondary d-block">Total Concepts</small>
+                                    <span id="mm-stat-total" class="fw-bold text-white fs-6">0</span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <div class="bg-dark bg-opacity-50 p-2 rounded text-center">
+                                    <small class="text-secondary d-block">Main Topics</small>
+                                    <span id="mm-stat-topics" class="fw-bold text-info fs-6">0</span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <div class="bg-dark bg-opacity-50 p-2 rounded text-center">
+                                    <small class="text-secondary d-block">Mastered</small>
+                                    <span id="mm-stat-mastered" class="fw-bold text-success fs-6">0</span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="bg-dark bg-opacity-50 p-2 rounded text-center">
+                                    <small class="text-secondary d-block">Needs Revision</small>
+                                    <span id="mm-stat-weak" class="fw-bold text-danger fs-6">0</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="bg-dark bg-opacity-50 p-2 rounded text-center">
+                                    <small class="text-secondary d-block">Avg Concept Mastery</small>
+                                    <span id="mm-stat-avg-mastery" class="fw-bold text-warning fs-6">Not enough data</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mind Map Fullscreen Container Wrapper -->
+                    <div id="mindmap-fullscreen-wrapper" class="position-relative">
+                        <!-- Top Control Toolbar -->
+                        <div class="glass-panel p-2 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <!-- Search Concepts -->
+                            <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 320px;">
+                                <span class="text-secondary ms-2">🔍</span>
+                                <input type="text" id="mm-search-input" class="form-control form-control-sm glass-input" placeholder="Search concepts..." oninput="onMindMapSearchInput(event)">
+                            </div>
+
+                            <!-- Canvas Controls (Zoom, 3D & Layout) -->
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button class="btn btn-outline-secondary" onclick="mindmapCanvasZoom(0.15)" title="Zoom In">🔍+</button>
+                                    <button class="btn btn-outline-secondary" onclick="mindmapCanvasZoom(-0.15)" title="Zoom Out">🔍−</button>
+                                    <button class="btn btn-outline-secondary" onclick="mindmapCanvasFit()" title="Fit to Screen">📐 Fit</button>
+                                    <button class="btn btn-outline-secondary" onclick="mindmapCanvasReset()" title="Reset View">🔄 Reset</button>
+                                    <button class="btn btn-outline-primary" id="mm-fullscreen-btn" onclick="toggleMindMapFullscreen()" title="Toggle Fullscreen Mode">⛶ Fullscreen</button>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-1 ms-1">
+                                    <small class="text-secondary me-1">Layout:</small>
+                                    <select id="mm-layout-select" class="form-select form-select-sm glass-input" onchange="changeMindMapLayout(this.value)">
+                                        <option value="tree">Tree (Hierarchical)</option>
+                                        <option value="radial">Radial Ring</option>
+                                        <option value="horizontal">Horizontal Flow</option>
+                                        <option value="vertical">Vertical Stack</option>
+                                        <option value="flow">Process Flow</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Content Area: Interactive Canvas (Left/Center) + Right Concept Panel -->
+                        <div class="row g-3" id="mm-main-row">
+                            <div class="col-lg-8" id="mm-canvas-column">
+                                <div id="mindmap-canvas-container" class="glass-panel position-relative overflow-hidden mindmap-canvas-box" style="background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-color); cursor: grab;">
+
+                                    
+                                    <!-- Loading / Progress Overlay -->
+                                    <div id="mm-loading-overlay" class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center d-none" style="background: rgba(15, 23, 42, 0.9); z-index: 10;">
+                                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                                        <h5 id="mm-loading-status-text" class="fw-bold text-info mb-2">Analyzing content...</h5>
+                                        <div class="text-secondary small">Gemini AI is extracting concepts, building relationships & calculating mastery...</div>
+                                    </div>
+
+                                    <!-- Interactive SVG Mind Map Canvas -->
+                                    <svg id="mindmap-svg-canvas" width="100%" height="100%" style="user-select: none;">
+                                        <defs>
+                                            <!-- Glowing 3D Laser Markers -->
+                                            <marker id="arrow-parent" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" />
+                                            </marker>
+                                            <marker id="arrow-depends" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+                                            </marker>
+                                            <marker id="arrow-related" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#06b6d4" />
+                                            </marker>
+
+                                            <!-- 3D Node Glow & Shadow Filters -->
+                                            <filter id="mm-node-3d-glow" x="-30%" y="-30%" width="160%" height="160%">
+                                                <feGaussianBlur stdDeviation="6" result="blur" />
+                                                <feColorMatrix type="matrix" values="0 0 0 0.388  0 0 0 0 0.400  0 0 0 0 0.945  0 0 0 0.6 0" />
+                                                <feMerge>
+                                                    <feMergeNode />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+
+                                            <filter id="mm-root-3d-glow" x="-40%" y="-40%" width="180%" height="180%">
+                                                <feGaussianBlur stdDeviation="10" result="blur" />
+                                                <feColorMatrix type="matrix" values="0 0 0 0 0.235  0 0 0 0 0.705  0 0 0 0 0.980  0 0 0 0.8 0" />
+                                                <feMerge>
+                                                    <feMergeNode />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+
+                                            <!-- 3D Gradients -->
+                                            <linearGradient id="mm-grad-root" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#4f46e5" />
+                                                <stop offset="50%" stop-color="#7c3aed" />
+                                                <stop offset="100%" stop-color="#06b6d4" />
+                                            </linearGradient>
+
+                                            <linearGradient id="mm-grad-node" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#1e293b" />
+                                                <stop offset="100%" stop-color="#0f172a" />
+                                            </linearGradient>
+
+                                            <linearGradient id="mm-grad-selected" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#312e81" />
+                                                <stop offset="100%" stop-color="#1e1b4b" />
+                                            </linearGradient>
+
+                                            <linearGradient id="mm-beam-pulse" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.2" />
+                                                <stop offset="50%" stop-color="#38bdf8" stop-opacity="1" />
+                                                <stop offset="100%" stop-color="#6366f1" stop-opacity="0.2" />
+                                            </linearGradient>
+                                        </defs>
+
+                                        <!-- Canvas Viewport for Pan & Zoom -->
+                                        <g id="mindmap-viewport">
+                                            <g id="mindmap-links-layer"></g>
+                                            <g id="mindmap-nodes-layer"></g>
+                                        </g>
+                                    </svg>
+
+                                    <!-- Empty Canvas State -->
+                                    <div id="mm-empty-state" class="position-absolute top-50 start-50 translate-middle text-center" style="max-width: 400px; pointer-events: auto;">
+                                        <div class="mb-3" style="font-size: 3rem; opacity: 0.7;">✨</div>
+                                        <h5 class="fw-bold text-white mb-2">No Active Mind Map</h5>
+                                        <p class="text-secondary small mb-3">Generate a visual concept map from a study topic or uploaded document.</p>
+                                        <button class="btn btn-primary-custom px-4" onclick="openCreateMindMapModal()">✨ Create Mind Map</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Dynamic Concept Inspector Panel -->
+                            <div class="col-lg-4" id="mm-concept-side-panel">
+                                <div class="glass-panel p-3 h-100" style="background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-color);">
+                                    
+                                    <!-- Unselected State -->
+                                    <div id="mm-panel-unselected" class="text-center py-5 text-secondary">
+                                        <div class="mb-3 fs-1 opacity-50">👆</div>
+                                        <h6 class="fw-bold text-white mb-1">Concept Inspector</h6>
+                                        <small>Click any node in the mind map to view in-depth details, AI explanation & study actions.</small>
+                                    </div>
+
+                                    <!-- Selected Node View -->
+                                    <div id="mm-panel-selected" class="d-none">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-primary px-2 py-1" id="mm-concept-importance-badge">Concept</span>
+                                            <span class="badge bg-success" id="mm-concept-mastery-badge">100% Mastery</span>
+                                        </div>
+
+                                        <h5 class="fw-bold text-white mb-2" id="mm-concept-title">Concept Name</h5>
+                                        
+                                        <div class="p-2 rounded bg-dark bg-opacity-50 mb-3 border border-secondary border-opacity-25">
+                                            <small class="text-secondary d-block fw-bold mb-1">Core Definition:</small>
+                                            <p class="small text-white m-0" id="mm-concept-definition">Definition text here...</p>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="text-secondary small fw-bold mb-1">Detailed Explanation:</label>
+                                            <div class="small text-secondary" id="mm-concept-explanation" style="max-height: 120px; overflow-y: auto; line-height: 1.5;">
+                                                Explanation here...
+                                            </div>
+                                        </div>
+
+                                        <!-- Related Concepts -->
+                                        <div class="mb-3">
+                                            <label class="text-secondary small fw-bold mb-1">Related Concepts:</label>
+                                            <div id="mm-concept-related-tags" class="d-flex flex-wrap gap-1">
+                                                <span class="badge bg-secondary">Supervised Learning</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- AI Explain Mode Trigger -->
+                                        <div class="mb-3">
+                                            <label class="text-secondary small fw-bold mb-1">Explain with AI:</label>
+                                            <div class="input-group input-group-sm">
+                                                <select id="mm-explain-mode-select" class="form-select glass-input">
+                                                    <option value="Simple Explanation">💡 Simple Explanation</option>
+                                                    <option value="Detailed Explanation">📚 Detailed Explanation</option>
+                                                    <option value="Exam Explanation">📝 High-Yield Exam Notes</option>
+                                                    <option value="Real-World Example">🌐 Real-World Example</option>
+                                                    <option value="Technical Explanation">⚙️ Technical Specification</option>
+                                                </select>
+                                                <button class="btn btn-outline-info" onclick="executeNodeAIExplainUI()">Explain</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Buttons Grid -->
+                                        <div class="d-flex flex-column gap-2 border-top border-secondary pt-3">
+                                            <button class="btn btn-sm btn-outline-warning w-100" onclick="executeNodeAIExpandUI()">✨ Expand Concept with AI</button>
+                                            
+                                            <div class="row g-1">
+                                                <div class="col-4">
+                                                    <button class="btn btn-sm btn-outline-info w-100" onclick="generateNotesFromNodeUI()">📝 Notes</button>
+                                                </div>
+                                                <div class="col-4">
+                                                    <button class="btn btn-sm btn-outline-primary w-100" onclick="generateFlashcardsFromNodeUI()">📇 Cards</button>
+                                                </div>
+                                                <div class="col-4">
+                                                    <button class="btn btn-sm btn-outline-success w-100" onclick="generateQuizFromNodeUI()">❓ Quiz</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="row g-1 mt-1">
+                                                <div class="col-6">
+                                                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="editSelectedNodeNameUI()">✏️ Rename</button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="addChildNodeUI()">➕ Add Child</button>
+                                                </div>
+                                            </div>
+
+                                            <button class="btn btn-sm btn-outline-danger w-100 mt-1" onclick="deleteSelectedNodeUI()">🗑️ Delete Concept</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Pane 3: AI Study Planner & Progress Coach -->
+                <div id="study-subpane-planner" class="d-none">
+
+                    <!-- ═══ Hero Header with Three.js 3D Interactive Canvas ═══ -->
+                    <div class="card-3d-wrap mb-4">
+                        <div class="glass-panel card-3d p-4" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.16) 0%, rgba(139, 92, 246, 0.12) 100%); border-left: 4px solid var(--primary); overflow: hidden;">
+                            <div class="glare-3d"></div>
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 layer-depth-1 position-relative" style="z-index: 2;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- 3D Interactive Three.js WebGL Particle Sphere -->
+                                    <div id="sp-hero-3d-orb" style="width: 65px; height: 65px; flex-shrink: 0; position: relative;"></div>
+                                    <div>
+                                        <h3 class="fw-bold m-0 d-flex align-items-center gap-2">
+                                            AI-Powered Personalized Study Planner
+                                        </h3>
+                                        <p class="text-secondary small m-0 mt-1">Dynamically scheduled based on your performance, weak topics, exam deadlines, and daily study capacity.</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 flex-wrap layer-depth-2">
+                                    <span class="badge bg-primary px-3 py-2 fs-6 shadow-sm" id="sp-hero-streak">🔥 0 Day Streak</span>
+                                    <button class="btn btn-sm btn-outline-info fw-bold btn-3d" onclick="document.getElementById('sp-syllabus-file-input').click()" title="Upload Syllabus PDF to dynamically create plan">
+                                        <span>📄</span> Upload Syllabus PDF
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary fw-bold btn-3d" onclick="spLoadProfile()">🔄 Reload</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ Row 1: Profile Setup + Today's Plan ═══ -->
+                    <div class="row g-4 mb-4">
+                        <!-- Profile Setup Card -->
+                        <div class="col-lg-6 card-3d-wrap">
+                            <div class="glass-panel card-3d p-4 h-100 d-flex flex-column justify-content-between">
+                                <div class="glare-3d"></div>
+                                <div class="layer-depth-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="fw-bold m-0 d-flex align-items-center gap-2">
+                                            <span>⚙️</span> Study Profile & Targets
+                                        </h5>
+                                        <span class="badge bg-secondary small" id="sp-subject-count-badge">0 Subjects</span>
+                                    </div>
+
+                                    <!-- Daily Hours -->
+                                    <div class="sp-form-section mb-3 p-3 rounded">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <label class="form-label small fw-bold m-0">⏱️ Daily Available Study Hours</label>
+                                            <span class="badge bg-primary fw-bold" id="sp-hours-display">4.0 hours</span>
+                                        </div>
+                                        <input type="range" class="form-range custom-slider" id="sp-daily-hours" min="0.5" max="12" step="0.5" value="4" 
+                                               oninput="document.getElementById('sp-hours-display').textContent=parseFloat(this.value).toFixed(1)+' hours'">
+                                        <div class="d-flex justify-content-between text-secondary" style="font-size: 0.72rem; font-weight: 600;">
+                                            <span>30m</span>
+                                            <span>4h</span>
+                                            <span>8h</span>
+                                            <span>12h</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Preferred Time -->
+                                    <div class="sp-form-section mb-3 p-3 rounded">
+                                        <label class="form-label small fw-bold mb-2 d-block">🕒 Preferred Study Window</label>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <label class="sp-time-option"><input type="radio" name="sp-time" value="Morning"><span>🌅 Morning (6 AM)</span></label>
+                                            <label class="sp-time-option"><input type="radio" name="sp-time" value="Afternoon"><span>☀️ Afternoon (12 PM)</span></label>
+                                            <label class="sp-time-option active-option"><input type="radio" name="sp-time" value="Evening" checked><span>🌆 Evening (4 PM)</span></label>
+                                            <label class="sp-time-option"><input type="radio" name="sp-time" value="Night"><span>🌙 Night (8 PM)</span></label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Study Goal -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">🎯 Overall Study Goal / Target</label>
+                                        <input type="text" id="sp-study-goal" class="form-control glass-input" placeholder="e.g. Master DSA and ace semester exams">
+                                    </div>
+
+                                    <!-- Dynamic Subjects List -->
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                            <label class="form-label small fw-bold m-0">📚 Subjects & Performance</label>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-info fw-bold btn-3d" onclick="document.getElementById('sp-syllabus-file-input').click()" title="Upload Syllabus PDF to auto-populate subjects">
+                                                    <span>📄</span> Upload Syllabus PDF
+                                                </button>
+                                                <input type="file" id="sp-syllabus-file-input" class="d-none" accept=".pdf,.docx,.txt" onchange="spUploadSyllabusFile(event)">
+                                                <button class="btn btn-sm btn-outline-primary fw-bold btn-3d" onclick="spAddSubjectRow()">
+                                                    <span>➕</span> Add Subject
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="sp-subjects-container" class="d-flex flex-column gap-2" style="max-height: 480px; overflow-y: auto; padding-right: 4px;">
+                                            <!-- Dynamic subject rows inserted here -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="pt-3 border-top border-secondary border-opacity-25 mt-3 layer-depth-2">
+                                    <label class="form-label small fw-bold text-secondary mb-2 d-block">🚀 Generate Personalized Study Schedule:</label>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button class="btn btn-primary-custom flex-fill py-2 fw-bold btn-3d" onclick="spSaveProfileAndGenerate('today')">
+                                            <span>⚡</span> Today's Plan
+                                        </button>
+                                        <button class="btn btn-outline-info flex-fill py-2 fw-bold btn-3d" onclick="spSaveProfileAndGenerate('week')" title="Generate 7-Day Curriculum Schedule">
+                                            <span>📅</span> 7-Day Plan
+                                        </button>
+                                        <button class="btn btn-outline-warning flex-fill py-2 fw-bold btn-3d" onclick="spSaveProfileAndGenerate('month')" title="Generate 30-Day Master Schedule">
+                                            <span>🗓️</span> 30-Day Plan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Plan Table -->
+                        <div class="col-lg-6 card-3d-wrap">
+                            <div class="glass-panel card-3d p-4 h-100 d-flex flex-column justify-content-between">
+                                <div class="glare-3d"></div>
+                                <div class="layer-depth-1">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                                        <div>
+                                            <h5 class="fw-bold m-0 d-flex align-items-center gap-2">
+                                                <span>📋</span> Personalized Study Schedule
+                                            </h5>
+                                            <span class="text-secondary small" id="sp-plan-subtitle">AI-allocated focus and revision blocks</span>
+                                        </div>
+                                        <div class="d-flex gap-2 align-items-center" id="sp-plan-actions" style="display:none!important">
+                                            <button class="btn btn-sm btn-success fw-bold px-3 shadow-sm btn-3d" onclick="spSetThisPlan()">
+                                                <span>✓</span> Set This Plan to Calendar
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning btn-3d" onclick="spSaveProfileAndGenerate('today')" title="Regenerate Plan">
+                                                <span>🔄</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Time Distribution Summary -->
+                                    <div id="sp-time-distribution" class="mb-3 p-3 rounded" style="display:none; background: rgba(99, 102, 241, 0.05); border: 1px dashed var(--primary);">
+                                        <div class="small fw-bold text-secondary mb-2">📊 Daily Time Allocation:</div>
+                                        <div class="d-flex gap-2 flex-wrap" id="sp-time-dist-badges"></div>
+                                    </div>
+
+                                    <!-- Table Container -->
+                                    <div id="sp-plan-table-container" style="max-height: 520px; overflow-y: auto; padding-right: 4px;">
+                                        <div class="text-secondary py-5 text-center">
+                                            <div class="fs-1 mb-2" style="display:inline-block; animation: float3D 3s ease-in-out infinite;">📅</div>
+                                            <h6 class="fw-bold">No active study plan generated yet</h6>
+                                            <p class="small text-secondary mb-3">Add your subjects on the left with performance & deadlines, then click <strong>Generate Today's Plan</strong>.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-2 text-secondary small d-flex justify-content-between align-items-center border-top border-secondary border-opacity-25 mt-2 layer-depth-1">
+                                    <span>💡 Tasks marked <strong>Missed</strong> automatically reschedule with higher priority.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ Row 2: Calendar + Pomodoro + Streak ═══ -->
+                    <div class="row g-4 mb-4">
+                        <!-- Smart Calendar -->
+                        <div class="col-lg-7 card-3d-wrap">
+                            <div class="glass-panel card-3d p-4">
+                                <div class="glare-3d"></div>
+                                <div class="layer-depth-1">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <h5 class="fw-bold m-0 d-flex align-items-center gap-2">
+                                                <span>📆</span> Smart Calendar
+                                            </h5>
+                                            <span class="badge bg-primary px-2 py-1 small fw-bold" id="sp-cal-title">This Week</span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-secondary" onclick="spCalPrev()" title="Previous"><span>◀</span></button>
+                                                <button class="btn btn-outline-secondary" onclick="spCalToday()" title="Today">Today</button>
+                                                <button class="btn btn-outline-secondary" onclick="spCalNext()" title="Next"><span>▶</span></button>
+                                            </div>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-info active" id="sp-cal-btn-week" onclick="spSwitchCalView('week')">Week</button>
+                                                <button class="btn btn-outline-info" id="sp-cal-btn-month" onclick="spSwitchCalView('month')">Month</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="sp-calendar-container" style="min-height: 280px;">
+                                        <div class="text-secondary py-5 text-center small">Set a plan to see your calendar schedule.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pomodoro Focus Hub with 3D Gyroscope -->
+                        <div class="col-lg-5 card-3d-wrap">
+                            <div class="glass-panel card-3d p-4" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(251, 146, 60, 0.06) 100%);">
+                                <div class="glare-3d"></div>
+                                <div class="layer-depth-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="fw-bold m-0 d-flex align-items-center gap-2">
+                                            <span>⏱️</span> Pomodoro 3D Focus Hub
+                                        </h5>
+                                        <span class="badge bg-danger px-2 py-1 small fw-bold" id="sp-pomodoro-sessions">0 Sessions</span>
+                                    </div>
+
+                                    <!-- 3D Gyroscope Orbital Ring + Circular Timer -->
+                                    <div class="text-center my-3">
+                                        <div class="sp-gyro-container" id="sp-gyro-container">
+                                            <div class="sp-gyro-ring ring-x"></div>
+                                            <div class="sp-gyro-ring ring-y"></div>
+                                            <div class="sp-gyro-ring ring-z"></div>
+                                            <div class="sp-pomo-svg-wrap">
+                                                <svg class="sp-pomo-svg" viewBox="0 0 160 160">
+                                                    <circle class="sp-pomo-circle-bg" cx="80" cy="80" r="70"></circle>
+                                                    <circle class="sp-pomo-circle-bar" id="sp-pomo-circle-bar" cx="80" cy="80" r="70"></circle>
+                                                </svg>
+                                                <div class="sp-pomo-center-content">
+                                                    <div class="sp-pomo-time" id="sp-pomodoro-time">25:00</div>
+                                                    <div class="sp-pomo-label text-secondary" id="sp-pomodoro-label">FOCUS TIME</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">🎯 Focus Subject</label>
+                                        <select class="form-select glass-input form-select-sm" id="sp-pomodoro-subject">
+                                            <option value="General">General Study</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                        <button class="btn btn-sm btn-success px-3 fw-bold shadow-sm btn-3d" id="sp-pomo-start-btn" onclick="spStartPomodoro()">
+                                            <span>▶</span> Start Focus
+                                        </button>
+                                        <button class="btn btn-sm btn-warning px-3 fw-bold d-none shadow-sm btn-3d" id="sp-pomo-pause-btn" onclick="spPausePomodoro()">
+                                            <span>⏸</span> Pause
+                                        </button>
+                                        <button class="btn btn-sm btn-primary px-3 fw-bold d-none shadow-sm btn-3d" id="sp-pomo-resume-btn" onclick="spResumePomodoro()">
+                                            <span>▶</span> Resume
+                                        </button>
+                                        <button class="btn btn-sm btn-danger px-3 fw-bold d-none shadow-sm btn-3d" id="sp-pomo-finish-btn" onclick="spFinishPomodoro()">
+                                            <span>⏹</span> Finish
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary btn-3d" onclick="spSetPomodoroPreset(5)" title="5 min Quick Break">☕ 5m</button>
+                                        <button class="btn btn-sm btn-outline-secondary btn-3d" onclick="spSetPomodoroPreset(25)" title="25 min Standard Focus">🎯 25m</button>
+                                        <button class="btn btn-sm btn-outline-secondary btn-3d" onclick="spSetPomodoroPreset(50)" title="50 min Deep Focus">🔥 50m</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ Row 3: Spacious 2-Column Dashboard Grid (No Cramping / No Truncation) ═══ -->
+                    <div class="row g-4 mb-4">
+                        <!-- Column 1: Learning Streak & Productivity Analytics (col-lg-6) -->
+                        <div class="col-lg-6 card-3d-wrap">
+                            <div class="glass-panel card-3d p-4 h-100 d-flex flex-column justify-content-between">
+                                <div class="glare-3d"></div>
+                                <div class="layer-depth-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="fw-bold m-0 d-flex align-items-center gap-2">
+                                            <span>📊</span> Learning Momentum & Analytics
+                                        </h5>
+                                        <span class="badge bg-warning text-dark fw-bold px-2 py-1 small" id="sp-ana-score-badge">Score: 0</span>
+                                    </div>
+
+                                    <!-- Streak & Analytics Top Row -->
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-sm-5">
+                                            <div class="p-3 rounded text-center h-100 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%); border: 1px solid rgba(251, 146, 60, 0.25);">
+                                                <div class="streak-fire fs-1 fw-bold" id="sp-streak-count">🔥 0 Days</div>
+                                                <small class="text-secondary fw-bold mt-1">Active Study Streak</small>
+                                                <div class="d-flex justify-content-around mt-2 pt-2 border-top border-secondary border-opacity-25 text-center">
+                                                    <div>
+                                                        <small class="text-secondary d-block" style="font-size: 0.68rem;">Current</small>
+                                                        <span class="fw-bold text-warning" id="sp-streak-current">0</span>
+                                                    </div>
+                                                    <div>
+                                                        <small class="text-secondary d-block" style="font-size: 0.68rem;">Longest</small>
+                                                        <span class="fw-bold text-primary" id="sp-streak-longest">0</span>
+                                                    </div>
+                                                    <div>
+                                                        <small class="text-secondary d-block" style="font-size: 0.68rem;">Pomodoros</small>
+                                                        <span class="fw-bold text-danger" id="sp-streak-pomodoros">0</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-7">
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <div class="analytics-card p-2 rounded text-center">
+                                                        <small class="text-secondary d-block" style="font-size: 0.72rem;">Planned Hours</small>
+                                                        <h5 class="fw-bold m-0 text-primary" id="sp-ana-planned">0h</h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="analytics-card p-2 rounded text-center">
+                                                        <small class="text-secondary d-block" style="font-size: 0.72rem;">Actual Studied</small>
+                                                        <h5 class="fw-bold m-0 text-success" id="sp-ana-actual">0h</h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="analytics-card p-2 rounded text-center">
+                                                        <small class="text-secondary d-block" style="font-size: 0.72rem;">Tasks Done</small>
+                                                        <h5 class="fw-bold text-success m-0" id="sp-ana-done">0</h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="analytics-card p-2 rounded text-center">
+                                                        <small class="text-secondary d-block" style="font-size: 0.72rem;">Tasks Missed</small>
+                                                        <h5 class="fw-bold text-danger m-0" id="sp-ana-missed">0</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 7-Day Bar Chart -->
+                                    <div class="p-3 rounded" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color);">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <small class="text-secondary fw-bold" style="font-size: 0.76rem;">📈 7-Day Performance (Planned vs Actual)</small>
+                                            <span class="text-secondary small" style="font-size: 0.7rem;">Bars: 🟦 Planned | 🟪 Actual</span>
+                                        </div>
+                                        <div id="sp-weekly-chart" class="d-flex align-items-end gap-2" style="height: 80px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Milestone Goals & AI Coach Recommendations (col-lg-6) -->
+                        <div class="col-lg-6 card-3d-wrap">
+                            <div class="glass-panel card-3d p-4 h-100 d-flex flex-column justify-content-between">
+                                <div class="glare-3d"></div>
+                                <div class="layer-depth-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="fw-bold m-0 d-flex align-items-center gap-2">
+                                            <span>🎯</span> Milestone Goals & AI Recommendations
+                                        </h5>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-outline-success fw-bold btn-3d" onclick="spOpenGoalModal()" title="Add Goal">
+                                                <span>➕ New Goal</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary btn-3d" onclick="spLoadRecommendations()" title="Refresh AI Insights">
+                                                <span>🔄 Refresh</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Active Milestone Goals -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-secondary mb-2">🎯 Active Goals & Milestones</label>
+                                        <div id="sp-goals-container" class="d-flex flex-column gap-2" style="max-height: 180px; overflow-y: auto; padding-right: 4px;">
+                                            <div class="text-secondary small text-center py-3">No active goals. Click <strong>+ New Goal</strong> to set targets.</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AI Recommendations -->
+                                    <div>
+                                        <label class="form-label small fw-bold text-secondary mb-2">💡 AI Study Coach Insights</label>
+                                        <div id="sp-recommendations-container" class="d-flex flex-column gap-2" style="max-height: 180px; overflow-y: auto; padding-right: 4px;">
+                                            <div class="text-secondary small text-center py-3">Generate a study plan to unlock personalized AI coaching.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Goal Create Modal -->
+                    <div class="modal fade" id="spGoalModal" tabindex="-1">
+                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                            <div class="modal-content glass-panel border-0">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-bold">🎯 Create Target Goal</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Goal Title</label>
+                                        <input type="text" id="sp-goal-name" class="form-control glass-input" placeholder="e.g. Master Tree Traversals">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Target Date</label>
+                                        <input type="date" id="sp-goal-date" class="form-control glass-input">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Total Milestones / Tasks</label>
+                                        <input type="number" id="sp-goal-tasks" class="form-control glass-input" value="10" min="1" max="100">
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button class="btn btn-success w-100 fw-bold" onclick="spCreateGoal()">Create Goal</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </section>
 
             <!-- 3. Coding Mentor Tab -->
@@ -2729,6 +3791,29 @@
                 </div>
             </section>
         </main>
+
+        <!-- 🌟 GLOBAL WEBSITE FOOTER 🌟 -->
+        <footer class="mt-5 pt-4 pb-4 border-top border-secondary border-opacity-25 text-secondary">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="logo-3d-container" style="width: 28px; height: 28px;">
+                        <span style="font-size: 1rem;">🧠</span>
+                    </div>
+                    <span class="fw-bold text-white">AI Learning & Career Mentor</span>
+                    <span class="small text-secondary d-none d-md-inline">| Next-Gen Study & Career Platform</span>
+                </div>
+                <div class="d-flex align-items-center gap-3 small">
+                    <a href="#" class="text-secondary text-decoration-none fw-semibold" onclick="switchTab('study')">📚 Study Companion</a>
+                    <a href="#" class="text-secondary text-decoration-none fw-semibold" onclick="switchTab('coding')">💻 Coding Mentor</a>
+                    <a href="#" class="text-secondary text-decoration-none fw-semibold" onclick="switchTab('interview')">🎙️ Mock Interviews</a>
+                    <a href="#" class="text-secondary text-decoration-none fw-semibold" onclick="showLandingPage()">🏠 Welcome Home</a>
+                </div>
+                <div class="small text-secondary">
+                    <span>© 2026 AI Learning & Career Mentor.</span>
+                    <span class="badge bg-success-subtle text-success ms-2">🟢 System Online</span>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <!-- AUTHENTICATION DIALOG (Login / Register Modal) -->
@@ -2788,12 +3873,532 @@
         </div>
     </div>
 
+    <!-- NOTE GENERATOR VIEWER MODAL -->
+    <div class="modal fade" id="notesModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-panel p-4 text-white" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.95) 100%); border: 1px solid rgba(56, 189, 248, 0.25); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);">
+                <div class="modal-header border-0 pb-2 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2 text-truncate" style="max-width: 85%;">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <h4 class="modal-title fw-bold text-white text-truncate m-0" id="notes-modal-title" style="font-size: 1.15rem;">AI Generated Notes</h4>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <ul class="nav nav-pills mb-3 gap-2" id="notes-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" id="tab-btn-short" data-bs-toggle="pill" data-bs-target="#notes-pane-short" type="button" style="font-size: 0.82rem;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                Short Summary
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" id="tab-btn-detailed" data-bs-toggle="pill" data-bs-target="#notes-pane-detailed" type="button" style="font-size: 0.82rem;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                                Detailed Breakdown
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" id="tab-btn-exam" data-bs-toggle="pill" data-bs-target="#notes-pane-exam" type="button" style="font-size: 0.82rem;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                Exam Cram Notes
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="notes-tab-content">
+                        <div class="tab-pane fade show active notes-container-box p-4 rounded-3" id="notes-pane-short" role="tabpanel" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); min-height: 260px; max-height: 480px; overflow-y: auto; color: #cbd5e1; line-height: 1.65;">
+                            Select document notes to view summary.
+                        </div>
+                        <div class="tab-pane fade notes-container-box p-4 rounded-3" id="notes-pane-detailed" role="tabpanel" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); min-height: 260px; max-height: 480px; overflow-y: auto; color: #cbd5e1; line-height: 1.65;">
+                            Select document notes to view detailed breakdown.
+                        </div>
+                        <div class="tab-pane fade notes-container-box p-4 rounded-3" id="notes-pane-exam" role="tabpanel" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); min-height: 260px; max-height: 480px; overflow-y: auto; color: #cbd5e1; line-height: 1.65;">
+                            Select document notes to view exam cram notes.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-2 d-flex justify-content-between align-items-center">
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1 d-flex align-items-center gap-1" onclick="downloadNotesAsMarkdown()" style="font-size: 0.82rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span>Export .md</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 d-flex align-items-center gap-1" onclick="copyNotesToClipboard()" style="font-size: 0.82rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <span>Copy</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1 d-flex align-items-center gap-1" id="notes-regen-btn" onclick="regenerateCurrentModalNotes()" style="font-size: 0.82rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                            <span>Regenerate with AI</span>
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-4" data-bs-dismiss="modal" style="font-size: 0.82rem;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- FLASHCARD REVIEWER MODAL (SM-2 Spaced Repetition) -->
+    <div class="modal fade" id="flashcardsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.98); border: 1px solid rgba(99, 102, 241, 0.25); box-shadow: 0 25px 60px rgba(0,0,0,0.7);">
+                <div class="modal-header border-0 pb-0 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="bg-primary bg-opacity-25 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                            <i class="bi bi-layers-fill text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold text-white m-0">Spaced Repetition Flashcard Deck</h5>
+                            <small class="text-secondary" style="font-size: 0.78rem;">SuperMemo SM-2 Adaptive Recall Engine</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span id="flashcard-counter" class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 px-3 py-2 fw-bold" style="font-size: 0.85rem;">Card 0 of 0</span>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body py-4 text-center">
+                    <!-- 3D Interactive Card Scene -->
+                    <div class="flashcard-scene" onclick="flipCurrentFlashcard()" title="Click to flip card">
+                        <div class="flashcard-card" id="flashcard-element">
+                            <!-- FRONT (Question) -->
+                            <div class="flashcard-face flashcard-front">
+                                <span class="badge bg-primary px-3 py-1 rounded-pill" style="font-size: 0.78rem; letter-spacing: 0.5px;">
+                                    <i class="bi bi-question-circle me-1"></i> QUESTION
+                                </span>
+                                <h5 id="flashcard-question-text">Click 'Review Cards' to load your deck.</h5>
+                                <div class="flashcard-flip-hint">
+                                    <i class="bi bi-arrow-repeat me-1"></i> Click card to reveal answer
+                                </div>
+                            </div>
+                            <!-- BACK (Answer) -->
+                            <div class="flashcard-face flashcard-back">
+                                <span class="badge bg-success px-3 py-1 rounded-pill" style="font-size: 0.78rem; letter-spacing: 0.5px;">
+                                    <i class="bi bi-check-circle me-1"></i> ANSWER & EXPLANATION
+                                </span>
+                                <p id="flashcard-answer-text">Answer will appear here.</p>
+                                <div class="flashcard-flip-hint">
+                                    <i class="bi bi-arrow-repeat me-1"></i> Click card to view question
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audio TTS Controller -->
+                    <div class="d-flex justify-content-center my-3">
+                        <button class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill fw-bold d-flex align-items-center gap-2" onclick="speakFlashcardText()" title="Listen to question/answer">
+                            <i class="bi bi-volume-up-fill text-info fs-6"></i>
+                            <span style="font-size: 0.82rem;">Listen with AI Speech (TTS)</span>
+                        </button>
+                    </div>
+
+                    <!-- SM-2 Memory Rating Controls -->
+                    <div class="p-3 rounded mt-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                            <span class="text-secondary small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Rate your recall accuracy:</span>
+                            <span class="text-secondary small" style="font-size: 0.75rem;">Adapts next review schedule</span>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-4 col-md-2">
+                                <button class="btn btn-sm btn-outline-danger w-100 py-2 fw-bold" onclick="submitFlashcardReviewScore(0)" title="Complete blackout">
+                                    <div style="font-size: 0.85rem;">0 - Blackout</div>
+                                    <small style="font-size: 0.65rem; opacity: 0.8;">Forgot</small>
+                                </button>
+                            </div>
+                            <div class="col-4 col-md-2">
+                                <button class="btn btn-sm btn-outline-warning w-100 py-2 fw-bold" onclick="submitFlashcardReviewScore(1)" title="Incorrect response">
+                                    <div style="font-size: 0.85rem;">1 - Wrong</div>
+                                    <small style="font-size: 0.65rem; opacity: 0.8;">Incorrect</small>
+                                </button>
+                            </div>
+                            <div class="col-4 col-md-2">
+                                <button class="btn btn-sm btn-outline-info w-100 py-2 fw-bold" onclick="submitFlashcardReviewScore(2)" title="Hard recall">
+                                    <div style="font-size: 0.85rem;">2 - Hard</div>
+                                    <small style="font-size: 0.65rem; opacity: 0.8;">Difficult</small>
+                                </button>
+                            </div>
+                            <div class="col-4 col-md-2">
+                                <button class="btn btn-sm btn-outline-primary w-100 py-2 fw-bold" onclick="submitFlashcardReviewScore(3)" title="Good recall">
+                                    <div style="font-size: 0.85rem;">3 - Good</div>
+                                    <small style="font-size: 0.65rem; opacity: 0.8;">Recalled</small>
+                                </button>
+                            </div>
+                            <div class="col-4 col-md-2">
+                                <button class="btn btn-sm btn-outline-success w-100 py-2 fw-bold" onclick="submitFlashcardReviewScore(4)" title="Easy recall">
+                                    <div style="font-size: 0.85rem;">4 - Easy</div>
+                                    <small style="font-size: 0.65rem; opacity: 0.8;">Effortless</small>
+                                </button>
+                            </div>
+                            <div class="col-4 col-md-2">
+                                <button class="btn btn-sm btn-success w-100 py-2 fw-bold" onclick="submitFlashcardReviewScore(5)" title="Perfect recall">
+                                    <div style="font-size: 0.85rem;">5 - Master</div>
+                                    <small style="font-size: 0.65rem; opacity: 0.9;">Instant</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- QUIZ SETUP / DIFFICULTY SELECTOR MODAL -->
+    <div class="modal fade" id="quizSetupModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel p-4 text-white" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.95) 100%); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);">
+                <div class="modal-header border-0 pb-2 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold text-white m-0" style="font-size: 1.1rem;">Configure AI Practice Quiz</h5>
+                            <small class="text-secondary" id="quiz-setup-doc-title" style="font-size: 0.78rem;">Select target challenge level</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body py-3">
+                    <label class="form-label text-white small fw-bold text-uppercase mb-2" style="letter-spacing: 0.5px;">Select Difficulty Tier</label>
+                    <div class="d-flex flex-column gap-2 mb-3">
+                        <div class="quiz-diff-card d-flex align-items-center justify-content-between p-3 rounded-3" onclick="setQuizSetupDifficulty('EASY')" id="diff-card-EASY" style="cursor: pointer; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.2s ease;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 0.85rem;">
+                                    🟢
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white" style="font-size: 0.9rem;">EASY - Foundations</div>
+                                    <small class="text-secondary" style="font-size: 0.75rem;">Core definitions, basic formulas &amp; conceptual recall</small>
+                                </div>
+                            </div>
+                            <input type="radio" name="quiz-diff" id="radio-diff-EASY" value="EASY" class="form-check-input m-0">
+                        </div>
+
+                        <div class="quiz-diff-card d-flex align-items-center justify-content-between p-3 rounded-3 active-tier" onclick="setQuizSetupDifficulty('MEDIUM')" id="diff-card-MEDIUM" style="cursor: pointer; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.4); transition: all 0.2s ease;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.85rem;">
+                                    🟡
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white" style="font-size: 0.9rem;">MEDIUM - Academic Standard</div>
+                                    <small class="text-secondary" style="font-size: 0.75rem;">Applied problem solving, scenario analysis &amp; multi-step logic</small>
+                                </div>
+                            </div>
+                            <input type="radio" name="quiz-diff" id="radio-diff-MEDIUM" value="MEDIUM" class="form-check-input m-0" checked>
+                        </div>
+
+                        <div class="quiz-diff-card d-flex align-items-center justify-content-between p-3 rounded-3" onclick="setQuizSetupDifficulty('HARD')" id="diff-card-HARD" style="cursor: pointer; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.2s ease;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(239, 68, 68, 0.15); color: #ef4444; font-size: 0.85rem;">
+                                    🔴
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white" style="font-size: 0.9rem;">HARD - Exam Mastery</div>
+                                    <small class="text-secondary" style="font-size: 0.75rem;">Edge cases, time complexity analysis &amp; advanced synthesis</small>
+                                </div>
+                            </div>
+                            <input type="radio" name="quiz-diff" id="radio-diff-HARD" value="HARD" class="form-check-input m-0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm fw-bold rounded-pill px-4 text-white shadow-sm d-flex align-items-center gap-2" onclick="confirmAndLaunchQuiz()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <span>Launch Quiz Assessment</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ GENERATOR & TAKING MODAL -->
+    <div class="modal fade" id="quizModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-panel p-4 text-white" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.95) 100%); border: 1px solid rgba(16, 185, 129, 0.25); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);">
+                <div class="modal-header border-0 pb-0 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 34px; height: 34px; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </div>
+                        <h4 class="modal-title fw-bold text-white m-0" id="quiz-modal-title" style="font-size: 1.1rem;">AI Assessment Quiz</h4>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span id="quiz-difficulty-badge" class="badge rounded-pill bg-warning text-dark fw-bold px-3 py-1" style="font-size: 0.75rem;">MEDIUM</span>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body py-4">
+                    <div id="quiz-taking-container">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 id="quiz-progress-text" class="text-secondary m-0">Question 1 of 5</h5>
+                            <span id="quiz-score-badge" class="badge bg-primary d-none">Score: 0</span>
+                        </div>
+                        
+                        <div class="glass-panel p-4 mb-4">
+                            <h5 id="quiz-question-prompt" class="fw-bold mb-3">Loading quiz question...</h5>
+                            <div class="d-flex flex-column gap-2" id="quiz-options-wrapper">
+                                <!-- MCQ options injected here dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-outline-secondary" id="quiz-prev-btn" onclick="navQuizQuestion(-1)" disabled>Previous</button>
+                            <button class="btn btn-primary-custom" id="quiz-next-btn" onclick="navQuizQuestion(1)">Next Question</button>
+                            <button class="btn btn-success d-none" id="quiz-submit-btn" onclick="submitCurrentQuiz()">Submit Quiz</button>
+                        </div>
+                    </div>
+
+                    <div id="quiz-results-container" class="d-none text-center">
+                        <i class="bi bi-trophy-fill fs-1 text-warning mb-3 d-block"></i>
+                        <h3 class="fw-bold mb-2">Quiz Completed!</h3>
+                        <h2 id="quiz-final-score-display" class="fw-extrabold text-primary mb-3">4 / 5 (80%)</h2>
+                        <div id="quiz-feedback-list" class="text-start mb-4 notes-container-box" style="max-height: 250px;"></div>
+                        <button class="btn btn-primary-custom" data-bs-dismiss="modal">Close & Return</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WEAKNESS ANALYSIS MODAL -->
+    <div class="modal fade" id="weaknessModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="modal-title fw-bold"><i class="bi bi-graph-up-arrow text-warning me-2"></i>AI Weakness Analysis</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3" id="weakness-modal-body">
+                    <div class="text-center text-secondary py-3">Analyzing past quiz attempts...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE MIND MAP MODAL -->
+    <div class="modal fade" id="createMindMapModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="modal-title fw-bold"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Create AI Mind Map</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <label class="form-label small fw-bold mb-2">Select Input Learning Source:</label>
+                    
+                    <div class="btn-group w-100 mb-4" role="group" id="mm-source-type-group">
+                        <input type="radio" class="btn-check" name="mm_source" id="source_topic" value="TOPIC" checked onchange="toggleMindMapSourceInputs('TOPIC')">
+                        <label class="btn btn-outline-primary" for="source_topic"><i class="bi bi-fonts me-1"></i>Enter Topic</label>
+
+                        <input type="radio" class="btn-check" name="mm_source" id="source_text" value="TEXT" onchange="toggleMindMapSourceInputs('TEXT')">
+                        <label class="btn btn-outline-primary" for="source_text"><i class="bi bi-file-earmark-text me-1"></i>Paste Text</label>
+
+                        <input type="radio" class="btn-check" name="mm_source" id="source_file" value="FILE" onchange="toggleMindMapSourceInputs('FILE')">
+                        <label class="btn btn-outline-primary" for="source_file"><i class="bi bi-file-earmark-pdf me-1"></i>Upload PDF/File</label>
+
+                        <input type="radio" class="btn-check" name="mm_source" id="source_doc" value="NOTE" onchange="toggleMindMapSourceInputs('NOTE')">
+                        <label class="btn btn-outline-primary" for="source_doc"><i class="bi bi-journal-richtext me-1"></i>Saved Document</label>
+                    </div>
+
+                    <!-- Input 1: Topic -->
+                    <div id="mm-input-sec-topic" class="mb-3">
+                        <label class="form-label small text-secondary">Study Topic Title:</label>
+                        <input type="text" id="mm-create-topic-input" class="form-control glass-input" placeholder="e.g. Machine Learning, Operating Systems, Software Engineering">
+                    </div>
+
+                    <!-- Input 2: Paste Text -->
+                    <div id="mm-input-sec-text" class="mb-3 d-none">
+                        <label class="form-label small text-secondary">Paste Study Notes / Material Text:</label>
+                        <textarea id="mm-create-text-input" class="form-control glass-input" rows="6" placeholder="Paste chapters, notes, or lecture transcript here..."></textarea>
+                    </div>
+
+                    <!-- Input 3: File Upload -->
+                    <div id="mm-input-sec-file" class="mb-3 d-none">
+                        <label class="form-label small text-secondary">Upload PDF, DOCX, or TXT file:</label>
+                        <input type="file" id="mm-create-file-input" class="form-control glass-input">
+                    </div>
+
+                    <!-- Input 4: Select Loaded Document -->
+                    <div id="mm-input-sec-doc" class="mb-3 d-none">
+                        <label class="form-label small text-secondary">Select Processed Study Document:</label>
+                        <select id="mm-create-doc-select" class="form-select glass-input">
+                            <option value="">No loaded documents available. Upload one first.</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary-custom w-100 mt-3 py-2 fw-bold" onclick="executeCreateMindMapForm()"><i class="bi bi-stars me-2"></i>Generate AI Mind Map</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MY MIND MAPS GALLERY MODAL -->
+    <div class="modal fade" id="myMindMapsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="modal-title fw-bold"><i class="bi bi-folder-fill text-warning me-2"></i>My Saved Mind Maps</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="list-group list-group-flush bg-transparent gap-2" id="my-mindmaps-list" style="max-height: 400px; overflow-y: auto;">
+                        <span class="text-secondary text-center py-4">Loading saved mind maps...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STUDY PLAN SESSION DETAIL MODAL -->
+    <div class="modal fade" id="spSessionDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.96); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.5);">
+                <div class="modal-header border-0 pb-2">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="fs-3">📋</span>
+                        <h4 class="modal-title fw-bold m-0 text-white" id="sp-modal-subj-title">Study Session Details</h4>
+                        <span id="sp-modal-priority-badge" class="priority-badge high">🔴 HIGH PRIORITY</span>
+                        <span id="sp-modal-status-badge" class="badge bg-secondary">⏳ Pending</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <!-- Session Timing & Metrics Grid -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-4">
+                            <div class="p-3 rounded text-center" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);">
+                                <small class="text-secondary d-block fw-bold mb-1">⏰ Scheduled Window</small>
+                                <h6 class="fw-bold m-0 text-primary" id="sp-modal-time-window">20:00 – 23:59</h6>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="p-3 rounded text-center" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);">
+                                <small class="text-secondary d-block fw-bold mb-1">⏱️ Planned Duration</small>
+                                <h6 class="fw-bold m-0 text-warning" id="sp-modal-duration">390 min</h6>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="p-3 rounded text-center" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);">
+                                <small class="text-secondary d-block fw-bold mb-1">📅 Scheduled Date</small>
+                                <h6 class="fw-bold m-0 text-success" id="sp-modal-date">2026-08-19</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Topic Focus & Strategy -->
+                    <div class="p-3 rounded mb-3" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%); border: 1px solid rgba(99, 102, 241, 0.3);">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                            <h6 class="fw-bold m-0 d-flex align-items-center gap-2 text-white">
+                                <span>📖</span> <span id="sp-modal-topic-title">Topic: Advanced Topics</span>
+                            </h6>
+                            <span id="sp-modal-topic-tag" class="sp-tag-badge weak">🎯 Weak Focus Area</span>
+                        </div>
+                        <p class="text-secondary small m-0" id="sp-modal-topic-desc">
+                            AI-allocated focus block targeted at reinforcing conceptual mastery and solving practice problem sets before your target deadline.
+                        </p>
+                    </div>
+
+                    <!-- Weak vs Strong Topics Performance Grid -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <div class="p-2 px-3 rounded h-100" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);">
+                                <div class="d-flex align-items-center gap-1 mb-1">
+                                    <span style="font-size: 0.85rem;">⚠️</span>
+                                    <strong class="text-danger small" style="font-size: 0.75rem;">Subject Weak Topics (Needs Focus):</strong>
+                                </div>
+                                <div class="d-flex gap-1 flex-wrap" id="sp-modal-weak-topics-list">
+                                    <!-- Dynamic weak topic pills -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-2 px-3 rounded h-100" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25);">
+                                <div class="d-flex align-items-center gap-1 mb-1">
+                                    <span style="font-size: 0.85rem;">✅</span>
+                                    <strong class="text-success small" style="font-size: 0.75rem;">Subject Strong Topics (Foundations):</strong>
+                                </div>
+                                <div class="d-flex gap-1 flex-wrap" id="sp-modal-strong-topics-list">
+                                    <!-- Dynamic strong topic pills -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 🎯 Detailed Topics & Concepts to Cover -->
+                    <div class="p-3 rounded mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);">
+                        <h6 class="fw-bold mb-2 d-flex align-items-center gap-2 text-white">
+                            <span>📖</span> Specific Topics & Concepts to Cover
+                        </h6>
+                        <div id="sp-modal-topics-breakdown" class="d-flex flex-column gap-2 small">
+                            <!-- Dynamic topics breakdown injected here -->
+                        </div>
+                    </div>
+
+                    <!-- 🚀 Direct AI Learning Companion Launchpad -->
+                    <div class="p-3 rounded mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);">
+                        <h6 class="fw-bold mb-2 d-flex align-items-center gap-2 text-white">
+                            <span>🚀</span> Instant AI Study Companion Launchpad
+                        </h6>
+                        <div class="row g-2">
+                            <div class="col-6 col-md-3">
+                                <button class="btn btn-sm btn-outline-info w-100 py-2 fw-bold btn-3d d-flex flex-column align-items-center gap-1" onclick="spLaunchNotesFromModal()">
+                                    <span class="fs-5">📝</span>
+                                    <span style="font-size: 0.75rem;">Generate Notes</span>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button class="btn btn-sm btn-outline-primary w-100 py-2 fw-bold btn-3d d-flex flex-column align-items-center gap-1" onclick="spLaunchFlashcardsFromModal()">
+                                    <span class="fs-5">📇</span>
+                                    <span style="font-size: 0.75rem;">Practice Cards</span>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button class="btn btn-sm btn-outline-success w-100 py-2 fw-bold btn-3d d-flex flex-column align-items-center gap-1" onclick="spLaunchQuizFromModal()">
+                                    <span class="fs-5">❓</span>
+                                    <span style="font-size: 0.75rem;">Take AI Quiz</span>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <button class="btn btn-sm btn-outline-warning w-100 py-2 fw-bold btn-3d d-flex flex-column align-items-center gap-1" onclick="spLaunchMindMapFromModal()">
+                                    <span class="fs-5">🗺️</span>
+                                    <span style="font-size: 0.75rem;">Concept Map</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap pt-2 border-top border-secondary border-opacity-25">
+                        <button class="btn btn-sm btn-outline-info fw-bold btn-3d" id="sp-modal-pomo-btn" onclick="spLaunchPomodoroFromModal()">
+                            <span>⏱️</span> Start Pomodoro Timer
+                        </button>
+                        <div class="d-flex gap-2" id="sp-modal-action-buttons">
+                            <!-- Dynamic done / missed / delete buttons -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Toast & Popup Container -->
+    <div id="global-toast-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000000; max-width: 420px; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
+
     <!-- Bootstrap 5 JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Chart.js for AI Career Coach Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Core Application Logic Bundle -->
-    <script src="/static/js/main.js?v=1.0.6"></script>
+    <script src="/static/js/main.js?v=31.0.0"></script>
 </body>
-
 </html>
+

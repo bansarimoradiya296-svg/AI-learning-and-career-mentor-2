@@ -88,7 +88,7 @@ class CodeExecutorService:
         )
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             response = model.generate_content(prompt)
             raw_text = response.text.replace("```json", "").replace("```", "").strip()
             return json.loads(raw_text)
@@ -122,7 +122,7 @@ class CodeExecutorService:
         )
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             response = model.generate_content(prompt)
             raw_text = response.text.replace("```json", "").replace("```", "").strip()
             return json.loads(raw_text)

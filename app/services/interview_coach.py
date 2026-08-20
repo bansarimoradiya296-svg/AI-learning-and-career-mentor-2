@@ -50,7 +50,7 @@ class InterviewCoachService:
         )
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             response = model.generate_content(prompt)
             question = response.text.strip()
         except Exception:
@@ -104,7 +104,7 @@ class InterviewCoachService:
         )
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             response = model.generate_content(prompt)
             next_q = response.text.strip()
         except Exception:
@@ -167,7 +167,7 @@ class InterviewCoachService:
         )
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             response = model.generate_content(prompt)
             raw_text = response.text.replace("```json", "").replace("```", "").strip()
             
