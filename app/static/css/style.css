@@ -270,356 +270,575 @@ h6 {
     }
 }
 
-/* ==========================================================================
-   AI Interview Simulator Custom Styles
-   ========================================================================== */
-
-/* Sub-pane animation */
-.interview-subpane {
-    animation: tabFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+/* Coding Mentor Sub-tab System styles */
+.sub-nav-pills {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
 }
 
-@keyframes tabFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Setup selectors styling */
-.setup-btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.setup-btn-group .btn {
+.btn-sub-tab {
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-color);
-    background: rgba(255, 255, 255, 0.04);
     color: var(--text-secondary);
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-family: var(--font-heading);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
     transition: all 0.2s ease;
 }
 
-.setup-btn-group .btn.active,
-.setup-btn-group .btn:hover {
-    background: var(--primary) !important;
-    color: white !important;
-    border-color: var(--primary);
-    box-shadow: 0 0 15px var(--primary-glow);
-    transform: translateY(-1px);
+.btn-sub-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
 }
 
-/* Webcam feed and Video frame */
-.video-frame-container {
-    position: relative;
-    border-radius: 16px;
-    overflow: hidden;
+.btn-sub-tab.active {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--primary);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
+}
+
+/* Chat bubble styling */
+.chat-bubble-user {
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: var(--text-primary);
+    border-radius: 12px 12px 0 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    align-self: flex-end;
+    max-width: 80%;
+    margin-left: auto;
+}
+
+.chat-bubble-mentor {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 12px 12px 12px 0;
+    padding: 16px;
+    margin-bottom: 16px;
+    align-self: flex-start;
+    max-width: 80%;
+}
+
+.chat-bubble-mentor pre {
     background: #090d16;
     border: 1px solid var(--border-color);
-    box-shadow: var(--card-shadow);
-    height: 320px;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #38bdf8 !important;
+}
+
+/* Quiz Option Card styling */
+.quiz-option-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 14px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+}
+
+.quiz-option-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(4px);
+}
+
+.quiz-option-card.selected {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+}
+
+.quiz-option-card.correct {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--success);
+}
+
+.quiz-option-card.incorrect {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+}
+
+/* Roadmap step status colors */
+.badge-completed {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-in-progress {
+    background: rgba(99, 102, 241, 0.15);
+    color: #8b5cf6;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.badge-pending {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+/* ============================================================
+   AI CAREER COACH STYLES
+   ============================================================ */
+
+/* Special highlight for AI Career Coach tab button */
+.btn-sub-tab-coach {
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2)) !important;
+    border-color: rgba(99,102,241,0.4) !important;
+    color: #a5b4fc !important;
+}
+.btn-sub-tab-coach.active {
+    background: linear-gradient(135deg, rgba(99,102,241,0.35), rgba(139,92,246,0.35)) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 0 16px rgba(99,102,241,0.35) !important;
+}
+
+/* The entire coach pane scrolls within the content area */
+#coding-sub-career-coach {
+    overflow-y: auto;
+    max-height: calc(100vh - 195px);
+    padding-right: 4px;
+}
+
+/* Compact labels */
+.coach-label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+/* Compact selects */
+.coach-select {
+    font-size: 0.78rem !important;
+}
+
+/* Skills badge (larger, in left panel) */
+.badge-skill {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+/* Skills badge (smaller, in gap analysis) */
+.badge-skill-sm {
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* Target salary display */
+.coach-salary-range {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    padding: 6px 10px;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 8px;
+}
+
+/* Resume file box */
+.coach-file-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+/* Resume upload button */
+.coach-upload-btn {
+    cursor: pointer;
+    color: var(--primary);
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+.coach-upload-btn:hover { color: var(--accent); }
+
+/* Skill gap analysis dot indicator */
+.coach-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Role rows in recommended career roles */
+.coach-role-row {
+    padding: 5px 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.coach-role-row:hover {
+    background: rgba(99,102,241,0.08);
+}
+
+/* Certification card */
+.coach-cert-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 4px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.coach-cert-card:hover {
+    background: rgba(99,102,241,0.1);
+    border-color: rgba(99,102,241,0.3);
+    transform: translateY(-2px);
+}
+.coach-cert-logo {
+    width: 36px;
+    height: 28px;
+    object-fit: contain;
+    filter: brightness(0.9);
+}
+
+/* Week prep cards */
+.coach-week-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+.coach-week-card:hover {
+    background: rgba(255,255,255,0.07);
+    transform: translateY(-2px);
+}
+.coach-week-title {
+    font-weight: 700;
+    font-size: 0.82rem;
+    margin-bottom: 6px;
+}
+
+/* Roadmap horizontal track */
+.coach-roadmap-track {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    padding: 12px 0;
+}
+.coach-roadmap-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    flex: 1;
+    text-align: center;
+}
+.coach-roadmap-node {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(99,102,241,0.2);
+    border: 2px solid rgba(99,102,241,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.1rem;
+    color: var(--primary);
+    transition: all 0.3s ease;
+    z-index: 1;
 }
-
-.webcam-viewport {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scaleX(-1);
-    /* mirror effect */
+.active-step .coach-roadmap-node {
+    background: rgba(99,102,241,0.35);
+    border-color: var(--primary);
+    box-shadow: 0 0 16px rgba(99,102,241,0.5);
 }
-
-.interviewer-viewport {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.video-label-badge {
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 600;
+.coach-roadmap-label {
+    font-size: 0.7rem;
+    margin-top: 6px;
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    font-weight: 500;
+    line-height: 1.4;
+}
+.coach-roadmap-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(99,102,241,0.4), rgba(139,92,246,0.2));
+    margin-top: 22px;
+    min-width: 20px;
 }
 
-.live-indicator {
+/* Robot decoration in AI Recommendations */
+.coach-ai-robot {
     position: absolute;
-    top: 12px;
+    bottom: 10px;
     right: 12px;
-    background: #ef4444;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
+    pointer-events: none;
+}
+
+/* Chart legend dot */
+.coach-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* Footer action buttons */
+.btn-coach-action {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+.btn-coach-action:hover {
+    background: rgba(99,102,241,0.15);
+    border-color: rgba(99,102,241,0.4);
+    color: #a5b4fc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.2);
+}
+
+/* Custom scrollbar for coach pane */
+#coding-sub-career-coach::-webkit-scrollbar { width: 5px; }
+#coding-sub-career-coach::-webkit-scrollbar-track { background: transparent; }
+#coding-sub-career-coach::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 10px; }
+
+/* ================================================
+   AI Mentor Memory — Card hover styles
+   ================================================ */
+.memory-card {
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+.memory-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+}
+
+/* ================================================
+   Code Evolution Timeline — Timeline item styles
+   ================================================ */
+.timeline-evolution {
+    position: relative;
+}
+.evo-item {
+    transition: background 0.2s ease;
+    border-radius: 8px;
+}
+.evo-item:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+.evo-item-active {
+    background: rgba(99, 102, 241, 0.04);
+}
+
+/* ================================================
+   Daily AI Mission — Task item styles
+   ================================================ */
+.mission-task-item {
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    cursor: default;
+}
+.mission-task-item:hover {
+    transform: translateX(4px);
+    border-color: rgba(99, 102, 241, 0.25);
+}
+
+/* Scrollbars for new sub-panes */
+#coding-sub-memory > div::-webkit-scrollbar,
+#coding-sub-timeline > div::-webkit-scrollbar,
+#coding-sub-mission > div::-webkit-scrollbar { width: 5px; }
+#coding-sub-memory > div::-webkit-scrollbar-track,
+#coding-sub-timeline > div::-webkit-scrollbar-track,
+#coding-sub-mission > div::-webkit-scrollbar-track { background: transparent; }
+#coding-sub-memory > div::-webkit-scrollbar-thumb,
+#coding-sub-timeline > div::-webkit-scrollbar-thumb,
+#coding-sub-mission > div::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 10px; }
+
+
+/* ================================================
+   Coding Mentor 4 Feature Workflow Cards
+   ================================================ */
+.coding-features-row {
+    margin-top: 10px;
+}
+
+.feature-card {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    background: rgba(13, 20, 35, 0.6) !important;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    transition: all 0.3s ease;
+}
+
+/* Theme specifics */
+.card-chat { border-color: rgba(59, 130, 246, 0.15); }
+.card-chat:hover { 
+    border-color: rgba(59, 130, 246, 0.6); 
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+}
+.bg-chat { background: rgba(59, 130, 246, 0.1); }
+.btn-chat-action {
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.btn-chat-action:hover {
+    background: #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+.card-debugger { border-color: rgba(16, 185, 129, 0.15); }
+.card-debugger:hover { 
+    border-color: rgba(16, 185, 129, 0.6); 
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.15);
+}
+.bg-debugger { background: rgba(16, 185, 129, 0.1); }
+.btn-debugger-action {
+    background: #059669;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.btn-debugger-action:hover {
+    background: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.card-explain { border-color: rgba(245, 158, 11, 0.15); }
+.card-explain:hover { 
+    border-color: rgba(245, 158, 11, 0.6); 
+    box-shadow: 0 8px 30px rgba(245, 158, 11, 0.15);
+}
+.bg-explain { background: rgba(245, 158, 11, 0.1); }
+.btn-explain-action {
+    background: #d97706;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.btn-explain-action:hover {
+    background: #f59e0b;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+.card-quiz { border-color: rgba(139, 92, 246, 0.15); }
+.card-quiz:hover { 
+    border-color: rgba(139, 92, 246, 0.6); 
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+}
+.bg-quiz { background: rgba(139, 92, 246, 0.1); }
+.btn-quiz-action {
+    background: #7c3aed;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.btn-quiz-action:hover {
+    background: #8b5cf6;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+/* Workflow step layouts */
+.workflow-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 15px;
+}
+.workflow-title {
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    animation: pulse-red-live 2s infinite;
+    color: rgba(255, 255, 255, 0.4);
 }
-
-@keyframes pulse-red-live {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        transform: scale(1.08);
-        opacity: 0.6;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+.workflow-steps {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
-
-/* Audio Visualizer Waves */
-.audio-waves-container {
+.workflow-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.step-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    height: 44px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    padding: 0 16px;
-    border: 1px solid var(--border-color);
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
 }
-
-.wave-bar {
-    width: 3px;
-    height: 8px;
-    background: var(--primary);
-    border-radius: 3px;
-    animation: wave-motion-active 1.2s infinite ease-in-out;
-}
-
-.wave-bar:nth-child(2) {
-    animation-delay: 0.15s;
-}
-
-.wave-bar:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.wave-bar:nth-child(4) {
-    animation-delay: 0.45s;
-}
-
-.wave-bar:nth-child(5) {
-    animation-delay: 0.6s;
-}
-
-.wave-bar:nth-child(6) {
-    animation-delay: 0.45s;
-}
-
-.wave-bar:nth-child(7) {
-    animation-delay: 0.3s;
-}
-
-.wave-bar:nth-child(8) {
-    animation-delay: 0.15s;
-}
-
-@keyframes wave-motion-active {
-
-    0%,
-    100% {
-        height: 8px;
-    }
-
-    50% {
-        height: 32px;
-    }
-}
-
-/* Panel Avatars */
-.panelist-card {
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid transparent;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid var(--border-color);
-}
-
-.panelist-card.speaking {
-    border: 2px solid var(--success) !important;
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
-    transform: translateY(-2px);
-}
-
-.panelist-card.listening {
-    border: 2px solid var(--primary) !important;
-}
-
-.panelist-card.waiting {
-    opacity: 0.5;
-}
-
-.panelist-img {
-    height: 140px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-.panelist-badge {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(4px);
-    font-size: 0.75rem;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-weight: 600;
-}
-
-.panel-notes-box {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 20px;
-}
-
-/* Circular Progress Dials */
-.circular-progress-wrapper {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-}
-
-.circular-progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: 800;
-    font-size: 1.35rem;
-    color: var(--text-primary);
-    font-family: var(--font-heading);
-}
-
-/* Decision Cards and Strengths list */
-.recruiter-decision-card {
-    border-left: 5px solid var(--success);
-    background: rgba(16, 185, 129, 0.05) !important;
-}
-
-.strength-item {
-    display: flex;
-    align-items: start;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-.strength-item i {
-    color: var(--success);
-    font-size: 1.1rem;
-    margin-top: 2px;
-}
-
-.weakness-item {
-    display: flex;
-    align-items: start;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-.weakness-item i {
-    color: var(--warning);
-    font-size: 1.1rem;
-    margin-top: 2px;
-}
-
-.next-step-item {
-    display: flex;
-    align-items: start;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-.next-step-item i {
-    color: var(--primary);
-    font-size: 1.1rem;
-    margin-top: 2px;
-}
-
-/* Achievements grid */
-.badge-card {
+.step-label {
+    font-size: 0.58rem;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.2;
     text-align: center;
-    padding: 20px 15px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border-color);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+    word-break: keep-all;
+    max-width: 62px;
+}
+.workflow-arrow {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.15);
+    margin-top: -18px;
+    user-select: none;
 }
 
-.badge-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--primary);
-    box-shadow: 0 8px 24px var(--primary-glow);
-    background: rgba(255, 255, 255, 0.04);
+/* Micro-animations */
+.feature-card:hover .step-icon {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
 }
 
-.badge-icon {
-    font-size: 2.25rem;
-    margin-bottom: 10px;
-    display: inline-block;
-}
-
-.avatar-rounded {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--border-color);
-}
-
-/* Ensure SVG circles start from the top (12 o'clock position) */
-.circular-progress-wrapper svg {
-    transform: rotate(-90deg);
-    transform-origin: center;
-}
-
-/* Micro-animations and highlights */
-.live-indicator {
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
-}
-
-.panelist-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.panelist-card:hover {
-    border-color: rgba(99, 102, 241, 0.5);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
-}
-
-/* Custom dashed border */
-.border-dashed {
-    border-style: dashed !important;
-}
