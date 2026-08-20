@@ -48,7 +48,7 @@ class CareerMentorService:
         )
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             response = model.generate_content(prompt)
             raw_text = response.text.replace("```json", "").replace("```", "").strip()
             analysis = json.loads(raw_text)
@@ -142,7 +142,7 @@ class CareerMentorService:
         )
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel(settings.GEMINI_MODEL)
             response = model.generate_content(prompt)
             raw_text = response.text.replace("```json", "").replace("```", "").strip()
             roadmap_structure = json.loads(raw_text)

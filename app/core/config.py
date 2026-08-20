@@ -32,8 +32,10 @@ class Settings(BaseSettings):
     CHROMADB_HOST: str = "localhost"
     CHROMADB_PORT: int = 8000
     
-    # Gemini API Key
+    # Gemini API Settings
     GEMINI_API_KEY: str
+    GEMINI_MODEL: str = "gemini-2.0-flash"
+
     
     # OAuth2 (Optional integration)
     GOOGLE_CLIENT_ID: Optional[str] = None

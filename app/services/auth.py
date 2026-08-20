@@ -36,8 +36,8 @@ class AuthService:
         # Create user
         user = await self.user_repo.create_user(email, password_raw, first_name, last_name)
         user.verification_code = otp_code
-        self.db.add(user)
-        await self.db.flush()
+        user.is_verified = True
+        await self.db.commit()
         
         # Mock Email send: Log to console in dev mode
         print(f"==========================================")

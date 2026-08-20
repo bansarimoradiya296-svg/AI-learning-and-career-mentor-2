@@ -4,20 +4,19 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 from fastapi import APIRouter, Depends, UploadFile, File, BackgroundTasks, status, Form, Query
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.exceptions import NotFoundError, BadRequestError
 from app.models.auth import User
-from app.models.study import Document, Flashcard, Quiz, QuizResult, Question, StudyPlan, StudyPlanItem, MindMap
+from app.models.study import Document, Flashcard, Quiz, QuizResult, Question
 from app.schemas.study import (
     DocumentResponse, FlashcardResponse, FlashcardCreateRequest,
-    FlashcardReviewRequest, QuizResponse, QuizSubmitRequest, QuizResultResponse,
+    FlashcardReviewRequest, QuizResponse, QuizSubmitRequest, QuizResultResponse
+)
+from app.schemas.planner import (
     StudyPlanCreateRequest, StudyPlanResponse, StudyPlanItemUpdate, 
-    AdaptPlanRequest, StudyPlanItemResponse,
-    MindMapGenerateRequest, MindMapExpandRequest, MindMapExplainRequest,
-    MindMapSaveRequest, MindMapResponse
+    AdaptPlanRequest, StudyPlanItemResponse
 )
 from app.services.ai_companion import AICompanionService
 from app.security.permissions import get_current_user
@@ -32,16 +31,14 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 async def upload_document(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    generate_short: bool = Form(True),
-    generate_detailed: bool = Form(True),
-    generate_notes: bool = Form(True),
-    generate_flashcards: bool = Form(True),
-    generate_quiz: bool = Form(True),
+    generate_short: bool = Form(False),
+    generate_detailed: bool = Form(False),
+    generate_notes: bool = Form(False),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Uploads a learning material (PDF, DOCX, PPTX, TXT) and triggers background vector indexing (RAG), Note Generation, Flashcards & Quiz.
+    Uploads a learning material (PDF, DOCX, PPTX, TXT) and triggers background vector indexing (RAG).
     """
     file_ext = os.path.splitext(file.filename)[1].lower()
     allowed_extensions = [
@@ -79,16 +76,14 @@ async def upload_document(
     await db.commit()
     await db.refresh(document)
 
-    # Trigger async ingestion, Note, Flashcard & Quiz Generation
+    # Trigger async ingestion
     ai_service = AICompanionService(db)
     background_tasks.add_task(
         ai_service.ingest_document, 
         document.id,
         generate_short,
         generate_detailed,
-        generate_notes,
-        generate_flashcards,
-        generate_quiz
+        generate_notes
     )
 
     return document
@@ -108,39 +103,6 @@ async def list_documents(
         .order_by(Document.created_at.desc())
     )
     return result.scalars().all()
-
-
-@router.get("/documents/{document_id}", response_model=DocumentResponse)
-async def get_document(
-    document_id: uuid.UUID,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """
-    Retrieves details and generated notes/summaries for a specific document.
-    """
-    result = await db.execute(
-        select(Document)
-        .filter(Document.id == document_id, Document.user_id == current_user.id)
-    )
-    doc = result.scalars().first()
-    if not doc:
-        raise NotFoundError("Document not found")
-    return doc
-
-
-@router.post("/documents/{document_id}/notes", response_model=DocumentResponse)
-async def generate_document_notes(
-    document_id: uuid.UUID,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """
-    Triggers AI Note Generation (Short Summary, Detailed Summary, Exam Notes) for an existing document.
-    """
-    ai_service = AICompanionService(db)
-    doc = await ai_service.generate_notes_for_document(document_id=document_id)
-    return doc
 
 
 @router.post("/ask")
@@ -163,135 +125,15 @@ async def ask_ai_companion(
 
 
 @router.post("/mindmap")
-@router.post("/mindmaps/generate")
-async def generate_mindmap_api(
-    payload: MindMapGenerateRequest,
+async def generate_mindmap(
+    topic: str,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Generates an interactive concept mindmap from topic, text, or document."""
-    doc_id = None
-    if payload.document_id:
-        try:
-            doc_id = uuid.UUID(str(payload.document_id))
-        except (ValueError, TypeError):
-            doc_id = None
-
+    """Generates a hierarchical JSON concept mindmap for a topic."""
     ai_service = AICompanionService(db)
-    mindmap = await ai_service.generate_mindmap_full(
-        source_type=payload.source_type,
-        topic=payload.topic,
-        text=payload.text,
-        document_id=doc_id,
-        user_id=current_user.id
-    )
+    mindmap = await ai_service.generate_mindmap(topic=topic, user_id=current_user.id)
     return mindmap
-
-
-@router.post("/mindmaps/expand-node")
-async def expand_mindmap_node_api(
-    payload: MindMapExpandRequest,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Dynamically expands a concept node with AI sub-concepts."""
-    ai_service = AICompanionService(db)
-    sub_nodes = await ai_service.expand_mindmap_node(
-        concept_name=payload.concept_name,
-        parent_context=payload.parent_context
-    )
-    return {"sub_nodes": sub_nodes}
-
-
-@router.post("/mindmaps/explain-node")
-async def explain_mindmap_node_api(
-    payload: MindMapExplainRequest,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Provides tailored AI explanation (Simple, Exam, Technical, Real-World, Detailed) for a node concept."""
-    ai_service = AICompanionService(db)
-    explanation = await ai_service.explain_mindmap_node(
-        concept_name=payload.concept_name,
-        mode=payload.mode,
-        context=payload.context
-    )
-    return {"explanation": explanation}
-
-
-@router.post("/mindmaps/save", response_model=MindMapResponse)
-async def save_mindmap(
-    payload: MindMapSaveRequest,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Saves or updates a Mind Map in the database."""
-    if payload.id:
-        res = await db.execute(select(MindMap).filter(MindMap.id == payload.id, MindMap.user_id == current_user.id))
-        existing_map = res.scalars().first()
-        if existing_map:
-            existing_map.title = payload.title
-            existing_map.source_type = payload.source_type
-            existing_map.source_id = payload.source_id
-            existing_map.nodes_data = payload.nodes_data
-            existing_map.layout_type = payload.layout_type
-            existing_map.updated_at = datetime.utcnow()
-            await db.commit()
-            await db.refresh(existing_map)
-            return existing_map
-
-    new_map = MindMap(
-        user_id=current_user.id,
-        title=payload.title,
-        source_type=payload.source_type,
-        source_id=payload.source_id,
-        nodes_data=payload.nodes_data,
-        layout_type=payload.layout_type
-    )
-    db.add(new_map)
-    await db.commit()
-    await db.refresh(new_map)
-    return new_map
-
-
-@router.get("/mindmaps", response_model=List[MindMapResponse])
-async def list_mindmaps(
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Lists all saved mind maps for the active student."""
-    res = await db.execute(select(MindMap).filter(MindMap.user_id == current_user.id).order_by(MindMap.updated_at.desc()))
-    return res.scalars().all()
-
-
-@router.get("/mindmaps/{map_id}", response_model=MindMapResponse)
-async def get_mindmap_by_id(
-    map_id: uuid.UUID,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Retrieves a specific saved mind map."""
-    res = await db.execute(select(MindMap).filter(MindMap.id == map_id, MindMap.user_id == current_user.id))
-    mindmap = res.scalars().first()
-    if not mindmap:
-        raise NotFoundError("Mind Map not found")
-    return mindmap
-
-
-@router.delete("/mindmaps/{map_id}")
-async def delete_mindmap(
-    map_id: uuid.UUID,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Deletes a saved mind map."""
-    res = await db.execute(select(MindMap).filter(MindMap.id == map_id, MindMap.user_id == current_user.id))
-    mindmap = res.scalars().first()
-    if not mindmap:
-        raise NotFoundError("Mind Map not found")
-    await db.delete(mindmap)
-    await db.commit()
-    return {"message": "Mind Map deleted successfully"}
 
 
 @router.post("/flashcards/generate", response_model=List[FlashcardResponse])
@@ -308,15 +150,11 @@ async def generate_flashcards(
 
 @router.get("/flashcards", response_model=List[FlashcardResponse])
 async def list_flashcards(
-    document_id: Optional[uuid.UUID] = Query(None),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Retrieves flashcards registered to the student, optionally filtered by document_id."""
-    stmt = select(Flashcard).filter(Flashcard.user_id == current_user.id)
-    if document_id:
-        stmt = stmt.filter(Flashcard.document_id == document_id)
-    result = await db.execute(stmt)
+    """Retrieves all flashcards registered to the student."""
+    result = await db.execute(select(Flashcard).filter(Flashcard.user_id == current_user.id))
     return result.scalars().all()
 
 
@@ -338,6 +176,8 @@ async def review_flashcard(
     if q < 0 or q > 5:
         raise BadRequestError("Rating must be an integer between 0 and 5.")
 
+    # SM-2 Spaced Repetition calculation
+    # Track repetitions internally or infer from interval
     repetitions = 0 if flashcard.interval_days <= 1 else 1
 
     if q >= 3:
@@ -374,10 +214,7 @@ async def generate_quiz(
     quiz = await ai_service.generate_quiz(document_id=document_id, difficulty=difficulty)
     if not quiz:
         raise BadRequestError("Failed to generate quiz. Verify document structure.")
-    res = await db.execute(
-        select(Quiz).options(selectinload(Quiz.questions)).filter(Quiz.id == quiz.id)
-    )
-    return res.scalars().first()
+    return quiz
 
 
 @router.get("/quizzes/{quiz_id}", response_model=QuizResponse)
@@ -388,7 +225,7 @@ async def get_quiz(
 ):
     """Retrieves a specific quiz by ID."""
     result = await db.execute(
-        select(Quiz).options(selectinload(Quiz.questions)).filter(Quiz.id == quiz_id)
+        select(Quiz).filter(Quiz.id == quiz_id)
     )
     quiz = result.scalars().first()
     if not quiz:
@@ -406,9 +243,7 @@ async def submit_quiz(
     """
     Submits student responses, calculates raw scores, and saves QuizResult logging.
     """
-    result = await db.execute(
-        select(Quiz).options(selectinload(Quiz.questions)).filter(Quiz.id == quiz_id)
-    )
+    result = await db.execute(select(Quiz).filter(Quiz.id == quiz_id))
     quiz = result.scalars().first()
     if not quiz:
         raise NotFoundError("Quiz not found")
@@ -418,8 +253,7 @@ async def submit_quiz(
 
     for question in quiz.questions:
         student_ans = payload.answers.get(str(question.id))
-        # Match student_ans against correct_option (e.g., 'A', 'B', 'C', 'D')
-        if student_ans and student_ans.strip().upper() == question.correct_option.strip().upper():
+        if student_ans == question.correct_option:
             correct_answers += 1
 
     quiz_result = QuizResult(
@@ -456,7 +290,14 @@ async def extract_syllabus(
     """
     Extracts structured topics and subtopics from an uploaded syllabus file.
     """
-    file_ext = os.path.splitext(file.filename)[1].lower() if file.filename else ".pdf"
+    file_ext = os.path.splitext(file.filename)[1].lower()
+    allowed_extensions = [
+        ".pdf", ".docx", ".doc", ".pptx", ".ppt", ".txt",
+        ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif"
+    ]
+    if file_ext not in allowed_extensions:
+        raise BadRequestError(f"Unsupported syllabus extension: {file_ext}")
+
     file_id = uuid.uuid4()
     saved_filename = f"syllabus_{file_id}{file_ext}"
     file_path = os.path.join(UPLOAD_DIR, saved_filename)
@@ -465,38 +306,16 @@ async def extract_syllabus(
         content = await file.read()
         with open(file_path, "wb") as f:
             f.write(content)
-    except Exception:
-        pass
+    except Exception as e:
+        raise BadRequestError(f"Failed to save syllabus file: {str(e)}")
 
     ai_service = AICompanionService(db)
-    try:
-        result_data = await ai_service.extract_syllabus_topics(file_path, file_ext)
-    except Exception as e:
-        clean_name = os.path.splitext(file.filename)[0].replace("syllabus_", "").replace("_", " ").replace("-", " ") if file.filename else "Core Syllabus Subject"
-        result_data = {
-            "classification": "Syllabus / Course Outline",
-            "course_metadata": {
-                "course_name": clean_name,
-                "total_units": 3,
-                "recommended_hours_per_week": 4
-            },
-            "topics": [
-                {
-                    "name": clean_name,
-                    "marks": 50,
-                    "weak_topics": ["Advanced Problem Solving", "Challenging Theorems"],
-                    "strong_topics": ["Basic Definitions", "Core Principles"],
-                    "priority": 7,
-                    "exam_date": None
-                }
-            ]
-        }
-
+    result_data = await ai_service.extract_syllabus_topics(file_path, file_ext)
     return {
         "filename": file.filename,
-        "classification": result_data.get("classification", "Syllabus / Course Outline"),
-        "course_metadata": result_data.get("course_metadata", {}),
-        "topics": result_data.get("topics", [])
+        "classification": result_data["classification"],
+        "course_metadata": result_data["course_metadata"],
+        "topics": result_data["topics"]
     }
 
 
@@ -645,9 +464,13 @@ async def get_daily_coach_report(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Queries database for today's study progress and quiz scores,
+    AI Pipeline Stage 5: Queries database for today's study progress and quiz scores,
     and returns a personalized progress report and next-day suggestions from the AI Coach.
     """
+    # Import QuizResult model for scoring
+    from app.models.study import QuizResult
+    
+    # 1. Get active study plan
     result = await db.execute(
         select(StudyPlan)
         .filter(StudyPlan.user_id == current_user.id, StudyPlan.is_active == True)
@@ -663,6 +486,7 @@ async def get_daily_coach_report(
             "confidence_score": 0
         }
         
+    # 2. Get sessions
     items_res = await db.execute(
         select(StudyPlanItem)
         .filter(StudyPlanItem.plan_id == plan.id)
@@ -679,6 +503,7 @@ async def get_daily_coach_report(
             "confidence_score": 0
         }
     
+    # Calculate active day
     active_day = 1
     for it in items:
         if not it.completed and not it.is_break:
@@ -698,6 +523,7 @@ async def get_daily_coach_report(
     
     study_hours = sum([it.duration_minutes for it in completed_items]) / 60.0
     
+    # Get recent quiz scores for user
     quiz_res = await db.execute(
         select(QuizResult)
         .filter(QuizResult.user_id == current_user.id)
@@ -708,7 +534,7 @@ async def get_daily_coach_report(
     if recent_quizzes:
         avg_quiz_score = int(sum([q.score / q.total_questions * 100 for q in recent_quizzes]) / len(recent_quizzes))
     else:
-        avg_quiz_score = 75
+        avg_quiz_score = 75 # Default fallback
         
     ai_service = AICompanionService(db)
     report = await ai_service.generate_daily_coach_report(
@@ -722,62 +548,3 @@ async def get_daily_coach_report(
     )
     return report
 
-
-# ─── Direct Topic-Based AI Generation Endpoints ─────────────
-
-@router.post("/notes/generate-for-topic")
-async def generate_notes_for_topic(
-    payload: dict,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Directly generates comprehensive AI notes for a specific subject & topic."""
-    subject = payload.get("subject", "Core Subject")
-    topic = payload.get("topic", "General Concepts")
-    ai_service = AICompanionService(db)
-    notes = await ai_service.generate_notes_from_topic(subject, topic)
-    return notes
-
-
-@router.post("/flashcards/generate-for-topic")
-async def generate_flashcards_for_topic(
-    payload: dict,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Directly generates and persists high-yield flashcards for a specific topic."""
-    subject = payload.get("subject", "Core Subject")
-    topic = payload.get("topic", "General Concepts")
-    ai_service = AICompanionService(db)
-    cards = await ai_service.generate_flashcards_from_topic(current_user.id, subject, topic)
-    return {"message": "Flashcards generated", "cards": cards}
-
-
-@router.post("/quizzes/generate-for-topic")
-async def generate_quiz_for_topic(
-    payload: dict,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Directly generates a 4-question interactive practice quiz for a specific topic."""
-    subject = payload.get("subject", "Core Subject")
-    topic = payload.get("topic", "General Concepts")
-    difficulty = payload.get("difficulty", "MEDIUM")
-    ai_service = AICompanionService(db)
-    quiz = await ai_service.generate_quiz_from_topic(current_user.id, subject, topic, difficulty)
-    return quiz
-
-
-@router.post("/planner/topic-breakdown")
-async def get_dynamic_topic_breakdown(
-    payload: dict,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Generates dynamic AI breakdown of subtopics, formulas, exam traps, and practice targets for any scheduled session."""
-    subject = payload.get("subject", "Core Subject")
-    topic = payload.get("topic", "General Concepts")
-    duration = payload.get("duration_minutes", 90)
-    ai_service = AICompanionService(db)
-    breakdown = await ai_service.generate_topic_breakdown(subject, topic, duration)
-    return breakdown
