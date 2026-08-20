@@ -14,7 +14,9 @@ class CareerGoal(Base):
     target_job_title: Mapped[str] = mapped_column(String(255), nullable=False)
     current_skills: Mapped[dict] = mapped_column(JSON, default=list) # e.g. ["Python", "HTML"]
     target_skills: Mapped[dict] = mapped_column(JSON, default=list) # e.g. ["FastAPI", "Docker", "ChromaDB"]
+    job_readiness_score: Mapped[float] = mapped_column(Float, default=0.0) # 1–100 scale from AI analysis
     roadmap_status: Mapped[str] = mapped_column(String(50), default="NOT_STARTED") # NOT_STARTED, GENERATING, READY, ARCHIVED
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
 
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="career_goals")

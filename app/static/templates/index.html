@@ -14,11 +14,9 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-icons.css">
     <!-- Custom Style System -->
-    <link rel="stylesheet" href="/static/css/style.css?v=1.0.3">
-    <!-- Chart.js for premium visualizations -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css?v=3.0.1">
 </head>
 
 <body data-theme="dark">
@@ -112,20 +110,18 @@
 
         <div>
             <hr class="border-secondary opacity-25">
-            <div class="d-flex align-items-center justify-content-between p-2 rounded glass-panel"
-                style="background: rgba(255, 255, 255, 0.02); border-color: rgba(255, 255, 255, 0.05);">
-                <div class="d-flex align-items-center">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80"
-                        class="rounded-circle me-2 border border-secondary border-opacity-50"
-                        style="width: 38px; height: 38px; object-fit: cover;" alt="Profile">
-                    <div style="font-size: 0.82rem;" class="logo-text">
-                        <div class="fw-bold text-white text-truncate" id="user-email-display" style="max-width: 130px;">
-                            Bansari Moradiya</div>
-                        <span class="text-secondary small" id="user-role-display">MCA Student</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center flex-grow-1" style="min-width: 0; padding-right: 10px;">
+                    <div class="bg-primary rounded-circle p-2 me-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                        <i class="bi bi-person-fill text-white"></i>
+                    </div>
+                    <div style="font-size: 0.85rem; min-width: 0;" class="flex-grow-1">
+                        <div class="fw-bold text-truncate" id="user-email-display">Guest</div>
+                        <div class="text-secondary text-truncate" id="user-role-display">Not Signed In</div>
                     </div>
                 </div>
-                <button class="btn btn-sm btn-outline-danger border-0 p-1" onclick="logout()" title="Logout">
-                    <i class="bi bi-box-arrow-right fs-5"></i>
+                <button class="btn btn-sm btn-outline-danger flex-shrink-0" onclick="logout()" title="Logout">
+                    <i class="bi bi-box-arrow-right"></i>
                 </button>
             </div>
         </div>
@@ -140,10 +136,9 @@
                 <p id="tab-subtitle" class="text-secondary m-0">Track your learning statistics and readiness indicators.
                 </p>
             </div>
-
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn glass-panel border-0 px-3 py-2" onclick="toggleTheme()"
-                    title="Toggle Dark/Light Mode">
+            
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <button class="btn glass-panel border-0 px-3 py-2" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
                     <i class="bi bi-moon-stars-fill" id="theme-icon"></i>
                 </button>
                 <div id="auth-buttons-wrapper">
@@ -334,41 +329,494 @@
 
             <!-- 4. Career Roadmap Tab -->
             <section id="tab-career" class="tab-pane-custom d-none">
+
+                <!-- ── Page Title Row ── -->
+                <div class="rm-page-header d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <h2 class="rm-title mb-1">Career Roadmap</h2>
+                        <p class="rm-subtitle">AI-generated roadmap based on your goals, current skills and interests.</p>
+                    </div>
+                    <button class="btn rm-export-btn" onclick="exportRoadmap()">
+                        <i class="bi bi-box-arrow-up me-1"></i> Export Roadmap
+                    </button>
+                </div>
+
                 <div class="row g-4">
-                    <div class="col-md-5">
-                        <div class="glass-panel p-4 mb-4">
-                            <h4 class="mb-3">Set Target & Analyze Resume</h4>
-                            <form id="resume-form" onsubmit="uploadResume(event)">
-                                <div class="mb-3">
-                                    <label class="form-label">Target Job Title</label>
-                                    <input type="text" id="target-job" class="form-control glass-input"
-                                        placeholder="e.g., Senior FastAPI Developer" required>
+                    <!-- ── LEFT + CENTRE COLUMN ── -->
+                    <div class="col-xl-9">
+
+                        <!-- Goal Info Cards -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="glass-panel rm-info-card h-100 p-3 d-flex align-items-center gap-3">
+                                    <div class="rm-info-icon rm-icon-blue">
+                                        <i class="bi bi-bullseye"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="rm-info-label">Your Goal</div>
+                                        <div class="rm-info-sublabel">Become a</div>
+                                        <div class="rm-info-value" id="rm-goal-title">Data Analyst</div>
+                                        <button class="btn rm-edit-btn mt-2" onclick="openGoalModal()"><i class="bi bi-pencil-fill me-1"></i>Edit Goal</button>
+                                    </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Upload Resume (PDF, DOCX)</label>
-                                    <input type="file" id="resume-file" class="form-control glass-input" required>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="glass-panel rm-info-card h-100 p-3 d-flex align-items-center gap-3">
+                                    <div class="rm-info-icon rm-icon-green">
+                                        <i class="bi bi-graph-up-arrow"></i>
+                                    </div>
+                                    <div>
+                                        <div class="rm-info-label">Current Level</div>
+                                        <div class="rm-info-value rm-level-value" id="rm-level">Beginner</div>
+                                        <div class="rm-info-status text-success mt-1" id="rm-level-msg">Keep learning!</div>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary-custom w-100">Analyze Skills & Set
-                                    Goals</button>
-                            </form>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="glass-panel rm-info-card h-100 p-3 d-flex align-items-center gap-3">
+                                    <div class="rm-info-icon rm-icon-orange">
+                                        <i class="bi bi-clock-history"></i>
+                                    </div>
+                                    <div>
+                                        <div class="rm-info-label">Estimated Time</div>
+                                        <div class="rm-info-value rm-time-value" id="rm-est-time">6 – 8 Months</div>
+                                        <div class="rm-info-status text-secondary mt-1">To achieve your goal</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="glass-panel p-4" id="skill-gap-panel">
-                            <h4>Target Job Skills Map</h4>
-                            <p class="text-secondary">Ingest resume to view target skills profile.</p>
+                        <!-- Roadmap Panel -->
+                        <div class="glass-panel p-4 mb-4" id="rm-roadmap-panel">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="m-0 fw-bold"><i class="bi bi-map-fill me-2 text-primary"></i>Your Personalized Roadmap</h4>
+                                <div class="rm-view-toggle">
+                                    <button class="rm-view-btn active" id="btn-timeline-view" onclick="setRoadmapView('timeline')">Timeline View</button>
+                                    <button class="rm-view-btn" id="btn-list-view" onclick="setRoadmapView('list')">List View</button>
+                                </div>
+                            </div>
+
+                            <!-- Phase Timeline Connector -->
+                            <div class="rm-timeline-connector mb-4" id="rm-phase-connector">
+                                <div class="rm-connector-line"></div>
+                                <div class="rm-connector-node rm-node-completed"><span>1</span></div>
+                                <div class="rm-connector-node rm-node-inprogress"><span>2</span></div>
+                                <div class="rm-connector-node rm-node-upcoming rm-node-orange"><span>3</span></div>
+                                <div class="rm-connector-node rm-node-upcoming rm-node-green"><span>4</span></div>
+                            </div>
+
+                            <!-- Phase Cards -->
+                            <div class="rm-phases-grid" id="rm-phases-grid">
+
+                                <!-- Phase 1 -->
+                                <div class="rm-phase-card rm-phase-inprogress">
+                                    <div class="rm-phase-header">
+                                        <div class="rm-phase-icon rm-icon-blue"><i class="bi bi-mortarboard-fill"></i></div>
+                                        <span class="rm-phase-label">Phase 1</span>
+                                    </div>
+                                    <h5 class="rm-phase-title">Foundations</h5>
+                                    <div class="rm-phase-duration"><i class="bi bi-clock me-1"></i>Duration: 4 – 6 weeks</div>
+                                    <p class="rm-phase-desc">Build strong fundamentals in data analysis.</p>
+                                    <ul class="rm-topic-list">
+                                        <li><i class="bi bi-check-circle-fill text-primary"></i> Excel Basics</li>
+                                        <li><i class="bi bi-check-circle-fill text-primary"></i> Statistics Fundamentals</li>
+                                        <li><i class="bi bi-check-circle-fill text-primary"></i> SQL Basics</li>
+                                        <li><i class="bi bi-check-circle-fill text-primary"></i> Data Visualization Intro</li>
+                                    </ul>
+                                    <div class="rm-phase-status-control mt-2">
+                                        <select class="form-select glass-input form-select-sm mb-2" onchange="this.nextElementSibling.classList.remove('d-none');">
+                                            <option value="completed">✅ Completed</option>
+                                            <option value="inprogress" selected>🔄 In Progress</option>
+                                            <option value="upcoming">⏳ Upcoming</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-primary-custom w-100 d-none" onclick="this.classList.add('d-none');">
+                                            <i class="bi bi-check2 me-1"></i>Update Status
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Phase 2 -->
+                                <div class="rm-phase-card rm-phase-upcoming">
+                                    <div class="rm-phase-header">
+                                        <div class="rm-phase-icon rm-icon-blue"><i class="bi bi-tools"></i></div>
+                                        <span class="rm-phase-label">Phase 2</span>
+                                    </div>
+                                    <h5 class="rm-phase-title">Core Skills</h5>
+                                    <div class="rm-phase-duration"><i class="bi bi-clock me-1"></i>Duration: 6 – 8 weeks</div>
+                                    <p class="rm-phase-desc">Learn core tools and techniques.</p>
+                                    <ul class="rm-topic-list">
+                                        <li><i class="bi bi-check-circle-fill text-primary"></i> Advanced SQL</li>
+                                        <li><i class="bi bi-check-circle-fill text-primary"></i> Power BI / Tableau</li>
+                                        <li><i class="bi bi-check-circle-fill text-primary"></i> Data Cleaning (Python)</li>
+                                        <li><i class="bi bi-check-circle-fill text-primary"></i> Exploratory Data Analysis</li>
+                                    </ul>
+                                    <div class="rm-phase-status-control mt-2">
+                                        <select class="form-select glass-input form-select-sm mb-2" onchange="this.nextElementSibling.classList.remove('d-none');">
+                                            <option value="completed">✅ Completed</option>
+                                            <option value="inprogress">🔄 In Progress</option>
+                                            <option value="upcoming" selected>⏳ Upcoming</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-primary-custom w-100 d-none" onclick="this.classList.add('d-none');">
+                                            <i class="bi bi-check2 me-1"></i>Update Status
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Phase 3 -->
+                                <div class="rm-phase-card rm-phase-upcoming">
+                                    <div class="rm-phase-header">
+                                        <div class="rm-phase-icon rm-icon-orange"><i class="bi bi-graph-up-arrow"></i></div>
+                                        <span class="rm-phase-label">Phase 3</span>
+                                    </div>
+                                    <h5 class="rm-phase-title">Advanced Topics</h5>
+                                    <div class="rm-phase-duration"><i class="bi bi-clock me-1"></i>Duration: 6 – 8 weeks</div>
+                                    <p class="rm-phase-desc">Deep dive into advanced data concepts.</p>
+                                    <ul class="rm-topic-list">
+                                        <li><i class="bi bi-hourglass-split text-warning"></i> Advanced Analytics</li>
+                                        <li><i class="bi bi-hourglass-split text-warning"></i> Machine Learning Basics</li>
+                                        <li><i class="bi bi-hourglass-split text-warning"></i> A/B Testing</li>
+                                        <li><i class="bi bi-hourglass-split text-warning"></i> Data Storytelling</li>
+                                    </ul>
+                                    <div class="rm-phase-status-control mt-2">
+                                        <select class="form-select glass-input form-select-sm mb-2" onchange="this.nextElementSibling.classList.remove('d-none');">
+                                            <option value="completed">✅ Completed</option>
+                                            <option value="inprogress">🔄 In Progress</option>
+                                            <option value="upcoming" selected>⏳ Upcoming</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-primary-custom w-100 d-none" onclick="this.classList.add('d-none');">
+                                            <i class="bi bi-check2 me-1"></i>Update Status
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Phase 4 -->
+                                <div class="rm-phase-card rm-phase-upcoming">
+                                    <div class="rm-phase-header">
+                                        <div class="rm-phase-icon rm-icon-green"><i class="bi bi-rocket-takeoff-fill"></i></div>
+                                        <span class="rm-phase-label">Phase 4</span>
+                                    </div>
+                                    <h5 class="rm-phase-title">Real World Ready</h5>
+                                    <div class="rm-phase-duration"><i class="bi bi-clock me-1"></i>Duration: 4 – 6 weeks</div>
+                                    <p class="rm-phase-desc">Apply skills with projects and portfolio.</p>
+                                    <ul class="rm-topic-list">
+                                        <li><i class="bi bi-hourglass-split text-secondary"></i> End-to-End Projects</li>
+                                        <li><i class="bi bi-hourglass-split text-secondary"></i> Dashboard Creation</li>
+                                        <li><i class="bi bi-hourglass-split text-secondary"></i> Portfolio Building</li>
+                                        <li><i class="bi bi-hourglass-split text-secondary"></i> Interview Preparation</li>
+                                    </ul>
+                                    <div class="rm-phase-status-control mt-2">
+                                        <select class="form-select glass-input form-select-sm mb-2" onchange="this.nextElementSibling.classList.remove('d-none');">
+                                            <option value="completed">✅ Completed</option>
+                                            <option value="inprogress">🔄 In Progress</option>
+                                            <option value="upcoming" selected>⏳ Upcoming</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-primary-custom w-100 d-none" onclick="this.classList.add('d-none');">
+                                            <i class="bi bi-check2 me-1"></i>Update Status
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div><!-- /.rm-phases-grid -->
+                        </div><!-- /.glass-panel roadmap -->
+
+                        <!-- Projects Section -->
+                        <div class="glass-panel p-4" id="rm-projects-panel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0 fw-bold"><i class="bi bi-folder2-open me-2 text-primary"></i>Projects You Will Build</h5>
+                                <button class="btn rm-view-all-btn" id="rm-view-all-btn">View All</button>
+                            </div>
+                            <div class="rm-projects-grid" id="rm-projects-grid">
+
+                                <div class="rm-project-card">
+                                    <div class="rm-proj-icon rm-icon-blue"><i class="bi bi-bar-chart-fill"></i></div>
+                                    <div>
+                                        <div class="rm-proj-name">Sales Dashboard</div>
+                                        <div class="rm-proj-type">Power BI Project</div>
+                                        <span class="rm-proj-phase">Phase 2</span>
+                                    </div>
+                                </div>
+
+                                <div class="rm-project-card">
+                                    <div class="rm-proj-icon rm-icon-blue"><i class="bi bi-database-fill"></i></div>
+                                    <div>
+                                        <div class="rm-proj-name">Customer Analysis</div>
+                                        <div class="rm-proj-type">SQL + Python Project</div>
+                                        <span class="rm-proj-phase">Phase 2</span>
+                                    </div>
+                                </div>
+
+                                <div class="rm-project-card">
+                                    <div class="rm-proj-icon rm-icon-orange"><i class="bi bi-graph-up"></i></div>
+                                    <div>
+                                        <div class="rm-proj-name">Marketing Analysis</div>
+                                        <div class="rm-proj-type">EDA Project</div>
+                                        <span class="rm-proj-phase">Phase 3</span>
+                                    </div>
+                                </div>
+
+                                <div class="rm-project-card">
+                                    <div class="rm-proj-icon rm-icon-green"><i class="bi bi-lightbulb-fill"></i></div>
+                                    <div>
+                                        <div class="rm-proj-name">Business Insights</div>
+                                        <div class="rm-proj-type">Capstone Project</div>
+                                        <span class="rm-proj-phase">Phase 4</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <p class="rm-roadmap-note mt-3 mb-0">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Roadmap adapts as you progress. Keep learning and updating your progress!
+                            </p>
+                        </div>
+
+                    </div><!-- /.col-xl-9 -->
+
+                    <!-- ── RIGHT SIDEBAR COLUMN ── -->
+                    <div class="col-xl-3">
+
+                        <!-- Roadmap Summary -->
+                        <div class="glass-panel p-3 mb-3">
+                            <h6 class="rm-sidebar-title mb-3"><i class="bi bi-clipboard-data me-1"></i>Roadmap Summary</h6>
+                            <ul class="rm-summary-list">
+                                <li><i class="bi bi-flag-fill text-primary"></i> <span id="rm-summary-phases">4</span> Learning Phases</li>
+                                <li><i class="bi bi-key-fill text-primary"></i> <span id="rm-summary-topics">24</span>+ Key Topics</li>
+                                <li><i class="bi bi-folder-fill text-primary"></i> <span id="rm-summary-projects">8</span>+ Projects</li>
+                                <li><i class="bi bi-collection-fill text-primary"></i> 12+ Recommended Resources</li>
+                            </ul>
+                        </div>
+
+                        <!-- Skills You Will Gain -->
+                        <div class="glass-panel p-3 mb-3">
+                            <h6 class="rm-sidebar-title mb-3"><i class="bi bi-bar-chart-steps me-1"></i>Skills You Will Gain</h6>
+                            <div class="rm-skills-list" id="rm-skills-list">
+                                <div class="rm-skill-row">
+                                    <div><span>SQL</span><span class="rm-skill-pct">90%</span></div>
+                                    <div class="rm-skill-bar"><div class="rm-skill-fill" style="width:90%"></div></div>
+                                </div>
+                                <div class="rm-skill-row">
+                                    <div><span>Excel</span><span class="rm-skill-pct">85%</span></div>
+                                    <div class="rm-skill-bar"><div class="rm-skill-fill" style="width:85%"></div></div>
+                                </div>
+                                <div class="rm-skill-row">
+                                    <div><span>Data Visualization</span><span class="rm-skill-pct">88%</span></div>
+                                    <div class="rm-skill-bar"><div class="rm-skill-fill" style="width:88%"></div></div>
+                                </div>
+                                <div class="rm-skill-row">
+                                    <div><span>Python</span><span class="rm-skill-pct">75%</span></div>
+                                    <div class="rm-skill-bar"><div class="rm-skill-fill" style="width:75%"></div></div>
+                                </div>
+                                <div class="rm-skill-row">
+                                    <div><span>Statistics</span><span class="rm-skill-pct">80%</span></div>
+                                    <div class="rm-skill-bar"><div class="rm-skill-fill" style="width:80%"></div></div>
+                                </div>
+                                <div class="rm-skill-row">
+                                    <div><span>Machine Learning</span><span class="rm-skill-pct">60%</span></div>
+                                    <div class="rm-skill-bar"><div class="rm-skill-fill" style="width:60%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Why This Roadmap -->
+                        <div class="glass-panel p-3 mb-3">
+                            <h6 class="rm-sidebar-title mb-3"><i class="bi bi-shield-check me-1"></i>Why This Roadmap?</h6>
+                            <ul class="rm-why-list">
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Personalized for your goal</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Based on in-demand skills</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Step-by-step structured path</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Project based learning</li>
+                            </ul>
+                        </div>
+
+                        <!-- Stay Consistent -->
+                        <div class="glass-panel p-3 rm-stay-consistent">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <h6 class="rm-sidebar-title m-0">Stay Consistent!</h6>
+                                <i class="bi bi-trophy-fill text-warning fs-4 ms-auto"></i>
+                            </div>
+                            <p class="rm-stay-text">Learn a little every day and you'll achieve big results.</p>
+                        </div>
+
+                    </div><!-- /.col-xl-3 -->
+                </div><!-- /.row -->
+
+                <!-- Edit Goal form moved to Modal -->
+
+            </section>
+
+
+            <!-- 5. Mock Interview Tab -->
+            <section id="tab-interview" class="tab-pane-custom d-none">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="glass-panel p-4 mb-4">
+                            <h4 class="mb-3">Start Simulated Mock</h4>
+                            <div class="mb-3">
+                                <label class="form-label">Interview Type</label>
+                                <select class="form-select glass-input" id="interview-type">
+                                    <option value="TECHNICAL">Technical Interview</option>
+                                    <option value="HR">HR Interview</option>
+                                    <option value="BEHAVIORAL">Behavioral Screening</option>
+                                    <option value="CODING">Coding Discussion</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary-custom w-100" onclick="initiateMockInterview()">Initialize Interview</button>
+                        </div>
+
+                        <div class="glass-panel p-4">
+                            <h4 class="mb-3">Previous Mock Runs</h4>
+                            <div class="list-group list-group-flush bg-transparent" id="mock-sessions-list">
+                                <span class="text-secondary">No mock interviews completed.</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-7">
-                        <div class="glass-panel p-4 mb-4">
-                            <h4 class="mb-3">AI Learning Timeline</h4>
-                            <div class="timeline-track" id="timeline-wrapper">
-                                <p class="text-secondary">Roadmap milestones will display here.</p>
+                    <div class="col-md-8">
+                        <div class="glass-panel p-4 d-flex flex-column" style="height: 500px;" id="interview-workspace">
+                            <h4 class="mb-3">Mock Live Audio/Text Stream</h4>
+                            <div class="flex-grow-1 overflow-auto p-3 rounded mb-3" style="background: rgba(0,0,0,0.15);" id="interview-chat-pane">
+                                <div class="text-secondary">Initialize session to begin interviewing.</div>
+                            </div>
+                            <div class="d-flex gap-2" id="interview-inputs-pane">
+                                <input type="text" id="interview-user-message" class="form-control glass-input" placeholder="Type response..." disabled>
+                                <button class="btn btn-primary-custom" id="interview-send-btn" onclick="sendInterviewResponse()" disabled>Send</button>
+                                <button class="btn btn-danger" id="interview-end-btn" onclick="endInterviewSession()" disabled>End</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+
+            <!-- 6. Admin Panel Tab -->
+            <section id="tab-admin" class="tab-pane-custom d-none">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="glass-panel p-4 text-center">
+                            <h5 class="text-secondary">Registered Users</h5>
+                            <h2 id="admin-stat-users" class="fw-bold">0</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-4 text-center">
+                            <h5 class="text-secondary">System Logins</h5>
+                            <h2 id="admin-stat-logins" class="fw-bold">0</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-4 text-center">
+                            <h5 class="text-secondary">Environment Status</h5>
+                            <h2 class="fw-bold text-success">ONLINE</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-4">
+                    <h4 class="mb-3">Global Security Audit Trail</h4>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Action</th>
+                                    <th>Entity</th>
+                                    <th>Origin IP</th>
+                                    <th>Payload Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-logs-table-body">
+                                <tr>
+                                    <td colspan="5" class="text-center text-secondary">Loading log indices...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- AUTHENTICATION DIALOG (Login / Register Modal) -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h3 class="modal-title fw-bold" id="auth-modal-title">Welcome Back</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="resetAuthError()"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="auth-form" onsubmit="executeAuthAction(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" id="auth-email" class="form-control glass-input" placeholder="student@aimentor.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="auth-password" class="form-control glass-input" placeholder="••••••••" required>
+                        </div>
+                        <div class="mb-3 d-none" id="auth-name-fields">
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" id="auth-fname" class="form-control glass-input" placeholder="John">
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" id="auth-lname" class="form-control glass-input" placeholder="Doe">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 d-none" id="auth-otp-field">
+                            <label class="form-label text-warning">OTP Verification Code</label>
+                            <input type="text" id="auth-otp" class="form-control glass-input" placeholder="123456" minlength="6" maxlength="6">
+                            <small class="text-info d-block mt-2"><i class="bi bi-info-circle-fill me-1"></i> Check the python server terminal logs to retrieve your simulated 6-digit OTP code.</small>
+                        </div>
+                        <div id="auth-error-block" class="alert alert-danger d-none mt-2"></div>
+                        <button type="submit" class="btn btn-primary-custom w-100 mt-3" id="auth-submit-btn">Login</button>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 pt-0 justify-content-center">
+                    <span id="auth-toggle-msg" class="text-secondary">Don't have an account?</span>
+                    <a href="#" class="text-primary fw-bold" id="auth-toggle-link" onclick="toggleAuthMode()">Register Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Goal Modal -->
+    <div class="modal fade" id="editGoalModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h3 class="modal-title fw-bold">Edit Career Goal</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="resume-form" onsubmit="uploadResume(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Your Goal (Target Job Title)</label>
+                            <input type="text" id="target-job" class="form-control glass-input" placeholder="e.g. Data Analyst" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Level</label>
+                            <select id="current-level" class="form-select glass-input">
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Resume (PDF, DOCX, TXT)</label>
+                            <input type="file" id="resume-file" class="form-control glass-input" required>
+                        </div>
+                        <div id="rm-upload-status" class="mt-2 mb-3"></div>
+                        <button type="submit" class="btn btn-primary-custom w-100">Analyze & Generate Roadmap</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+            </section>
+
 
             <!-- 5. Mock Interview Tab -->
             <section id="tab-interview" class="tab-pane-custom d-none">
@@ -2370,13 +2818,49 @@
             </div>
         </div>
     </div>
+    
+    <!-- Edit Goal Modal -->
+    <div class="modal fade" id="editGoalModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel p-4 text-white" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h3 class="modal-title fw-bold">Edit Career Goal</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="resume-form" onsubmit="uploadResume(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Your Goal (Target Job Title)</label>
+                            <input type="text" id="target-job" class="form-control glass-input" placeholder="e.g. Data Analyst" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Level</label>
+                            <select id="current-level" class="form-select glass-input">
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Resume (PDF, DOCX, TXT)</label>
+                            <input type="file" id="resume-file" class="form-control glass-input" required>
+                        </div>
+                        <div id="rm-upload-status" class="mt-2 mb-3"></div>
+                        <button type="submit" class="btn btn-primary-custom w-100">Analyze & Generate Roadmap</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- html2pdf.js for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Bootstrap 5 JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- html2pdf.js for client-side PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Core Application Logic Bundle -->
-    <script src="/static/js/main.js?v=1.0.2"></script>
+    <script src="/static/js/main.js?v=12"></script>
 </body>
 
 </html>

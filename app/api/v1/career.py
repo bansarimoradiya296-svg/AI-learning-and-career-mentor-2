@@ -2,6 +2,7 @@ import os
 import uuid
 from typing import List
 from fastapi import APIRouter, Depends, UploadFile, File, Form, status
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -53,10 +54,10 @@ async def analyze_resume_and_set_profile(
         target_job_title=target_job_title,
         user_id=current_user.id
     )
-    
+
     # Commit changes
     await db.commit()
-    
+
     # Reload goal with relationships
     stmt = (
         select(CareerGoal)
@@ -86,6 +87,7 @@ async def list_career_goals(
             selectinload(CareerGoal.projects),
             selectinload(CareerGoal.certifications)
         )
+        .order_by(CareerGoal.created_at.desc())
     )
     result = await db.execute(stmt)
     return result.scalars().all()
@@ -106,112 +108,55 @@ async def get_roadmap(
     return roadmap
 
 
-from pydantic import BaseModel
+# ── Phase Status Update ───────────────────────────────────────────────────────
 
-class PortfolioAnalysisRequest(BaseModel):
-    target_career: str
-    experience_level: str
-    current_skills: str
-    num_projects: int
-    linkedin_status: str
-    github_status: str
-    portfolio_status: str
-    resume_status: str
-    certification_status: str
+class PhaseStatusUpdate(BaseModel):
+    phase_num: int      # 1-based phase number
+    phase_status: str   # "upcoming" | "inprogress" | "completed"
 
 
-@router.post("/portfolio-analyze")
-async def analyze_portfolio(
-    payload: PortfolioAnalysisRequest,
-    current_user: User = Depends(get_current_user)
+@router.patch("/roadmaps/{roadmap_id}/phase-status", response_model=RoadmapResponse)
+async def update_phase_status(
+    roadmap_id: uuid.UUID,
+    payload: PhaseStatusUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ):
-    """
-    Leverages Gemini to analyze portfolio readiness inputs and output strengths, weaknesses,
-    and priority improvements.
-    """
-    import google.generativeai as genai
-    from app.core.config import settings
-    import json
-    import re
+    """Updates the status of a specific phase in a roadmap and recalculates completion percentage."""
+    stmt = select(Roadmap).filter(Roadmap.id == roadmap_id)
+    result = await db.execute(stmt)
+    roadmap = result.scalars().first()
+    if not roadmap:
+        raise NotFoundError("Roadmap not found")
 
-    # Ensure gemini API is configured
-    genai.configure(api_key=settings.GEMINI_API_KEY)
+    allowed = {"upcoming", "inprogress", "completed"}
+    if payload.phase_status not in allowed:
+        raise BadRequestError(f"Invalid status. Allowed: {allowed}")
 
-    prompt = (
-        f"You are an Expert Technical Recruiter and Portfolio Coach.\n"
-        f"Analyze the candidate's portfolio details:\n"
-        f"- Target Career: {payload.target_career}\n"
-        f"- Experience Level: {payload.experience_level}\n"
-        f"- Current Skills: {payload.current_skills}\n"
-        f"- Number of Projects: {payload.num_projects}\n"
-        f"- LinkedIn Status: {payload.linkedin_status}\n"
-        f"- GitHub Status: {payload.github_status}\n"
-        f"- Portfolio Status: {payload.portfolio_status}\n"
-        f"- Resume Status: {payload.resume_status}\n"
-        f"- Certification Status: {payload.certification_status}\n\n"
-        f"Provide a structured assessment in JSON format with the following keys:\n"
-        f'  "strengths": list of 3-4 strengths,\n'
-        f'  "weaknesses": list of 3-4 weak areas,\n'
-        f'  "missing_elements": list of 3-4 missing items,\n'
-        f'  "priority_improvements": list of 3-4 priority actions (numbered),\n'
-        f'  "recommended_projects": list of 2 project ideas suitable for target career,\n'
-        f'  "linkedin_improvements": list of 2 improvements,\n'
-        f'  "github_improvements": list of 2 improvements,\n'
-        f'  "resume_improvements": list of 2 improvements,\n'
-        f'  "portfolio_improvements": list of 2 improvements.\n\n'
-        f"Return raw JSON text only. Do not include markdown formatting or comments."
-    )
+    # Update the target phase status inside JSON
+    import copy
+    structure = copy.deepcopy(roadmap.structure)
+    phases = structure.get("phases", [])
+    for phase in phases:
+        if phase.get("phase_num") == payload.phase_num:
+            phase["status"] = payload.phase_status
+            break
 
-    try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
-        raw_text = response.text.replace("```json", "").replace("```", "").strip()
-        raw_text_clean = re.sub(r'//.*$', '', raw_text, flags=re.MULTILINE)
-        result = json.loads(raw_text_clean)
-    except Exception as e:
-        print(f"Failed to call Gemini for portfolio analysis: {e}")
-        # Build logical default/fallback response tailored to target career
-        result = {
-            "strengths": [
-                f"Demonstrated interest in the {payload.target_career} domain",
-                f"Has {payload.num_projects} project(s) listed on their profile",
-                "Awareness of key baseline skills"
-            ],
-            "weaknesses": [
-                f"Needs to align Github repository showcase with professional {payload.target_career} standards",
-                "Descriptions could emphasize problem statements and metric achievements more",
-                "LinkedIn presence may not be optimized for recruiter search visibility"
-            ],
-            "missing_elements": [
-                "ATS-optimized resume keywords matching job descriptions",
-                "Pinned high-quality GitHub repositories with clear documentation",
-                "Clean system architecture diagrams in the project READMEs"
-            ],
-            "priority_improvements": [
-                f"1. Tailor your GitHub repository README files for {payload.target_career} tech stack.",
-                "2. Align LinkedIn headline and summary with target industry roles.",
-                "3. Build a personal portfolio site that lists your projects with live links."
-            ],
-            "recommended_projects": [
-                f"Project 1: Advanced {payload.target_career} Application showcasing API design or data modeling.",
-                "Project 2: End-to-end full stack utility containing security headers and user authentication."
-            ],
-            "linkedin_improvements": [
-                "Write a professional headline mentioning specific technical methodologies.",
-                "Add an about section showcasing passion for building robust engineering solutions."
-            ],
-            "github_improvements": [
-                "Create a profile README introducing your stack and repository highlights.",
-                "Clean up legacy or blank repositories to keep your profile clean."
-            ],
-            "resume_improvements": [
-                "Format resume cleanly using standard sections (Skills, Projects, Experience).",
-                "Ensure technical terms align with target applicant screening systems."
-            ],
-            "portfolio_improvements": [
-                "Add live deployment links alongside code repository references.",
-                "Detail your exact role and contributions for team/collaborative projects."
-            ]
-        }
+    structure["phases"] = phases
 
-    return result
+    # Recalculate completion percentage
+    total = len(phases)
+    completed_count = sum(1 for p in phases if p.get("status") == "completed")
+    inprogress_count = sum(1 for p in phases if p.get("status") == "inprogress")
+    completion = 0.0
+    if total > 0:
+        completion = round(((completed_count + inprogress_count * 0.5) / total) * 100, 1)
+
+    from sqlalchemy.orm.attributes import flag_modified
+    roadmap.structure = structure
+    flag_modified(roadmap, "structure")
+    roadmap.completion_percentage = completion
+
+    await db.commit()
+    await db.refresh(roadmap)
+    return roadmap

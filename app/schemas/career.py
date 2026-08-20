@@ -45,6 +45,7 @@ class CareerGoalResponse(BaseModel):
     target_job_title: str
     current_skills: List[str]
     target_skills: List[str]
+    job_readiness_score: float = 0.0
     roadmap_status: str
     roadmaps: List[RoadmapResponse] = []
     projects: List[RecommendedProjectResponse] = []
