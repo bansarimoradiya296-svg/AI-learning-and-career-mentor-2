@@ -41,7 +41,12 @@ body {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-heading);
     font-weight: 700;
 }
@@ -96,7 +101,8 @@ h1, h2, h3, h4, h5, h6 {
     margin-right: 12px;
 }
 
-.nav-link-custom:hover, .nav-link-custom.active {
+.nav-link-custom:hover,
+.nav-link-custom.active {
     color: var(--text-primary);
     background: rgba(99, 102, 241, 0.15);
     box-shadow: 0 0 15px var(--primary-glow);
@@ -196,19 +202,24 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Loading Skeletons */
 .skeleton {
-    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
     background-size: 200% 100%;
     animation: loading-pulse 1.5s infinite;
     border-radius: 8px;
 }
 
 [data-theme="light"] .skeleton {
-    background: linear-gradient(90deg, rgba(0,0,0,0.03) 25%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.03) 75%);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.03) 25%, rgba(0, 0, 0, 0.06) 50%, rgba(0, 0, 0, 0.03) 75%);
 }
 
 @keyframes loading-pulse {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 /* Coding Workspace Split Pane */
@@ -242,13 +253,17 @@ h1, h2, h3, h4, h5, h6 {
         width: 80px;
         padding: 16px 8px;
     }
-    .sidebar .logo-text, .sidebar span {
+
+    .sidebar .logo-text,
+    .sidebar span {
         display: none;
     }
+
     .main-content {
         margin-left: 80px;
         padding: 20px;
     }
+
     .coding-container {
         flex-direction: column;
         height: auto;
